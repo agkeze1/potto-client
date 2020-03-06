@@ -26,7 +26,7 @@ const UserLogin: React.FC<LoginProps> = ({ location, history }) => {
   return (
     <>
       <Helmet>
-        <title> Admin Login | {GetAppName()}</title>
+        <title> Login | {GetAppName()}</title>
       </Helmet>
       <div className="all-wrapper menu-side with-pattern">
         <div className="auth-box-w">
@@ -36,13 +36,13 @@ const UserLogin: React.FC<LoginProps> = ({ location, history }) => {
             </a>
             <h6 className="mt-2">Potto</h6>
           </div>
-          <h4 className="auth-header">Admin Login</h4>
+          <h4 className="auth-header">Login</h4>
           <form className="pb-4">
             {/* Email input */}
             <Input
               name="email"
-              placeholder="Enter Email"
-              label="Email / Reg.no. / Phone"
+              placeholder="Enter email or phone"
+              label="Email / Phone"
               onChange={(item: string) => {}}
               icon="os-icon-user-male-circle"
               required={true}
@@ -59,22 +59,16 @@ const UserLogin: React.FC<LoginProps> = ({ location, history }) => {
               required={true}
               type="password"
             />
-            <div className="buttons-w">
+            <div className="buttons-w pb-3">
               <button type="submit" className="btn btn-primary">
                 Login
                 <div className="os-icon os-icon-arrow-right7"></div>
               </button>
+              <NavLink className="btn btn-link" to="#">
+                Forgot password?
+              </NavLink>
             </div>
           </form>
-          <div className="text-center pb-4">
-            <NavLink className="btn btn-link" to="#">
-              Forgot password?
-            </NavLink>{" "}
-            |
-            <NavLink className="btn btn-link" to="/signup">
-              Create Account
-            </NavLink>
-          </div>
           <a
             className="text-center font-sm footer pb-3"
             href="http://afari.com"

@@ -310,3 +310,7 @@ body.full-screen .all-wrapper,
 .footer {
   display: block;
 }
+
+.clickable {
+  cursor: pointer;
+}

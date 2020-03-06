@@ -1,16 +1,16 @@
 import React, { FC } from "react";
 import { NavLink, Redirect } from "react-router-dom";
 // import { authService } from "../../../../services/Auth.Service";
-import { IProps } from "../../../../models/IProps";
+import { IProps } from "../../models/IProps";
 
-const AdminHeader: FC<IProps> = ({ location }) => {
+const Header: FC<IProps> = ({ location }) => {
   return (
     <div className="top-bar color-scheme-transparent">
       <div className="top-menu-controls">
         <div className="logged-user-w">
           <div className="logged-user-i">
             <div className="avatar-w">
-              <img src="/img/images.png" alt="profile" />
+              <img src="/avatar.png" alt="menu" />
             </div>
             <div className="logged-user-menu color-style-bright">
               <div className="bg-icon">
@@ -67,30 +67,6 @@ const AdminHeader: FC<IProps> = ({ location }) => {
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/in/admin/new-course">
-                    <i className="os-icon os-icon-book-open"></i>
-                    <span>New Course</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/in/admin/course-list">
-                    <i className="os-icon os-icon-list"></i>
-                    <span>Course List</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/in/admin/active-session">
-                    <i className="os-icon os-icon-check-square"></i>
-                    <span>Active Session</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/in/admin/max-credit-unit">
-                    <i className="os-icon os-icon-pie-chart-3"></i>
-                    <span>Max. Credit Unit</span>
-                  </NavLink>
-                </li>
-                <li>
                   <a
                     onClick={() => {
                       // authService.Logout();
@@ -110,4 +86,4 @@ const AdminHeader: FC<IProps> = ({ location }) => {
     </div>
   );
 };
-export default AdminHeader;
+export default Header;

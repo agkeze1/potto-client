@@ -14,7 +14,7 @@ import { IMessage } from "../models/IMessage";
 // import { authService } from "../services/Auth.Service";
 import AlertMessage from "../pages/partials/AlertMessage";
 
-const StudentSignup: React.FC<IProps> = ({ location, history }) => {
+const UserSignup: React.FC<IProps> = ({ location, history }) => {
   document.body.className = "auth-wrapper";
 
   const [record, setRecord] = useState<any>();
@@ -43,7 +43,7 @@ const StudentSignup: React.FC<IProps> = ({ location, history }) => {
   return (
     <>
       <Helmet>
-        <title>New Admin Account | {GetAppName()}</title>
+        <title>Super Admin Account | {GetAppName()}</title>
       </Helmet>
       <div className="all-wrapper menu-side with-pattern">
         <div className="auth-box-w wider">
@@ -53,12 +53,12 @@ const StudentSignup: React.FC<IProps> = ({ location, history }) => {
             </a>
             <h6 className="mt-2">Potto</h6>
           </div>
-          <h4 className="auth-header">New Admin Account</h4>
+          <h4 className="auth-header">Create Super Admin </h4>
           <form>
             {/* Fullname input */}
             <Input
               name="fullname"
-              placeholder="Enter Name"
+              placeholder="Enter fullname"
               label="Name"
               onChange={(name: string) =>
                 setRecord({
@@ -73,25 +73,25 @@ const StudentSignup: React.FC<IProps> = ({ location, history }) => {
 
             <div className="row">
               <div className="col-sm-6">
-                {/* Reg. number input */}
+                {/* Email input */}
                 <Input
-                  name="regNo"
-                  placeholder="Enter reg.no."
-                  label="Reg. Number"
-                  onChange={(regNo: string) =>
+                  name="phone"
+                  placeholder="Enter phone number"
+                  label="Phone number "
+                  onChange={(phone: string) =>
                     setRecord({
                       ...record,
-                      regNo
+                      phone
                     })
                   }
-                  icon="os-icon-tasks-checked"
+                  icon="os-icon-phone"
                   required={true}
                   type="text"
                 />
               </div>
 
               <div className="col-sm-6">
-                {/* Email input */}
+                {/* Phone number input */}
                 <Input
                   name="email"
                   placeholder="Enter email"
@@ -107,58 +107,6 @@ const StudentSignup: React.FC<IProps> = ({ location, history }) => {
                 />
               </div>
             </div>
-
-            {/* Department dropdown */}
-            {/* <DepartmentListControl
-              onSelect={(item: any) => {
-                setRecord({
-                  ...record,
-                  department: item.value
-                });
-              }}
-            /> */}
-
-            <div className="row">
-              <div className="col-sm-6">
-                {/* Level dropdown */}
-                <Dropdown
-                  onSelect={(item: any) =>
-                    setRecord({
-                      ...record,
-                      level: parseInt(item.value)
-                    })
-                  }
-                  items={[
-                    { value: "100", label: "100" },
-                    { value: "200", label: "200" },
-                    { value: "300", label: "300" },
-                    { value: "400", label: "400" },
-                    { value: "500", label: "500" },
-                    { value: "600", label: "600" }
-                  ]}
-                  icon="os-icon-trending-up"
-                  label="Level"
-                />
-              </div>
-
-              <div className="col-sm-6">
-                {/* phone input */}
-                <Input
-                  name="phone"
-                  placeholder="Enter phone number"
-                  label="Phone Number"
-                  onChange={(phone: string) =>
-                    setRecord({
-                      ...record,
-                      phone
-                    })
-                  }
-                  required={true}
-                  type="text"
-                />
-              </div>
-            </div>
-
             <div className="row">
               <div className="col-sm-6">
                 {/* password input */}
@@ -182,7 +130,7 @@ const StudentSignup: React.FC<IProps> = ({ location, history }) => {
                 <Input
                   name="confirmPassword"
                   placeholder="Re-enter password"
-                  label="Password"
+                  label="Confirm Password"
                   onChange={(password: string) =>
                     setRecord({
                       ...record,
@@ -194,15 +142,19 @@ const StudentSignup: React.FC<IProps> = ({ location, history }) => {
                 />
               </div>
             </div>
-            <ImageUpload
-              title="Profile Picture"
-              onData={(path: string) =>
-                setRecord({
-                  ...record,
-                  image: path
-                })
-              }
-            />
+            <div className="form-group">
+              <label>Passport</label>
+              <ImageUpload
+                title="Browse Picture..."
+                onData={(path: string) =>
+                  setRecord({
+                    ...record,
+                    image: path
+                  })
+                }
+              />
+              <div className="pre-icon os-icon os-icon-documents-07"></div>
+            </div>
             <div className="row">
               <div className="col-12">
                 {/* <LoadingState loading={loading} /> */}
@@ -210,10 +162,7 @@ const StudentSignup: React.FC<IProps> = ({ location, history }) => {
               </div>
             </div>
             <div className="buttons-w">
-              <button className="btn btn-primary">Register Now</button>
-              <NavLink className="btn btn-link" to="/login">
-                Login
-              </NavLink>
+              <button className="btn btn-primary px-4">Create</button>
             </div>
           </form>
           <a
@@ -228,4 +177,4 @@ const StudentSignup: React.FC<IProps> = ({ location, history }) => {
     </>
   );
 };
-export default StudentSignup;
+export default UserSignup;

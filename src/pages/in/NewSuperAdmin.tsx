@@ -4,6 +4,7 @@ import { IProps } from "../../models/IProps";
 import { GetAppName } from "../../context/App";
 import IconInput from "../partials/IconInput";
 import ImageUpload from "../partials/ImageUpload";
+import Dropdown from "../partials/Dropdown";
 
 const NewSuperAdmin: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
@@ -18,7 +19,7 @@ const NewSuperAdmin: FC<IProps> = ({ history }) => {
             <h5 className="element-header">New Super Admin</h5>
 
             <div className="row justify-content-center element-box">
-              <div className="col-lg-8 pt-5">
+              <div className="col-lg-10 pt-5">
                 <h5 className="element-header">Basic Information</h5>
                 <form>
                   {/* Fullname input */}
@@ -79,19 +80,35 @@ const NewSuperAdmin: FC<IProps> = ({ history }) => {
                       />
                     </div>
                   </div>
-                  <label>Passport</label>
-                  <ImageUpload
-                    title="Browse picture..."
-                    onData={(path: string) =>
-                      SetRecord({
-                        ...record,
-                        image: path
-                      })
-                    }
-                  />
+                  <div className="row">
+                    <div className="col-sm-6">
+                      <Dropdown
+                        items={[
+                          { label: "Male", value: "1" },
+                          { label: "Female", value: "2" }
+                        ]}
+                        onSelect={() => {}}
+                        label="Gender"
+                        icon="phone"
+                      />
+                    </div>
+                    <div className="col-sm-6">
+                      <label>Passport</label>
+                      <ImageUpload
+                        title="Browse picture..."
+                        onData={(path: string) =>
+                          SetRecord({
+                            ...record,
+                            image: path
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
                   <div className="buttons-w mt-3 mb-5">
                     <button className="btn btn-primary px-5 mt-3" type="submit">
-                      Create
+                      Save
                     </button>
                   </div>
                 </form>

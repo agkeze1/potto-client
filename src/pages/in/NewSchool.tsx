@@ -18,7 +18,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
             <h5 className="element-header">New School</h5>
 
             <div className="row justify-content-center element-box">
-              <div className="col-lg-8 pt-5">
+              <div className="col-lg-10 pt-5">
                 <h5 className="element-header">Basic Information</h5>
                 <form>
                   <div className="row">

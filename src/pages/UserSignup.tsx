@@ -51,7 +51,7 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
             <a href="/">
               <img alt="logo" width="80" src="logo192.png" />
             </a>
-            <h6 className="mt-2">Potto</h6>
+            <h6 className="mt-2">{GetAppName()}</h6>
           </div>
           <h4 className="auth-header">Create Super Admin </h4>
           <form>

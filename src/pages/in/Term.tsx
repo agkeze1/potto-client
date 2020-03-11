@@ -3,22 +3,22 @@ import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
 import { NavLink } from "react-router-dom";
 
-const Level = () => {
+const Term = () => {
   return (
     <>
       <Helmet>
-        <title>Level | {GetAppName()}</title>
+        <title>Term | {GetAppName()}</title>
       </Helmet>
       <div className="row justify-content-center">
         <div className="col-md-10">
           <div className="content-i">
             <div className="content-box">
               <div className="element-wrapper">
-                <h5 className="element-header">Level</h5>
+                <h5 className="element-header">Term</h5>
                 <div className="element-box">
                   <div className="row justify-content-center">
                     <div className="col-lg-12">
-                      <label htmlFor="">New Level</label>
+                      <label htmlFor="">New Term</label>
                     </div>
                     <div className="col-lg-12">
                       <form>
@@ -32,7 +32,7 @@ const Level = () => {
                               </div>
                               <input
                                 className="form-control"
-                                placeholder="Enter level name"
+                                placeholder="Enter term name"
                               />
                             </div>
                           </div>
@@ -103,4 +103,4 @@ const Level = () => {
   );
 };
 
-export default Level;
+export default Term;

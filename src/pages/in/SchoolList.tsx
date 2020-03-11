@@ -13,12 +13,18 @@ const SchoolList = () => {
       <div className="content-i">
         <div className="content-box">
           <div className="element-wrapper">
+            <span className="element-actions mt-n2">
+              <button
+                className="btn btn-primary "
+                data-target="#exampleModal1"
+                id="#newMax"
+                data-toggle="modal"
+                type="button"
+              >
+                Create New
+              </button>
+            </span>
             <h5 className="element-header">School List</h5>
-            <div className="text-right mb-3 mt-n3">
-              <NavLink className="btn btn-primary" to="/in/new-school">
-                New School
-              </NavLink>
-            </div>
             <div className="element-box">
               <div className="row justify-content-center">
                 <div className="col-lg-12">

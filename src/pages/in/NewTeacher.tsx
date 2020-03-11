@@ -7,44 +7,60 @@ import ImageUpload from "../partials/ImageUpload";
 import Dropdown from "../partials/Dropdown";
 import SwitchInput from "../partials/SwitchInput";
 
-const NewUser: FC<IProps> = ({ history }) => {
+const NewTeacher: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
   const [isAdmin, SetIsAdmin] = useState(true);
 
   return (
     <>
       <Helmet>
-        <title>New User | {GetAppName()}</title>
+        <title>New Teacher | {GetAppName()}</title>
       </Helmet>
       <div className="content-i">
         <div className="content-box">
           <div className="element-wrapper">
-            <h5 className="element-header">New User</h5>
+            <h5 className="element-header">New Teacher</h5>
 
             <div className="row justify-content-center element-box">
               <div className="col-lg-10 pt-5">
-                <div className="element-actions" style={{ marginTop: "-20px" }}>
-                  <SwitchInput
-                    isOn={isAdmin}
-                    handleToggle={() => {
-                      SetIsAdmin(!isAdmin);
-                    }}
-                    label="Is Admin?"
-                  />
-                </div>
                 <h5 className="element-header">Basic Information</h5>
                 <form>
-                  {/* Fullname input */}
-                  <IconInput
-                    placeholder="Enter fullname"
-                    label="Full Name"
-                    icon="os-icon-user-male-circle"
-                    required={true}
-                    type="text"
-                    onChange={(name: string) => {}}
-                  />
-
                   <div className="row">
+                    {/* First Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter first name"
+                        label="First Name"
+                        icon="os-icon-email-2-at2"
+                        required={true}
+                        type="email"
+                        onChange={(firstName: string) => {}}
+                      />
+                    </div>
+                    {/* Middle Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter middle name"
+                        label="Middle Name"
+                        icon="os-icon-phone"
+                        required={true}
+                        type="text"
+                        onChange={(middleName: string) => {}}
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    {/* Last Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter last name"
+                        label="Last Name"
+                        icon="os-icon-phone"
+                        required={true}
+                        type="text"
+                        onChange={(lastName: string) => {}}
+                      />
+                    </div>
                     {/* Email input */}
                     <div className="col-sm-6">
                       <IconInput
@@ -56,6 +72,8 @@ const NewUser: FC<IProps> = ({ history }) => {
                         onChange={(email: string) => {}}
                       />
                     </div>
+                  </div>
+                  <div className="row">
                     {/* Phone input */}
                     <div className="col-sm-6">
                       <IconInput
@@ -67,9 +85,27 @@ const NewUser: FC<IProps> = ({ history }) => {
                         onChange={(phone: string) => {}}
                       />
                     </div>
+                    <div className="col-sm-6">
+                      {/* Employment Date input */}
+                      <label htmlFor="">Employment Date </label>
+                      <div className="input-group mb-3">
+                        <div className="input-group-prepend">
+                          <div className="input-group-text">
+                            <div className="os-icon os-icon-calendar"></div>
+                          </div>
+                        </div>
+                        <input
+                          type="date"
+                          className="form-control"
+                          required
+                          onChange={() => {}}
+                        />
+                      </div>
+                    </div>
                   </div>
                   <div className="row">
-                    <div className={isAdmin ? "col-sm-12" : "col-sm-6"}>
+                    {/* Gender input */}
+                    <div className="col-sm-6">
                       <Dropdown
                         items={[
                           { label: "Male", value: "1" },
@@ -80,20 +116,32 @@ const NewUser: FC<IProps> = ({ history }) => {
                         icon="phone"
                       />
                     </div>
-                    {!isAdmin && (
-                      <div className="col-sm-6">
-                        <Dropdown
-                          items={[
-                            { label: "Front Desker", value: "1" },
-                            { label: "Oga", value: "2" }
-                          ]}
-                          onSelect={() => {}}
-                          label="Role"
-                          icon="phone"
+                    <div className="col-sm-6">
+                      {/* Date of birth input */}
+                      <label htmlFor="">Date of Birth </label>
+                      <div className="input-group mb-3">
+                        <div className="input-group-prepend">
+                          <div className="input-group-text">
+                            <div className="os-icon os-icon-calendar"></div>
+                          </div>
+                        </div>
+                        <input
+                          type="date"
+                          className="form-control"
+                          required
+                          onChange={() => {}}
                         />
                       </div>
-                    )}
+                    </div>
                   </div>
+                  <IconInput
+                    placeholder="Enter address"
+                    label="Address"
+                    icon="os-icon-ui-09"
+                    required={true}
+                    type="text"
+                    onChange={(address: string) => {}}
+                  />
                   <div className="row">
                     <div className="col-sm-6">
                       {/* Password input */}
@@ -143,4 +191,4 @@ const NewUser: FC<IProps> = ({ history }) => {
   );
 };
 
-export default NewUser;
+export default NewTeacher;

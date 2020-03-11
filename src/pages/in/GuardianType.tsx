@@ -3,22 +3,22 @@ import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
 import { NavLink } from "react-router-dom";
 
-const Level = () => {
+const GuardianType = () => {
   return (
     <>
       <Helmet>
-        <title>Level | {GetAppName()}</title>
+        <title>Term | {GetAppName()}</title>
       </Helmet>
       <div className="row justify-content-center">
         <div className="col-md-10">
           <div className="content-i">
             <div className="content-box">
               <div className="element-wrapper">
-                <h5 className="element-header">Level</h5>
+                <h5 className="element-header">Guardian Type</h5>
                 <div className="element-box">
                   <div className="row justify-content-center">
                     <div className="col-lg-12">
-                      <label htmlFor="">New Level</label>
+                      <label htmlFor="">New Guardian Type</label>
                     </div>
                     <div className="col-lg-12">
                       <form>
@@ -32,7 +32,7 @@ const Level = () => {
                               </div>
                               <input
                                 className="form-control"
-                                placeholder="Enter level name"
+                                placeholder="Enter guardian type"
                               />
                             </div>
                           </div>
@@ -56,14 +56,14 @@ const Level = () => {
                           <thead>
                             <tr>
                               <th>#</th>
-                              <th>Level</th>
+                              <th>Name</th>
                               <th className="text-center">Actions</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>1</td>
-                              <td>JSS1</td>
+                              <td>Father</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
@@ -75,7 +75,7 @@ const Level = () => {
                             </tr>
                             <tr>
                               <td>2</td>
-                              <td>JSS2</td>
+                              <td>Mother</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
@@ -103,4 +103,4 @@ const Level = () => {
   );
 };
 
-export default Level;
+export default GuardianType;

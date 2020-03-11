@@ -2,28 +2,27 @@ import React from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
 import { NavLink } from "react-router-dom";
+import Dropdown from "../partials/Dropdown";
 
-const Level = () => {
+const Class = () => {
   return (
     <>
       <Helmet>
-        <title>Level | {GetAppName()}</title>
+        <title>Class | {GetAppName()}</title>
       </Helmet>
       <div className="row justify-content-center">
         <div className="col-md-10">
           <div className="content-i">
             <div className="content-box">
               <div className="element-wrapper">
-                <h5 className="element-header">Level</h5>
+                <h5 className="element-header">Class</h5>
                 <div className="element-box">
                   <div className="row justify-content-center">
                     <div className="col-lg-12">
-                      <label htmlFor="">New Level</label>
-                    </div>
-                    <div className="col-lg-12">
                       <form>
                         <div className="row">
-                          <div className="col-sm-12 col-md-8 col-lg-10">
+                          <div className="col-sm-12 col-md-4 col-lg-5">
+                            <label>Class Name</label>
                             <div className="input-group mb-3">
                               <div className="input-group-prepend">
                                 <div className="input-group-text">
@@ -32,12 +31,22 @@ const Level = () => {
                               </div>
                               <input
                                 className="form-control"
-                                placeholder="Enter level name"
+                                placeholder="Enter class name"
                               />
                             </div>
                           </div>
+                          <div className="col-sm-12 col-md-4 col-lg-5">
+                            <Dropdown
+                              items={[
+                                { label: "JSS1", value: "1" },
+                                { label: "JSS2", value: "2" }
+                              ]}
+                              onSelect={() => {}}
+                              label="Level"
+                            />
+                          </div>
                           <div className="col-sm-12 col-md-4 col-lg-2">
-                            <div className="buttons-w">
+                            <div className="buttons-w mt-4">
                               <button className="btn btn-primary" type="submit">
                                 Save New
                               </button>
@@ -56,6 +65,7 @@ const Level = () => {
                           <thead>
                             <tr>
                               <th>#</th>
+                              <th>Class</th>
                               <th>Level</th>
                               <th className="text-center">Actions</th>
                             </tr>
@@ -63,6 +73,7 @@ const Level = () => {
                           <tbody>
                             <tr>
                               <td>1</td>
+                              <td>Eagle</td>
                               <td>JSS1</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
@@ -75,7 +86,8 @@ const Level = () => {
                             </tr>
                             <tr>
                               <td>2</td>
-                              <td>JSS2</td>
+                              <td>Dog</td>
+                              <td>JSS1</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
@@ -89,7 +101,7 @@ const Level = () => {
                         </table>
                       </div>
                       {/* <div className="text-center pt-5 fade-in">
-                        <h2 className="text-danger">No Level found!</h2>
+                        <h2 className="text-danger">No Class found!</h2>
                       </div> */}
                     </div>
                   </div>
@@ -103,4 +115,4 @@ const Level = () => {
   );
 };
 
-export default Level;
+export default Class;

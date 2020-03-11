@@ -1,1 +1,1 @@
-export const GetAppName = (): string => "Potto";
+export const GetAppName = (): string => "SpacoSpy";

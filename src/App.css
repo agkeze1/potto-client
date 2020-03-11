@@ -314,3 +314,19 @@ body.full-screen .all-wrapper,
 .clickable {
   cursor: pointer;
 }
+
+/* .main-menu {
+  background-image: url("/bg_fp2.png");
+  background-repeat: no-repeat;
+} */
+.element-box {
+  background-image: url("/bg_fp2.png");
+  background-repeat: no-repeat;
+}
+
+.no-bg {
+  background: none;
+}
+.no-shadow {
+  box-shadow: none;
+}

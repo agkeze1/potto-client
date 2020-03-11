@@ -4,7 +4,7 @@ import { GetAppName } from "../../context/App";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 
-const UserList = () => {
+const SuperAdminList = () => {
   return (
     <>
       <Helmet>
@@ -13,12 +13,18 @@ const UserList = () => {
       <div className="content-i">
         <div className="content-box">
           <div className="element-wrapper">
+            <span className="element-actions mt-n2">
+              <button
+                className="btn btn-primary "
+                data-target="#exampleModal1"
+                id="#newMax"
+                data-toggle="modal"
+                type="button"
+              >
+                Create New
+              </button>
+            </span>
             <h5 className="element-header">Super Admin List</h5>
-            <div className="text-right mb-3 mt-n3">
-              <NavLink className="btn btn-primary" to="/in/new-school">
-                New Super Admin
-              </NavLink>
-            </div>
             <div className="row justify-content-center ">
               <div className="col-lg-12 pt-5">
                 <div className="element-box-tp">
@@ -29,6 +35,7 @@ const UserList = () => {
                           <th>#</th>
                           <th>Image</th>
                           <th>Name</th>
+                          <th>Gender</th>
                           <th>Email</th>
                           <th>Phone</th>
                           <th className="text-center">Actions</th>
@@ -48,6 +55,7 @@ const UserList = () => {
                           </td>
                           <td>Douglas Aniekwu</td>
                           <td>douglas@afari.com</td>
+                          <td>Male</td>
                           <td>080333222111</td>
                           <td className="row-actions text-center">
                             <a href="#" title="Edit">
@@ -69,7 +77,8 @@ const UserList = () => {
                               <img src="/logo192.png" alt="" />
                             </div>
                           </td>
-                          <td>Odogwu Jakata</td>
+                          <td>douglas@afari.com</td>
+                          <td>Female</td>
                           <td>jakata@gmail.com</td>
                           <td>080332211332</td>
                           <td className="row-actions text-center">
@@ -97,4 +106,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default SuperAdminList;

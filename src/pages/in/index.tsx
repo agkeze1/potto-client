@@ -13,6 +13,16 @@ import NewUser from "./NewUser";
 import UserList from "./UserList";
 import NewSuperAdmin from "./NewSuperAdmin";
 import SuperAdminList from "./SuperAdminList";
+import Level from "./Level";
+import Class from "./Class";
+import Term from "./Term";
+import Subjects from "./Subjects";
+import NewStudent from "./NewStudent";
+import StudentList from "./StudentList";
+import NewTeacher from "./NewTeacher";
+import TeacherList from "./TeacherList";
+import GuardianType from "./GuardianType";
+import NewGuardian from "./NewGuardian";
 
 const Home: FC<IProps> = ({ location }) => {
   document.body.className =
@@ -30,14 +40,14 @@ const Home: FC<IProps> = ({ location }) => {
           <SideNav location={location} />
 
           <div className="content-w">
-            {/* Header goes here */}
+            {/* Header */}
             <Header location={location} />
             <div className="content-panel-toggler">
               <i className="os-icon os-icon-grid-squares-22"></i>
               <span>Sidebar</span>
             </div>
 
-            {/* Content goes here */}
+            {/* Content */}
             <div className="main-container">
               <Switch>
                 <Route path="/in/new-school" component={NewSchool} />
@@ -46,6 +56,16 @@ const Home: FC<IProps> = ({ location }) => {
                 <Route path="/in/user-list" component={UserList} />
                 <Route path="/in/new-super-admin" component={NewSuperAdmin} />
                 <Route path="/in/super-admin-list" component={SuperAdminList} />
+                <Route path="/in/level" component={Level} />
+                <Route path="/in/class" component={Class} />
+                <Route path="/in/term" component={Term} />
+                <Route path="/in/subjects" component={Subjects} />
+                <Route path="/in/new-student" component={NewStudent} />
+                <Route path="/in/student-list" component={StudentList} />
+                <Route path="/in/new-teacher" component={NewTeacher} />
+                <Route path="/in/teacher-list" component={TeacherList} />
+                <Route path="/in/guardian-type" component={GuardianType} />
+                <Route path="/in/new-guardian" component={NewGuardian} />
               </Switch>
             </div>
           </div>

@@ -5,11 +5,16 @@ import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 import Dropdown from "../partials/Dropdown";
 import SwitchInput from "../partials/SwitchInput";
-import Accordion from "../partials/Accordion";
+import AttAccordion from "../partials/AttAccordion";
+import ImageUpload from "../partials/ImageUpload";
+import IconInput from "../partials/IconInput";
 
 const StudentList = () => {
+  const [imageRecord, SetImageRecord] = useState<any>();
+
   const [showFilter, SetShowFilter] = useState<boolean>(true);
   const [showProfile, SetShowProfile] = useState<boolean>(false);
+  const [showNewGuardian, SetNewGuardian] = useState<boolean>(false);
 
   return (
     <>
@@ -261,14 +266,14 @@ const StudentList = () => {
                     <ul className="nav nav-tabs smaller">
                       <li className="nav-item">
                         <a
-                          className="nav-link active"
+                          className="nav-link active text-uppercase"
                           data-toggle="tab"
                           href="#basic-info"
                         >
                           Basic Info
                         </a>
                       </li>
-                      <li className="nav-item">
+                      <li className="nav-item text-uppercase">
                         <a
                           className="nav-link"
                           data-toggle="tab"
@@ -277,7 +282,7 @@ const StudentList = () => {
                           Subjects
                         </a>
                       </li>
-                      <li className="nav-item">
+                      <li className="nav-item text-uppercase">
                         <a
                           className="nav-link"
                           data-toggle="tab"
@@ -286,7 +291,7 @@ const StudentList = () => {
                           Guardians
                         </a>
                       </li>
-                      <li className="nav-item">
+                      <li className="nav-item text-uppercase">
                         <a
                           className="nav-link"
                           data-toggle="tab"
@@ -298,8 +303,8 @@ const StudentList = () => {
                     </ul>
                   </div>
                   <div className="tab-content">
+                    {/* Basic Information */}
                     <div className="tab-pane active" id="basic-info">
-                      {/* Basic Information */}
                       <div className="text-center element-box no-bg no-shadow">
                         <ul className="pro-details">
                           <li>
@@ -328,8 +333,9 @@ const StudentList = () => {
                         </ul>
                       </div>
                     </div>
+
+                    {/* Selected Subject */}
                     <div className="tab-pane" id="subjects">
-                      {/* Selected Subject */}
                       <div className="text-center element-box no-bg no-shadow">
                         <div className="text-right">
                           {/* General subjects */}
@@ -374,53 +380,409 @@ const StudentList = () => {
                         </div>
                       </div>
                     </div>
+
+                    {/* Guardians List*/}
                     <div className="tab-pane" id="guardians">
-                      {/* Guardians */}
-                      <div className="text-center ">
-                        <div className="row">
-                          <div className="col-3">
-                            <div className="element-box no-bg">
-                              <img
-                                className="avatar"
-                                src="/3.jpeg"
-                                alt=""
-                                style={{ width: "80%" }}
-                              />
-                              <hr />
-                              <a
-                                href="#"
-                                data-dismiss="modal"
-                                data-target="#imageModal"
-                                data-toggle="modal"
-                              >
-                                Douglas King
-                              </a>
-                            </div>
+                      {!showNewGuardian && (
+                        <div>
+                          <div className="element-actions">
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => {
+                                SetNewGuardian(true);
+                              }}
+                            >
+                              <i className="os-icon os-icon-plus-circle mr-2"></i>
+                              New
+                            </button>
                           </div>
-                          <div className="col-3">
-                            <div className="element-box no-bg">
-                              <img
-                                className="avatar"
-                                src="/avatar.png"
-                                alt=""
-                                style={{ width: "80%" }}
-                              />
-                              <hr />
-                              <a
-                                href="#"
-                                data-dismiss="modal"
-                                data-target="#imageModal"
-                                data-toggle="modal"
-                              >
-                                Mrs Anita Loveth
-                              </a>
+                          <div className="text-center ">
+                            <div className="row">
+                              <div className="col-sm-3">
+                                <div className="element-box no-bg">
+                                  <img
+                                    className="avatar"
+                                    src="/3.jpeg"
+                                    alt=""
+                                    style={{ width: "80%" }}
+                                  />
+                                  <hr />
+                                  <a
+                                    href="#"
+                                    data-dismiss="modal"
+                                    data-target="#imageModal"
+                                    data-toggle="modal"
+                                  >
+                                    Douglas King
+                                  </a>
+                                </div>
+                              </div>
+                              <div className="col-sm-3">
+                                <div className="element-box no-bg">
+                                  <img
+                                    className="avatar"
+                                    src="/avatar.png"
+                                    alt=""
+                                    style={{ width: "80%" }}
+                                  />
+                                  <hr />
+                                  <a
+                                    href="#"
+                                    data-dismiss="modal"
+                                    data-target="#imageModal"
+                                    data-toggle="modal"
+                                  >
+                                    Mrs Anita Loveth
+                                  </a>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      )}
+
+                      {/* New Guardian  */}
+                      {showNewGuardian && (
+                        <div className="content-i">
+                          <div className="content-box">
+                            <div className="element-wrapper">
+                              <h5 className="element-header">New Guardian</h5>
+
+                              <div className="row justify-content-center element-box no-bg no-shadow">
+                                <div className="col-lg-10 pt-5">
+                                  <h5 className="element-header">
+                                    Basic Information
+                                  </h5>
+                                  <form onSubmit={e => {}}>
+                                    <div className="row">
+                                      <div className="col-sm-6">
+                                        {/* Title input */}
+                                        <Dropdown
+                                          items={[
+                                            { label: "Mr", value: "1" },
+                                            { label: "Mrs", value: "2" },
+                                            { label: "Sergeant", value: "2" }
+                                          ]}
+                                          onSelect={() => {}}
+                                          label="Title"
+                                          icon="phone"
+                                        />
+                                      </div>
+                                      <div className="col-sm-6">
+                                        {/* Relationship input */}
+                                        <Dropdown
+                                          items={[
+                                            { label: "Father", value: "1" },
+                                            { label: "Mother", value: "2" }
+                                          ]}
+                                          onSelect={() => {}}
+                                          label="Relationship"
+                                          icon="phone"
+                                        />
+                                      </div>
+                                    </div>
+                                    {/* Full name input */}
+                                    <IconInput
+                                      placeholder="Enter full name"
+                                      label="Full Name"
+                                      icon="os-icon-ui-09"
+                                      required={true}
+                                      type="text"
+                                      onChange={(fullname: string) => {}}
+                                    />
+                                    <div className="row">
+                                      <div className="col-sm-6">
+                                        {/* Phone number input */}
+                                        <IconInput
+                                          placeholder="Enter phone number"
+                                          label="Phone Number"
+                                          icon="os-icon-ui-09"
+                                          required={true}
+                                          type="text"
+                                          onChange={(phone: string) => {}}
+                                        />
+                                      </div>
+                                      <div className="col-sm-6">
+                                        {/* Email input */}
+                                        <IconInput
+                                          placeholder="Enter email"
+                                          label="Email"
+                                          icon="os-icon-ui-09"
+                                          required={true}
+                                          type="text"
+                                          onChange={(email: string) => {}}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="row">
+                                      <div className="col-sm-6">
+                                        {/* Gender input */}
+                                        <Dropdown
+                                          items={[
+                                            {
+                                              label: "Front Desker",
+                                              value: "1"
+                                            },
+                                            { label: "Oga", value: "2" }
+                                          ]}
+                                          onSelect={() => {}}
+                                          label="Gender"
+                                          icon="phone"
+                                        />
+                                      </div>
+                                      <div className="col-sm-6">
+                                        {/* State of Origin input */}
+                                        <Dropdown
+                                          items={[
+                                            {
+                                              label: "Front Desker",
+                                              value: "1"
+                                            },
+                                            { label: "Oga", value: "2" }
+                                          ]}
+                                          onSelect={() => {}}
+                                          label="State of Origin"
+                                          icon="phone"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="row">
+                                      <div className="col-sm-6">
+                                        {/* LGA */}
+                                        <Dropdown
+                                          items={[
+                                            {
+                                              label: "Front Desker",
+                                              value: "1"
+                                            },
+                                            { label: "Oga", value: "2" }
+                                          ]}
+                                          onSelect={() => {}}
+                                          label="LGA"
+                                          icon="phone"
+                                        />
+                                      </div>
+                                      <div className="col-sm-6">
+                                        {/* Hometown input */}
+                                        <IconInput
+                                          placeholder="Enter Hometown"
+                                          label="Hometown"
+                                          icon="os-icon-ui-09"
+                                          required={true}
+                                          type="text"
+                                          onChange={(hometown: string) => {}}
+                                        />
+                                      </div>
+                                    </div>
+                                    {/* Address input */}
+                                    <IconInput
+                                      placeholder="Enter address"
+                                      label="Address"
+                                      icon="os-icon-ui-09"
+                                      required={true}
+                                      type="text"
+                                      onChange={(address: string) => {}}
+                                    />
+                                    <label>Passport</label>
+                                    <ImageUpload
+                                      title="Browse passport..."
+                                      onData={(path: string) =>
+                                        SetImageRecord({
+                                          ...imageRecord,
+                                          image: path
+                                        })
+                                      }
+                                    />
+                                    <div className="buttons-w mt-3 mb-5">
+                                      <button
+                                        onClick={() => {
+                                          SetNewGuardian(false);
+                                        }}
+                                        className="btn btn-secondary px-5 mt-3"
+                                        type="submit"
+                                      >
+                                        Cancel
+                                      </button>
+                                      <button
+                                        className="btn btn-primary px-5 mt-3"
+                                        type="submit"
+                                      >
+                                        Save Guardian
+                                      </button>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
+
+                    {/* Accordion for student attendance */}
                     <div className="tab-pane" id="attendance">
-                      <Accordion />
+                      <div className="os-tabs-w">
+                        <div className="os-tabs-controls">
+                          {/* Tab header */}
+                          <ul className="nav nav-tabs ">
+                            <li className="nav-item">
+                              <a
+                                className="nav-link active"
+                                data-toggle="tab"
+                                href="#schoolAtt"
+                              >
+                                School Att.
+                              </a>
+                            </li>
+                            <li className="nav-item">
+                              <a
+                                className="nav-link"
+                                data-toggle="tab"
+                                href="#classAtt"
+                              >
+                                Class Att.
+                              </a>
+                            </li>
+                            <li className="nav-item">
+                              <a
+                                className="nav-link"
+                                data-toggle="tab"
+                                href="#subjectAtt"
+                              >
+                                Subjects Att.
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className="tab-content">
+                          {/* School Attendance */}
+                          <div className="tab-pane active" id="schoolAtt">
+                            <div className="text-center element-box no-bg no-shadow">
+                              <div className="table-responsive">
+                                <table className="table table-striped">
+                                  <thead>
+                                    <tr>
+                                      <th>#</th>
+                                      <th>Date</th>
+                                      <th>In</th>
+                                      <th>Out</th>
+                                      <th>Device</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>1</td>
+                                      <td>21st Jan. 2020</td>
+                                      <td>
+                                        <label className="badge badge-success-inverted">
+                                          Attended
+                                        </label>
+                                      </td>
+                                      <td>
+                                        <label className="badge badge-success-inverted">
+                                          Attended
+                                        </label>
+                                      </td>
+                                      <td>Device Component</td>
+                                    </tr>
+                                    <tr>
+                                      <td>2</td>
+                                      <td>29st Jan. 2020</td>
+                                      <td>
+                                        <label className="badge badge-success-inverted">
+                                          Attended
+                                        </label>
+                                      </td>
+                                      <td>
+                                        <label className="badge badge-danger-inverted">
+                                          Absent
+                                        </label>
+                                      </td>
+                                      <td>Device Component</td>
+                                    </tr>
+                                    <tr>
+                                      <td>3</td>
+                                      <td>6th Feb. 2020</td>
+                                      <td>
+                                        <label className="badge badge-success-inverted">
+                                          Attended
+                                        </label>
+                                      </td>
+                                      <td>
+                                        <label className="badge badge-success-inverted">
+                                          Attended
+                                        </label>
+                                      </td>
+                                      <td>Device Component</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Class Attendance */}
+                          <div className="tab-pane" id="classAtt">
+                            <div className="text-center element-box no-bg no-shadow">
+                              <div className="table-responsive">
+                                <table className="table table-striped">
+                                  <thead>
+                                    <tr>
+                                      <th>#</th>
+                                      <th>Date</th>
+                                      <th>Status</th>
+                                      <th>Device</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>1</td>
+                                      <td>21st Jan. 2020</td>
+                                      <td>
+                                        <label className="badge badge-success-inverted">
+                                          Attended
+                                        </label>
+                                      </td>
+                                      <td>Device Component</td>
+                                    </tr>
+                                    <tr>
+                                      <td>2</td>
+                                      <td>29st Jan. 2020</td>
+                                      <td>
+                                        <label className="badge badge-danger-inverted">
+                                          Absent
+                                        </label>
+                                      </td>
+                                      <td>Device Component</td>
+                                    </tr>
+                                    <tr>
+                                      <td>3</td>
+                                      <td>6th Feb. 2020</td>
+                                      <td>
+                                        <label className="badge badge-warning-inverted">
+                                          Exempted
+                                        </label>
+                                      </td>
+                                      <td>Device Component</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Subject Attendance */}
+                          <div className="tab-pane" id="subjectAtt">
+                            <h5 className="element-header">Monday</h5>
+                            <AttAccordion />
+
+                            <h5 className="element-header">Tuesday</h5>
+                            <AttAccordion />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -3,6 +3,8 @@ import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
 import { NavLink } from "react-router-dom";
 import Dropdown from "../partials/Dropdown";
+import IconInput from "../partials/IconInput";
+import Select from "react-select";
 
 const Class = () => {
   return (
@@ -11,7 +13,7 @@ const Class = () => {
         <title>Class | {GetAppName()}</title>
       </Helmet>
       <div className="row justify-content-center">
-        <div className="col-md-10">
+        <div className="col-md-12">
           <div className="content-i">
             <div className="content-box">
               <div className="element-wrapper">
@@ -22,18 +24,15 @@ const Class = () => {
                       <form>
                         <div className="row">
                           <div className="col-sm-12 col-md-4 col-lg-5">
-                            <label>Class Name</label>
-                            <div className="input-group mb-3">
-                              <div className="input-group-prepend">
-                                <div className="input-group-text">
-                                  <div className="os-icon os-icon-plus"></div>
-                                </div>
-                              </div>
-                              <input
-                                className="form-control"
-                                placeholder="Enter class name"
-                              />
-                            </div>
+                            {/* Class name input */}
+                            <IconInput
+                              placeholder="Enter class name"
+                              label="Class Name"
+                              icon="os-icon-user-male-circle"
+                              required={true}
+                              type="text"
+                              onChange={(name: string) => {}}
+                            />
                           </div>
                           <div className="col-sm-12 col-md-4 col-lg-5">
                             <Dropdown
@@ -67,6 +66,7 @@ const Class = () => {
                               <th>#</th>
                               <th>Class</th>
                               <th>Level</th>
+                              <th>Form Teacher</th>
                               <th className="text-center">Actions</th>
                             </tr>
                           </thead>
@@ -75,9 +75,18 @@ const Class = () => {
                               <td>1</td>
                               <td>Eagle</td>
                               <td>JSS1</td>
+                              <td>Teacher Component</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
+                                </a>
+                                <a
+                                  href="#"
+                                  title="Assign Form teacher"
+                                  data-target="#FormTeacherModal"
+                                  data-toggle="modal"
+                                >
+                                  <i className="os-icon os-icon-file-text"></i>
                                 </a>
                                 <a className="danger" href="#" title="Delete">
                                   <i className="os-icon os-icon-ui-15"></i>
@@ -88,9 +97,18 @@ const Class = () => {
                               <td>2</td>
                               <td>Dog</td>
                               <td>JSS1</td>
+                              <td>Teacher Component</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
+                                </a>
+                                <a
+                                  href="#"
+                                  title="Assign Form teacher"
+                                  data-target="#FormTeacherModal"
+                                  data-toggle="modal"
+                                >
+                                  <i className="os-icon os-icon-file-text"></i>
                                 </a>
                                 <a className="danger" href="#" title="Delete">
                                   <i className="os-icon os-icon-ui-15"></i>
@@ -107,6 +125,45 @@ const Class = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Assign Form Teacher Modal*/}
+      <div
+        aria-hidden="true"
+        className="modal fade"
+        id="FormTeacherModal"
+        role="dialog"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Assign Form Teacher</h5>
+              <button
+                aria-label="Close"
+                className="close"
+                data-dismiss="modal"
+                type="button"
+              >
+                <span aria-hidden="true"> ×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <form>
+                <Dropdown
+                  items={[
+                    { label: "Mrs. Antai Grace", value: "1" },
+                    { label: "Sir Innocent Okoli", value: "2" }
+                  ]}
+                  onSelect={() => {}}
+                  label="Select Form Teacher"
+                />
+                <button className="btn btn-primary" type="submit">
+                  Assign
+                </button>
+              </form>
             </div>
           </div>
         </div>

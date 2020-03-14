@@ -77,7 +77,6 @@ const NewUser: FC<IProps> = ({ history }) => {
                         ]}
                         onSelect={() => {}}
                         label="Gender"
-                        icon="phone"
                       />
                     </div>
                     {!isAdmin && (

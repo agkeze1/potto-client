@@ -1,8 +1,6 @@
 import React from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
-import { NavLink } from "react-router-dom";
-import Dropdown from "../partials/Dropdown";
 import Select from "react-select";
 
 const Subjects = () => {
@@ -27,7 +25,7 @@ const Subjects = () => {
                 <span className="element-actions">
                   <button
                     className="btn btn-primary "
-                    data-target="#NewSubjectModal1"
+                    data-target="#NewSubjectModal"
                     data-toggle="modal"
                     type="button"
                   >
@@ -35,7 +33,6 @@ const Subjects = () => {
                   </button>
                 </span>
                 <h5 className="element-header">Subjects</h5>
-
                 <div className="row justify-content-center ">
                   <div className="col-lg-12">
                     <div className="element-box-tp">
@@ -95,7 +92,7 @@ const Subjects = () => {
       <div
         aria-hidden="true"
         className="modal fade"
-        id="NewSubjectModal1"
+        id="NewSubjectModal"
         role="dialog"
       >
         <div className="modal-dialog" role="document">

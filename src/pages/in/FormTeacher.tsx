@@ -7,52 +7,11 @@ const UserList = () => {
   return (
     <>
       <Helmet>
-        <title>User List | {GetAppName()}</title>
+        <title>Form Teacher | {GetAppName()}</title>
       </Helmet>
       <div className="content-i">
         <div className="content-box">
           <div className="element-wrapper">
-            <span className="element-actions mt-n2">
-              <button
-                className="btn btn-primary "
-                data-target="#exampleModal1"
-                id="#newMax"
-                data-toggle="modal"
-                type="button"
-              >
-                Create New
-              </button>
-            </span>
-            <h5 className="element-header">User List</h5>
-            <div className="element-box">
-              <div className="row justify-content-center">
-                <div className="col-lg-12">
-                  <label htmlFor="">Filter User</label>
-                </div>
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col-sm-12 col-md-8 col-lg-10">
-                      <div className="input-group mb-3">
-                        <div className="input-group-prepend">
-                          <div className="input-group-text">
-                            <div className="os-icon os-icon-search"></div>
-                          </div>
-                        </div>
-                        <input
-                          className="form-control"
-                          placeholder="Enter User name or alias to search"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-12 col-md-4 col-lg-2">
-                      <div className="buttons-w">
-                        <button className="btn btn-primary">Search User</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div className="row justify-content-center ">
               <div className="col-lg-12 pt-5">
                 <div className="element-box-tp">

@@ -330,3 +330,10 @@ body.full-screen .all-wrapper,
 .no-shadow {
   box-shadow: none;
 }
+.nav-link {
+  color: #666 !important;
+}
+
+.nav-item > .active {
+  color: black !important;
+}

@@ -22,7 +22,8 @@ import StudentList from "./StudentList";
 import NewTeacher from "./NewTeacher";
 import TeacherList from "./TeacherList";
 import GuardianType from "./GuardianType";
-import NewGuardian from "./NewGuardian";
+import DeviceList from "./DeviceList";
+import FormTeacher from "./FormTeacher";
 
 const Home: FC<IProps> = ({ location }) => {
   document.body.className =
@@ -65,7 +66,8 @@ const Home: FC<IProps> = ({ location }) => {
                 <Route path="/in/new-teacher" component={NewTeacher} />
                 <Route path="/in/teacher-list" component={TeacherList} />
                 <Route path="/in/guardian-type" component={GuardianType} />
-                <Route path="/in/new-guardian" component={NewGuardian} />
+                <Route path="/in/device-list" component={DeviceList} />
+                <Route path="/in/form-teacher" component={FormTeacher} />
               </Switch>
             </div>
           </div>

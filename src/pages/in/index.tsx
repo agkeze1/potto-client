@@ -23,7 +23,11 @@ import NewTeacher from "./NewTeacher";
 import TeacherList from "./TeacherList";
 import GuardianType from "./GuardianType";
 import DeviceList from "./DeviceList";
-import FormTeacher from "./FormTeacher";
+import Navigation from "./Navigation";
+import NavigationGroup from "./NavigationGroup";
+import Feedback from "./Feedback";
+import FeedbackType from "./FeedbackType";
+import Role from "./Role";
 
 const Home: FC<IProps> = ({ location }) => {
   document.body.className =
@@ -67,7 +71,14 @@ const Home: FC<IProps> = ({ location }) => {
                 <Route path="/in/teacher-list" component={TeacherList} />
                 <Route path="/in/guardian-type" component={GuardianType} />
                 <Route path="/in/device-list" component={DeviceList} />
-                <Route path="/in/form-teacher" component={FormTeacher} />
+                <Route path="/in/navigation" component={Navigation} />
+                <Route
+                  path="/in/navigation-group"
+                  component={NavigationGroup}
+                />
+                <Route path="/in/feedback" component={Feedback} />
+                <Route path="/in/feedback-type" component={FeedbackType} />
+                <Route path="/in/role" component={Role} />
               </Switch>
             </div>
           </div>

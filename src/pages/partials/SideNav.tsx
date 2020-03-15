@@ -228,42 +228,6 @@ const SideNav: FC<SideProps> = ({ location }) => {
               </div>
             </div>
           </li>
-          <li className="has-sub-menu">
-            <NavLink to="#" onClick={() => scrollTop()}>
-              <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
-              </div>
-              <span>Student</span>
-            </NavLink>
-            <div className="sub-menu-w">
-              <div className="sub-menu-header">Teacheer</div>
-              <div className="sub-menu-icon">
-                <i className="os-icon os-icon-layout"></i>
-              </div>
-              <div className="sub-menu-i">
-                <ul className="sub-menu">
-                  <li>
-                    <NavLink to="/in/new-student" onClick={() => scrollTop()}>
-                      New
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/in/student-list" onClick={() => scrollTop()}>
-                      List
-                    </NavLink>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </li>
-          <li>
-            <NavLink to="/in/form-teacher" onClick={() => scrollTop()}>
-              <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
-              </div>
-              <span>Form Teacher</span>
-            </NavLink>
-          </li>
 
           {/* Student Mgt */}
           <li className="sub-header">

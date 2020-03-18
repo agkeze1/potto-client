@@ -56,14 +56,14 @@ const Term = () => {
                           <thead>
                             <tr>
                               <th>#</th>
-                              <th>Level</th>
+                              <th>Term</th>
                               <th className="text-center">Actions</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>1</td>
-                              <td>JSS1</td>
+                              <td>First Term</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
@@ -75,7 +75,19 @@ const Term = () => {
                             </tr>
                             <tr>
                               <td>2</td>
-                              <td>JSS2</td>
+                              <td>Second Term</td>
+                              <td className="row-actions text-center">
+                                <a href="#" title="Edit">
+                                  <i className="os-icon os-icon-edit"></i>
+                                </a>
+                                <a className="danger" href="#" title="Delete">
+                                  <i className="os-icon os-icon-ui-15"></i>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <td>Third Term</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>

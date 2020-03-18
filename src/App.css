@@ -8,9 +8,9 @@ body:before {
     left top,
     right bottom,
     from(#3f51b5),
-    to(#0546a0)
+    to(#16a820)
   );
-  background: linear-gradient(to bottom right, #3f51b5, #0546a0);
+  background: linear-gradient(to bottom right, #3f51b5, #16a820);
 }
 
 .auth-box-w .logo-w {
@@ -36,20 +36,20 @@ body:before {
 .btn-primary:hover,
 .all-wrapper .fc-button.fc-state-active:hover,
 .btn-primary:active {
-  background-color: #0546a0 !important;
-  border-color: #0546a0 !important;
+  background-color: #158c1e !important;
+  border-color: #158c1e !important;
 }
 
 .btn-primary:focus,
 .all-wrapper .fc-button.fc-state-active:focus,
 .btn-primary.focus,
 .all-wrapper .focus.fc-button.fc-state-active {
-  background-color: #0546a0;
+  background-color: #16a820;
 }
 
 .btn-primary:hover,
 .all-wrapper .fc-button.fc-state-active:hover {
-  background-color: #0546a0;
+  background-color: #158c1e;
 }
 
 .alert-danger {
@@ -64,13 +64,13 @@ body:before {
 
 li.menu-link > a.active {
   /* background-color: #374d6b; */
-  border-left: 2px solid #0546a0;
+  border-left: 2px solid #16a820;
   padding-left: 10px;
 }
 
 li.menu-link > a.active > div.icon-w,
 li.menu-link > a.active > span {
-  color: #0546a0 !important;
+  color: #16a820 !important;
 }
 
 li.menu-link {
@@ -145,18 +145,18 @@ body.full-screen .all-wrapper,
     left top,
     left bottom,
     from(#3f51b5),
-    to(#0546a0)
+    to(#16a820)
   );
-  background-image: linear-gradient(to bottom, #3f51b5 0%, #0546a0 100%);
+  background-image: linear-gradient(to bottom, #3f51b5 0%, #16a820 100%);
   background-repeat: repeat-x;
   background-image: -webkit-gradient(
     linear,
     left top,
     left bottom,
     from(#3f51b5),
-    to(#0546a0)
+    to(#16a820)
   );
-  background-image: linear-gradient(to bottom, #3f51b5 0%, #0546a0 100%);
+  background-image: linear-gradient(to bottom, #3f51b5 0%, #16a820 100%);
 }
 
 @media screen and (max-width: 600px) {

@@ -61,7 +61,11 @@ const SideNav: FC<SideProps> = ({ location }) => {
               <div className="sub-menu-i">
                 <ul className="sub-menu">
                   <li>
-                    <NavLink to="/in/new-school" onClick={() => scrollTop()}>
+                    <NavLink
+                      to="/in/new-school"
+                      onClick={() => scrollTop()}
+                      className=""
+                    >
                       New
                     </NavLink>
                   </li>
@@ -108,9 +112,19 @@ const SideNav: FC<SideProps> = ({ location }) => {
                       <span>Subjects</span>
                     </NavLink>
                   </li>
+                </ul>
+                <ul className="sub-menu">
                   <li>
-                    <NavLink to="/in/timetable" onClick={() => scrollTop()}>
-                      <span>Timetable</span>
+                    <NavLink to="/in/new-timetable" onClick={() => scrollTop()}>
+                      <span>New Timetable</span>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/in/view-timetable"
+                      onClick={() => scrollTop()}
+                    >
+                      <span>View Timetable</span>
                     </NavLink>
                   </li>
                   <li>
@@ -181,18 +195,12 @@ const SideNav: FC<SideProps> = ({ location }) => {
               <div className="sub-menu-i">
                 <ul className="sub-menu">
                   <li>
-                    <NavLink
-                      to="/in/new-super-admin"
-                      onClick={() => scrollTop()}
-                    >
+                    <NavLink to="/in/new-user" onClick={() => scrollTop()}>
                       New
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink
-                      to="/in/super-admin-list"
-                      onClick={() => scrollTop()}
-                    >
+                    <NavLink to="/in/user-list" onClick={() => scrollTop()}>
                       List
                     </NavLink>
                   </li>
@@ -274,73 +282,117 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="sub-header">
             <span>Attendance</span>
           </li>
-          <li>
-            <NavLink to="/in/school-attendance" onClick={() => scrollTop()}>
+          <li className="has-sub-menu">
+            <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
                 <div className="os-icon os-icon-layout"></div>
               </div>
-              <span>School Attendance</span>
+              <span>Attendance</span>
             </NavLink>
-          </li>
-          <li>
-            <NavLink to="/in/class-attendance" onClick={() => scrollTop()}>
-              <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+            <div className="sub-menu-w">
+              <div className="sub-menu-header">Attendance</div>
+              <div className="sub-menu-icon">
+                <i className="os-icon os-icon-layout"></i>
               </div>
-              <span>Class Attendance</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/in/subject-attendance" onClick={() => scrollTop()}>
-              <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+              <div className="sub-menu-i">
+                <ul className="sub-menu">
+                  <li>
+                    <NavLink
+                      to="/in/school-attendance"
+                      onClick={() => scrollTop()}
+                    >
+                      School Attendance
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/in/class-attendance"
+                      onClick={() => scrollTop()}
+                    >
+                      Class Attendance
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/in/subject-attendance"
+                      onClick={() => scrollTop()}
+                    >
+                      Subject Attendance
+                    </NavLink>
+                  </li>
+                </ul>
               </div>
-              <span>Subject Attendance</span>
-            </NavLink>
+            </div>
           </li>
 
           {/* Navigation Mgt */}
           <li className="sub-header">
             <span>Navigation Mgt</span>
           </li>
-          <li>
-            <NavLink to="/in/navigation" onClick={() => scrollTop()}>
+          <li className="has-sub-menu">
+            <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
                 <div className="os-icon os-icon-layout"></div>
               </div>
               <span>Navigation</span>
             </NavLink>
-          </li>
-          <li>
-            <NavLink to="/in/navigation-group" onClick={() => scrollTop()}>
-              <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+            <div className="sub-menu-w">
+              <div className="sub-menu-header">Navigation</div>
+              <div className="sub-menu-icon">
+                <i className="os-icon os-icon-layout"></i>
               </div>
-              <span>Navigation Group</span>
-            </NavLink>
+              <div className="sub-menu-i">
+                <ul className="sub-menu">
+                  <li>
+                    <NavLink to="/in/navigation" onClick={() => scrollTop()}>
+                      Navigation
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/in/navigation-group"
+                      onClick={() => scrollTop()}
+                    >
+                      Navigation Group
+                    </NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </li>
 
           {/* Feedback Mgt */}
           <li className="sub-header">
             <span>Feedback Mgt</span>
           </li>
-          <li>
-            <NavLink to="/in/feedback" onClick={() => scrollTop()}>
+          <li className="has-sub-menu">
+            <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
                 <div className="os-icon os-icon-layout"></div>
               </div>
               <span>Feedback</span>
             </NavLink>
-          </li>
-          <li>
-            <NavLink to="/in/feedback-type" onClick={() => scrollTop()}>
-              <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+            <div className="sub-menu-w">
+              <div className="sub-menu-header">Feedback</div>
+              <div className="sub-menu-icon">
+                <i className="os-icon os-icon-layout"></i>
               </div>
-              <span>Feedback Type</span>
-            </NavLink>
+              <div className="sub-menu-i">
+                <ul className="sub-menu">
+                  <li>
+                    <NavLink to="/in/feedback" onClick={() => scrollTop()}>
+                      Feedback
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/in/feedback-type" onClick={() => scrollTop()}>
+                      Feedback Type
+                    </NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </li>
-
           <li className="menu-link">
             <a
               onClick={() => {

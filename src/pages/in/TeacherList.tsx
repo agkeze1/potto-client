@@ -3,11 +3,10 @@ import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
-import Select from "react-select";
+import TeacherTTAccordion from "../partials/TeacherTTAccordion";
 
 const TeacherList = () => {
   const [showProfile, SetShowProfile] = useState<boolean>(false);
-  const [showAssignSubject, SetShowAssignSubject] = useState<boolean>(false);
 
   const subjects = [
     { label: "English language JSS1", value: 1 },
@@ -22,7 +21,7 @@ const TeacherList = () => {
       <div className="content-i">
         <div className="content-box">
           <div className="element-wrapper">
-            {!showProfile && !showAssignSubject && (
+            {!showProfile && (
               <>
                 <span className="element-actions mt-n2">
                   <button
@@ -109,15 +108,6 @@ const TeacherList = () => {
                                 >
                                   <i className="os-icon os-icon-eye"></i>
                                 </a>
-                                <a
-                                  href="#"
-                                  title="Assign subject"
-                                  onClick={() => {
-                                    SetShowAssignSubject(true);
-                                  }}
-                                >
-                                  <i className="os-icon os-icon-documents-03"></i>
-                                </a>
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
                                 </a>
@@ -157,15 +147,6 @@ const TeacherList = () => {
                                 >
                                   <i className="os-icon os-icon-eye"></i>
                                 </a>
-                                <a
-                                  href="#"
-                                  title="Assign subject"
-                                  onClick={() => {
-                                    SetShowAssignSubject(true);
-                                  }}
-                                >
-                                  <i className="os-icon os-icon-documents-03"></i>
-                                </a>
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
                                 </a>
@@ -187,7 +168,7 @@ const TeacherList = () => {
             )}
 
             {/* Profile Section */}
-            {showProfile && !showAssignSubject && (
+            {showProfile && (
               <div>
                 <div className="content-box">
                   <div className="element-wrapper">
@@ -228,192 +209,76 @@ const TeacherList = () => {
                         </h6>
                       </div>
 
-                      {/* Basic Information */}
-                      <h6 className="element-header">Basic Information</h6>
-                      <div className="text-center mb-5">
-                        <ul className="pro-details">
-                          <li>
-                            <span>Gender</span> | <b>Male</b>
-                          </li>
-                          <li>
-                            <span>Date of Birth</span> | <b>8th May 2001 </b>
-                            <i>(20yrs)</i>
-                          </li>
-                          <li>
-                            <span>Date of Admission</span> |{" "}
-                            <b>12th April 2017</b>
-                          </li>
-                          <li>
-                            <span>Phone number</span> | <b>09033422324</b>
-                          </li>
-                          <li>
-                            <span>Employment date</span> | <b>12th May 2017</b>
-                          </li>
-                          <li>
-                            <span>Address</span> |{" "}
-                            <b>12 Ugochuckwu st. New Haven, Enugu state</b>
-                          </li>
-                        </ul>
-                      </div>
+                      <div className="os-tabs-w">
+                        <div className="os-tabs-controls">
+                          <ul className="nav nav-tabs smaller">
+                            {/* Basic Info Tab */}
+                            <li className="nav-item text-uppercase">
+                              <a
+                                className="nav-link active"
+                                data-toggle="tab"
+                                href="#basic-info"
+                              >
+                                Basic Info
+                              </a>
+                            </li>
 
-                      {/* Assigned Subjects */}
-                      <h6 className="element-header">Assigned Subjects</h6>
-                      <div className="text-center">
-                        <div className="table-responsive">
-                          <table className="table table-striped">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-                                <th>Subject</th>
-                                <th>Level</th>
-                                <th className="text-center">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>1</td>
-                                <td>English language</td>
-                                <td>SS1</td>
-                                <td className="row-actions text-center">
-                                  <a
-                                    className="danger"
-                                    href="#"
-                                    title="Remove subject"
-                                  >
-                                    <i className="os-icon os-icon-x"></i>
-                                  </a>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>2</td>
-                                <td>Intro tech</td>
-                                <td>JSS3</td>
-                                <td className="row-actions text-center">
-                                  <a
-                                    className="danger"
-                                    href="#"
-                                    title="Remove subject"
-                                  >
-                                    <i className="os-icon os-icon-x"></i>
-                                  </a>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                            {/* Timetable Tab */}
+                            <li className="nav-item text-uppercase">
+                              <a
+                                className="nav-link"
+                                data-toggle="tab"
+                                href="#timetable"
+                              >
+                                Timetable
+                              </a>
+                            </li>
+                          </ul>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+                        <div className="tab-content">
+                          {/* Basic Information */}
+                          <div className="tab-pane active" id="basic-info">
+                            <div className="text-center element-box no-bg no-shadow">
+                              <ul className="pro-details">
+                                <li>
+                                  <span>Gender</span> | <b>Male</b>
+                                </li>
+                                <li>
+                                  <span>Date of Birth</span> |{" "}
+                                  <b>8th May 2001 </b>
+                                  <i>(20yrs)</i>
+                                </li>
+                                <li>
+                                  <span>Date of Admission</span> |{" "}
+                                  <b>12th April 2017</b>
+                                </li>
+                                <li>
+                                  <span>Phone number</span> | <b>09033422324</b>
+                                </li>
+                                <li>
+                                  <span>Employment date</span> |{" "}
+                                  <b>12th May 2017</b>
+                                </li>
+                                <li>
+                                  <span>Address</span> |{" "}
+                                  <b>
+                                    12 Ugochuckwu st. New Haven, Enugu state
+                                  </b>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
 
-            {/* Assign Subject Section */}
-            {showAssignSubject && !showProfile && (
-              <div>
-                <div className="content-box">
-                  <div className="element-wrapper">
-                    <h5 className="element-header">
-                      Teacher's Subject Assignment
-                    </h5>
-                    <div className="element-box">
-                      <div className="text-left">
-                        <NavLink
-                          to="#"
-                          onClick={() => {
-                            SetShowAssignSubject(false);
-                          }}
-                        >
-                          <i
-                            className="icon-lg os-icon os-icon-arrow-left6"
-                            style={{ fontSize: "25px" }}
-                          ></i>
-                        </NavLink>
-                      </div>
-                      <div className="text-right">
-                        <NavLink to="#">
-                          <i className="icon-lg os-icon os-icon-edit"></i>
-                        </NavLink>
-                      </div>
-                      <div className="text-center mb-5">
-                        <img
-                          className="avatar pb-3"
-                          alt="Passport"
-                          src="/3.jpeg"
-                        />
-
-                        <h2 className="up-header ">Douglas Elenu</h2>
-                        <h6 className="up-sub-header">
-                          douglas@gmail.com
-                          <i
-                            className="os-icon os-icon-check-circle text-success ml-2"
-                            title="Email verified"
-                          ></i>
-                        </h6>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* New Assignment */}
-                  <div className="element-wrapper">
-                    <div className="element-box">
-                      <h6 className="element-header">New Assignment</h6>
-                      <div className="form-group">
-                        <label htmlFor="departmental">Select Subjects</label>
-                        <Select isMulti={true} options={subjects} />
-                      </div>
-                      <button className="btn btn-primary">Assign</button>
-                    </div>
-                  </div>
-
-                  {/* Already Assigned Subjects */}
-                  <div className="element-wrapper">
-                    <div className="element-box">
-                      <h6 className="element-header">
-                        Already Assigned Subjects
-                      </h6>
-                      <div className="text-center">
-                        <div className="table-responsive">
-                          <table className="table table-striped">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-                                <th>Subject</th>
-                                <th>Level</th>
-                                <th className="text-center">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>1</td>
-                                <td>English language</td>
-                                <td>SS1</td>
-                                <td className="row-actions text-center">
-                                  <a
-                                    className="danger"
-                                    href="#"
-                                    title="Remove subject"
-                                  >
-                                    <i className="os-icon os-icon-x"></i>
-                                  </a>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>2</td>
-                                <td>Intro tech</td>
-                                <td>JSS3</td>
-                                <td className="row-actions text-center">
-                                  <a
-                                    className="danger"
-                                    href="#"
-                                    title="Remove subject"
-                                  >
-                                    <i className="os-icon os-icon-x"></i>
-                                  </a>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          {/* Timetable */}
+                          <div className="tab-pane" id="timetable">
+                            <div className="text-center element-box no-bg no-shadow">
+                              <TeacherTTAccordion day="Monday" />
+                              <TeacherTTAccordion day="Tuesday" />
+                              <TeacherTTAccordion day="Wednesday" />
+                              <TeacherTTAccordion day="Thursday" />
+                              <TeacherTTAccordion day="Friday" />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

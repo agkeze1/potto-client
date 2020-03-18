@@ -9,7 +9,7 @@ import SwitchInput from "../partials/SwitchInput";
 
 const NewUser: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
-  const [isAdmin, SetIsAdmin] = useState(true);
+  const [isAdmin, SetIsAdmin] = useState<boolean>(true);
 
   return (
     <>

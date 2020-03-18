@@ -264,9 +264,9 @@ const StudentList = () => {
                 <div className="os-tabs-w">
                   <div className="os-tabs-controls">
                     <ul className="nav nav-tabs smaller">
-                      <li className="nav-item">
+                      <li className="nav-item text-uppercase">
                         <a
-                          className="nav-link active text-uppercase"
+                          className="nav-link active"
                           data-toggle="tab"
                           href="#basic-info"
                         >

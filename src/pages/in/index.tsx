@@ -28,6 +28,8 @@ import NavigationGroup from "./NavigationGroup";
 import Feedback from "./Feedback";
 import FeedbackType from "./FeedbackType";
 import Role from "./Role";
+import NewTimetable from "./NewTimetable";
+import ViewTimetable from "./ViewTimetable";
 
 const Home: FC<IProps> = ({ location }) => {
   document.body.className =
@@ -79,6 +81,8 @@ const Home: FC<IProps> = ({ location }) => {
                 <Route path="/in/feedback" component={Feedback} />
                 <Route path="/in/feedback-type" component={FeedbackType} />
                 <Route path="/in/role" component={Role} />
+                <Route path="/in/new-timetable" component={NewTimetable} />
+                <Route path="/in/view-timetable" component={ViewTimetable} />
               </Switch>
             </div>
           </div>

@@ -18,7 +18,7 @@ const Subjects = () => {
         <title>Subjects | {GetAppName()}</title>
       </Helmet>
       <div className="row justify-content-center">
-        <div className="col-md-10">
+        <div className="col-md-12">
           <div className="content-i">
             <div className="content-box">
               <div className="element-wrapper">
@@ -41,7 +41,8 @@ const Subjects = () => {
                           <thead>
                             <tr>
                               <th>#</th>
-                              <th>Class</th>
+                              <th>Title</th>
+                              <th>Code</th>
                               <th>Level</th>
                               <th className="text-center">Actions</th>
                             </tr>
@@ -49,8 +50,9 @@ const Subjects = () => {
                           <tbody>
                             <tr>
                               <td>1</td>
-                              <td>Eagle</td>
-                              <td>JSS1</td>
+                              <td>English Language</td>
+                              <td>ENG</td>
+                              <td>SS1</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
@@ -62,8 +64,9 @@ const Subjects = () => {
                             </tr>
                             <tr>
                               <td>2</td>
-                              <td>Dog</td>
-                              <td>JSS1</td>
+                              <td>Biology</td>
+                              <td>BIO</td>
+                              <td>SS2</td>
                               <td className="row-actions text-center">
                                 <a href="#" title="Edit">
                                   <i className="os-icon os-icon-edit"></i>
@@ -76,9 +79,9 @@ const Subjects = () => {
                           </tbody>
                         </table>
                       </div>
-                      <div className="text-center pt-5 fade-in">
+                      {/* <div className="text-center pt-5 fade-in">
                         <h2 className="text-danger">No Subject found!</h2>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

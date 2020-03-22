@@ -7,10 +7,10 @@ body:before {
     linear,
     left top,
     right bottom,
-    from(#3f51b5),
+    from(#158c1e),
     to(#16a820)
   );
-  background: linear-gradient(to bottom right, #3f51b5, #16a820);
+  background: linear-gradient(to bottom right, #158c1e, #16a820);
 }
 
 .auth-box-w .logo-w {
@@ -105,7 +105,7 @@ b {
 }
 
 .logged-user-w .avatar-w {
-  border: 2px solid #3f51b5;
+  border: 2px solid #158c1e;
 }
 
 .onboarding-modal .onboarding-content .onboarding-text {
@@ -144,19 +144,19 @@ body.full-screen .all-wrapper,
     linear,
     left top,
     left bottom,
-    from(#3f51b5),
+    from(#158c1e),
     to(#16a820)
   );
-  background-image: linear-gradient(to bottom, #3f51b5 0%, #16a820 100%);
+  background-image: linear-gradient(to bottom, #158c1e 0%, #16a820 100%);
   background-repeat: repeat-x;
   background-image: -webkit-gradient(
     linear,
     left top,
     left bottom,
-    from(#3f51b5),
+    from(#158c1e),
     to(#16a820)
   );
-  background-image: linear-gradient(to bottom, #3f51b5 0%, #16a820 100%);
+  background-image: linear-gradient(to bottom, #158c1e 0%, #16a820 100%);
 }
 
 @media screen and (max-width: 600px) {

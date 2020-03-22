@@ -23,14 +23,19 @@ const SwitchInput: FC<SwitchProps> = ({ isOn, handleToggle, label }) => {
               className="react-switch-label"
               htmlFor={`react-switch-new`}
               style={{
-                background: isOn ? "#06D6A0" : "",
+                background: isOn ? "#16a820" : "",
                 width: "60px",
-                height: "25px"
+                height: "22px"
               }}
             >
               <span
                 className={`react-switch-button`}
-                style={{ width: "35px", height: "35px" }}
+                style={{
+                  width: "33px",
+                  height: "33px",
+                  marginTop: "-2px",
+                  border: isOn ? "1px solid #16a820" : "1px solid darkgray"
+                }}
               />
             </label>
           </div>

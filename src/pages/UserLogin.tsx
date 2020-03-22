@@ -3,13 +3,12 @@ import { Helmet } from "react-helmet";
 import { GetAppName } from "../context/App";
 import { NavLink, Redirect } from "react-router-dom";
 import Input from "./partials/Input";
-// import AlertMessage from "../partial/AlertMessage";
-// import Input from "../partial/Input";
-// import LoadingState from "../partial/Loading";
-// import { IMessage } from "../model/IMessage";
-// import { authService } from "../services/Auth.Service";
-// import { useMutation, useQuery } from "@apollo/react-hooks";
-// import { USER_LOGIN, HAS_ADMIN } from "../queries/user.query";
+import { IMessage } from "../models/IMessage";
+import AlertMessage from "./partials/AlertMessage";
+import LoadingState from "./partials/loading";
+import { authService } from "../services/Auth.Service";
+import { useMutation, useQuery } from "@apollo/react-hooks";
+import { USER_LOGIN } from "../queries/user.query";
 
 interface LoginProps {
   location: any;
@@ -19,9 +18,21 @@ interface LoginProps {
 const UserLogin: React.FC<LoginProps> = ({ location, history }) => {
   document.body.className = "auth-wrapper";
 
-  //   const [message, SetMessage] = useState<IMessage>();
-  //   const [email, SetEmail] = useState();
-  //   const [password, SetPassword] = useState();
+  const [message, SetMessage] = useState<IMessage>();
+  const [email, SetEmail] = useState<string>();
+  const [password, SetPassword] = useState<string>();
+
+  const [Login, { loading }] = useMutation(USER_LOGIN, {
+    onError: err =>
+      SetMessage({
+        message: err.message,
+        failed: true
+      }),
+    onCompleted: data => {
+      const { doc, token } = data.USER_LOGIN;
+      authService.Login(doc, token);
+    }
+  });
 
   return (
     <>
@@ -37,13 +48,39 @@ const UserLogin: React.FC<LoginProps> = ({ location, history }) => {
             <h6 className="mt-2">{GetAppName()}</h6>
           </div>
           <h4 className="auth-header">Login</h4>
-          <form className="pb-4">
+          <form
+            className="pb-4"
+            onSubmit={async e => {
+              e.preventDefault();
+              // Reset Message
+              SetMessage(undefined);
+              if (email && password) {
+                // Login
+                await Login({
+                  variables: {
+                    email,
+                    password
+                  }
+                });
+                if (authService.IsAuthenticated()) {
+                  history.push("/in");
+                } else {
+                  SetMessage({
+                    message: "Incorrect Username or Password!",
+                    failed: true
+                  });
+                }
+              }
+            }}
+          >
             {/* Email input */}
             <Input
               name="email"
               placeholder="Enter email or phone"
               label="Email / Phone"
-              onChange={(item: string) => {}}
+              onChange={(email: string) => {
+                SetEmail(email);
+              }}
               icon="os-icon-user-male-circle"
               required={true}
               type="email"
@@ -54,11 +91,15 @@ const UserLogin: React.FC<LoginProps> = ({ location, history }) => {
               name="password"
               placeholder="Enter password"
               label="Password"
-              onChange={(item: string) => {}}
+              onChange={(password: string) => {
+                SetPassword(password);
+              }}
               icon="os-icon-fingerprint"
               required={true}
               type="password"
             />
+            <LoadingState loading={loading} />
+            <AlertMessage message={message?.message} failed={message?.failed} />
             <div className="buttons-w pb-3">
               <button type="submit" className="btn btn-primary">
                 Login

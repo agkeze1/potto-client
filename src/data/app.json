@@ -1,5 +1,5 @@
 {
-  "base_url": "https://potto.com/.netlify/functions/main",
+  "base_url": "https://potto-api.netlify.com/.netlify/functions/main",
   "uploadBaseUrl": "https://api.cloudinary.com/v1_1/unizik-attendance/upload",
   "uploadPreset": "plpmntgi"
 }

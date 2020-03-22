@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
 import Dropdown from "../partials/Dropdown";
-import IconInput from "../partials/IconInput";
+import { IExpand } from "../../models/expand";
 
-const ViewTimetable = () => {
+const ViewTimetable: FC<IExpand> = ({ expand }) => {
   const [ShowTimetable, SetShowTimetable] = useState<boolean>(false);
+  const [showFilter, SetShowFilter] = useState<boolean>(true);
+  const [expanded, SetExpanded] = useState<boolean>(true);
 
   return (
     <>
@@ -17,59 +19,72 @@ const ViewTimetable = () => {
           <div className="element-wrapper">
             <h5 className="element-header">View Timetable</h5>
             {/* Select Level and Class Section */}
-            <div className="element-box">
-              <div className="row justify-content-center">
-                <div className="col-lg-12">
-                  <form
-                    onSubmit={e => {
-                      e.preventDefault();
-                    }}
-                  >
-                    <div className="row">
-                      <div className="col-md-6">
-                        {/* Level input */}
-                        <Dropdown
-                          items={[
-                            { label: "JSS1", value: "1" },
-                            { label: "JSS2", value: "2" }
-                          ]}
-                          onSelect={() => {}}
-                          label="Select Level"
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        {/* Class Input */}
-                        <Dropdown
-                          items={[
-                            { label: "A", value: "1" },
-                            { label: "B", value: "2" }
-                          ]}
-                          onSelect={() => {}}
-                          label="Select Class"
-                        />
-                      </div>
-                      <div className="col-12 ">
-                        <div className="buttons-w">
-                          <button
-                            className="btn btn-primary px-3"
-                            type="submit"
-                            onClick={() => {
-                              SetShowTimetable(true);
-                            }}
-                          >
-                            View Timetable
-                          </button>
+            {showFilter && (
+              <div className="element-box">
+                <div className="row justify-content-center">
+                  <div className="col-lg-12">
+                    <form
+                      onSubmit={e => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <div className="row">
+                        <div className="col-md-6">
+                          {/* Level input */}
+                          <Dropdown
+                            items={[
+                              { label: "JSS1", value: "1" },
+                              { label: "JSS2", value: "2" }
+                            ]}
+                            onSelect={() => {}}
+                            label="Select Level"
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          {/* Class Input */}
+                          <Dropdown
+                            items={[
+                              { label: "A", value: "1" },
+                              { label: "B", value: "2" }
+                            ]}
+                            onSelect={() => {}}
+                            label="Select Class"
+                          />
+                        </div>
+                        <div className="col-12 ">
+                          <div className="buttons-w">
+                            <button
+                              className="btn btn-primary px-3"
+                              type="submit"
+                              onClick={() => {
+                                SetShowTimetable(true);
+                              }}
+                            >
+                              View Timetable
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Selected Level and class timetable */}
             {ShowTimetable && (
               <div className="element-box">
+                <a
+                  href="#"
+                  className="element-actions"
+                  onClick={() => {
+                    SetExpanded(!expanded);
+                    expand(expanded);
+                    SetShowFilter(!showFilter);
+                  }}
+                >
+                  <i className="os-icon os-icon-maximize"></i>
+                </a>
                 <h6 className="element-header">JSS2 - A Timetable</h6>
                 <div className="table-responsive">
                   <table className="table table-bordered table-lg table-v2 table-striped">

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { GetAppName } from "../../context/App";
 import Helmet from "react-helmet";
 import { Switch, Route } from "react-router-dom";
@@ -30,11 +30,13 @@ import FeedbackType from "./FeedbackType";
 import Role from "./Role";
 import NewTimetable from "./NewTimetable";
 import ViewTimetable from "./ViewTimetable";
+import { authService } from "../../services/Auth.Service";
 
 const Home: FC<IProps> = ({ location }) => {
+  const [expand, SetExpand] = useState<boolean>(false);
   document.body.className =
     "full-screen with-content-panel menu-position-side menu-side-left";
-  // const { IsAuthenticated, IsStudent } = authService;
+  const { IsAuthenticated } = authService;
 
   return (
     <>
@@ -44,15 +46,19 @@ const Home: FC<IProps> = ({ location }) => {
       <div className="all-wrapper with-side-panel solid-bg-all">
         <div className="layout-w">
           {/* Main sidebar */}
-          <SideNav location={location} />
+          {!expand && <SideNav location={location} />}
 
           <div className="content-w">
             {/* Header */}
-            <Header location={location} />
-            <div className="content-panel-toggler">
-              <i className="os-icon os-icon-grid-squares-22"></i>
-              <span>Sidebar</span>
-            </div>
+            {!expand && (
+              <>
+                <Header location={location} />
+                <div className="content-panel-toggler">
+                  <i className="os-icon os-icon-grid-squares-22"></i>
+                  <span>Sidebar</span>
+                </div>
+              </>
+            )}
 
             {/* Content */}
             <div className="main-container">
@@ -82,7 +88,10 @@ const Home: FC<IProps> = ({ location }) => {
                 <Route path="/in/feedback-type" component={FeedbackType} />
                 <Route path="/in/role" component={Role} />
                 <Route path="/in/new-timetable" component={NewTimetable} />
-                <Route path="/in/view-timetable" component={ViewTimetable} />
+                <Route
+                  path="/in/view-timetable"
+                  render={() => <ViewTimetable expand={SetExpand} />}
+                />
               </Switch>
             </div>
           </div>

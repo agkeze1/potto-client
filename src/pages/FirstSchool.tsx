@@ -6,34 +6,36 @@ import { IProps } from "../models/IProps";
 import LoadingState from "./partials/loading";
 import ImageUpload from "../pages/partials/ImageUpload";
 import { useQuery } from "@apollo/react-hooks";
-import { USER_SETUP } from "../queries/user.query";
+import { NEW_SCHOOL } from "../queries/school.query";
 import { useMutation } from "@apollo/react-hooks";
 import { IMessage } from "../models/IMessage";
-import { authService } from "../services/Auth.Service";
 import AlertMessage from "../pages/partials/AlertMessage";
 
-const UserSignup: React.FC<IProps> = ({ location, history }) => {
+const FirstSchool: React.FC<IProps> = ({ history }) => {
   document.body.className = "auth-wrapper";
 
   const [record, setRecord] = useState<any>();
   const [message, SetMessage] = useState<IMessage>();
 
-  const [SaveUser, { loading }] = useMutation(USER_SETUP, {
+  //   Save First School record
+  const [SaveSchool, { loading }] = useMutation(NEW_SCHOOL, {
     onError: err =>
       SetMessage({
         message: err.message,
         failed: true
       }),
     onCompleted: data => {
-      if (data && data.USER_SETUP) {
+      if (data && data.NewSchool) {
         SetMessage({
-          message: data.USER_SETUP.message,
+          message: data.NewSchool.message,
           failed: false
         });
-
-        // Login user
-        const { doc, token } = data.USER_SETUP;
-        authService.Login(doc, token);
+        history.push("/signup");
+      } else {
+        SetMessage({
+          message: "Could not Save School",
+          failed: true
+        });
       }
     }
   });
@@ -41,7 +43,7 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
   return (
     <>
       <Helmet>
-        <title>Super Admin Account | {GetAppName()}</title>
+        <title>Default School | {GetAppName()}</title>
       </Helmet>
       <div className="all-wrapper menu-side with-pattern">
         <div className="auth-box-w wider">
@@ -51,29 +53,21 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
             </a>
             <h6 className="mt-2">{GetAppName()}</h6>
           </div>
-          <h4 className="auth-header">Create Super Admin </h4>
+          <h4 className="auth-header">Create School </h4>
           <form
             onSubmit={async e => {
               e.preventDefault();
-              await SaveUser({
+              await SaveSchool({
                 variables: {
-                  userInput: record
+                  schoolInput: record
                 }
               });
-              if (authService.IsAuthenticated()) {
-                history.push("/in");
-              } else {
-                SetMessage({
-                  message: "Failed to login",
-                  failed: true
-                });
-              }
             }}
           >
             {/* Fullname input */}
             <Input
               name="fullname"
-              placeholder="Enter fullname"
+              placeholder="Enter school fullname"
               label="Fullname"
               onChange={(name: string) =>
                 setRecord({
@@ -85,82 +79,130 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
               required
               type="text"
             />
+            {/* Alias input */}
+            <Input
+              name="alias"
+              placeholder="Enter alias"
+              label="Alias"
+              onChange={(alias: string) =>
+                setRecord({
+                  ...record,
+                  alias
+                })
+              }
+              icon="os-icon-phone"
+              required={true}
+              type="text"
+            />
 
             <div className="row">
               <div className="col-sm-6">
-                {/* Phone input */}
+                {/* Contact Email input */}
                 <Input
-                  name="phone"
-                  placeholder="Enter phone number"
-                  label="Phone number "
-                  onChange={(phone: string) =>
+                  name="email"
+                  placeholder="Enter contact email"
+                  label="Contact Email"
+                  onChange={(contact_email: string) =>
                     setRecord({
                       ...record,
-                      phone
+                      contact_email
                     })
                   }
                   icon="os-icon-phone"
                   required={true}
-                  type="text"
+                  type="email"
                 />
               </div>
 
               <div className="col-sm-6">
-                {/* Email number input */}
+                {/* Contact Phone input */}
                 <Input
-                  name="email"
-                  placeholder="Enter email"
-                  label="Email"
-                  onChange={(email: string) =>
+                  name="phone"
+                  placeholder="Enter contact"
+                  label="Contact Phone number "
+                  onChange={(contact_phone: string) =>
                     setRecord({
                       ...record,
-                      email
+                      contact_phone
                     })
                   }
                   required={true}
-                  type="email"
+                  type="text"
                 />
               </div>
             </div>
+
+            {/* Contact Address */}
+            <Input
+              name="contact_address"
+              placeholder="Enter contact address"
+              label="Contact Address"
+              onChange={(contact_address: string) =>
+                setRecord({
+                  ...record,
+                  contact_address
+                })
+              }
+              icon="os-icon-fingerprint"
+              required={true}
+              type="text"
+            />
+
+            {/* Address input */}
+            <Input
+              name="address"
+              placeholder="Enter address"
+              label="Address"
+              onChange={(address: string) =>
+                setRecord({
+                  ...record,
+                  address
+                })
+              }
+              icon="os-icon-fingerprint"
+              required={true}
+              type="text"
+            />
+
             <div className="row">
               <div className="col-sm-6">
-                {/* password input */}
+                {/* Primary colour input */}
                 <Input
-                  name="password"
-                  placeholder="Enter password"
-                  label="Password"
-                  onChange={(password: string) =>
+                  name="primary_colour"
+                  placeholder="Enter primary colour"
+                  label="Primary Colour"
+                  onChange={(primary_colour: string) =>
                     setRecord({
                       ...record,
-                      password
+                      primary_colour
                     })
                   }
                   icon="os-icon-fingerprint"
                   required={true}
-                  type="password"
+                  type="text"
                 />
               </div>
               <div className="col-sm-6">
-                {/* confirm password input */}
+                {/* Secondary Colour input */}
                 <Input
-                  name="confirmPassword"
-                  placeholder="Re-enter password"
-                  label="Confirm Password"
-                  onChange={(password: string) =>
+                  name="secondary_colour"
+                  placeholder="Enter secondary colour"
+                  label="Secondary Colour"
+                  onChange={(secondary_colour: string) =>
                     setRecord({
                       ...record,
-                      password
+                      secondary_colour
                     })
                   }
                   required={true}
-                  type="password"
+                  type="text"
                 />
               </div>
             </div>
             <div className="form-group">
-              <label>Passport</label>
+              <label>Logo</label>
               <ImageUpload
-                title="Browse Picture..."
+                title="Browse Logo..."
                 onData={(path: string) =>
                   setRecord({
                     ...record,
@@ -197,4 +239,4 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
     </>
   );
 };
-export default UserSignup;
+export default FirstSchool;

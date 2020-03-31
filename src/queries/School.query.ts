@@ -8,7 +8,7 @@ export const SCHOOL_PROPS = gql`
     logo
     contact_address
     contact_email
-    # contact_phone
+    contact_phone
     address
     created_at
   }

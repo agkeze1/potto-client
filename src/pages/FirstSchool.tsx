@@ -31,11 +31,6 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
           failed: false
         });
         history.push("/signup");
-      } else {
-        SetMessage({
-          message: "Could not Save School",
-          failed: true
-        });
       }
     }
   });
@@ -102,10 +97,10 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
                   name="email"
                   placeholder="Enter contact email"
                   label="Contact Email"
-                  onChange={(contact_email: string) =>
+                  onChange={(contactEmail: string) =>
                     setRecord({
                       ...record,
-                      contact_email
+                      contactEmail
                     })
                   }
                   icon="os-icon-phone"
@@ -120,10 +115,10 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
                   name="phone"
                   placeholder="Enter contact"
                   label="Contact Phone number "
-                  onChange={(contact_phone: string) =>
+                  onChange={(contactPhone: string) =>
                     setRecord({
                       ...record,
-                      contact_phone
+                      contactPhone
                     })
                   }
                   required={true}
@@ -137,10 +132,10 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
               name="contact_address"
               placeholder="Enter contact address"
               label="Contact Address"
-              onChange={(contact_address: string) =>
+              onChange={(contactAddress: string) =>
                 setRecord({
                   ...record,
-                  contact_address
+                  contactAddress
                 })
               }
               icon="os-icon-fingerprint"
@@ -171,10 +166,10 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
                   name="primary_colour"
                   placeholder="Enter primary colour"
                   label="Primary Colour"
-                  onChange={(primary_colour: string) =>
+                  onChange={(primaryColour: string) =>
                     setRecord({
                       ...record,
-                      primary_colour
+                      primaryColour
                     })
                   }
                   icon="os-icon-fingerprint"
@@ -188,10 +183,10 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
                   name="secondary_colour"
                   placeholder="Enter secondary colour"
                   label="Secondary Colour"
-                  onChange={(secondary_colour: string) =>
+                  onChange={(secondaryColour: string) =>
                     setRecord({
                       ...record,
-                      secondary_colour
+                      secondaryColour
                     })
                   }
                   required={true}
@@ -206,7 +201,7 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
                 onData={(path: string) =>
                   setRecord({
                     ...record,
-                    image: path
+                    logo: path
                   })
                 }
               />

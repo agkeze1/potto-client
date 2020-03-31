@@ -1,10 +1,55 @@
-import React from "react";
+import React, { FC, useState, useEffect } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
+import { IProps } from "../../models/IProps";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
+import { authService } from "../../services/Auth.Service";
+import { useQuery } from "@apollo/react-hooks";
+import { GET_SCHOOL_LIST } from "../../queries/School.query";
+import { IMessage } from "../../models/IMessage";
+import Pagination from "../partials/Pagination";
+import LoadingState from "../partials/loading";
+import AlertMessage from "../partials/AlertMessage";
+import { School } from "../../models/School.model";
+import { IImageProp } from "../../models/IImageProp";
 
-const SchoolList = () => {
+const SchoolList: FC<IProps> = ({ history }) => {
+  const [message, SetMessage] = useState<IMessage>();
+  const [page, setPage] = useState<number>(1);
+  const [limit] = useState<number>(25);
+  const [active, SetActive] = useState<IImageProp>({
+    image: "/avatar.png",
+    name: "Undefined"
+  });
+
+  // Check if user is authenticated
+  if (!authService.IsAuthenticated()) {
+    history.push("/login");
+  }
+
+  // Get List of schools
+  const { data, loading, fetchMore } = useQuery(GET_SCHOOL_LIST, {
+    variables: { page, limit },
+    onError: err => {
+      SetMessage({
+        message: err.message,
+        failed: true
+      });
+    }
+  });
+  useEffect(() => {
+    fetchMore({
+      variables: { page, limit },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        return {
+          GetSchools: fetchMoreResult.GetSchools
+        };
+      }
+    });
+  }, [page, limit]);
+
   return (
     <>
       <Helmet>
@@ -56,89 +101,92 @@ const SchoolList = () => {
                 </div>
               </div>
             </div>
-            <div className="row justify-content-center ">
-              <div className="col-lg-12 pt-5">
-                <div className="element-box-tp">
-                  <div className="table-responsive">
-                    <table className="table table-padded">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Logo</th>
-                          <th>Ref. No</th>
-                          <th>Name</th>
-                          <th>Alias</th>
-                          <th className="text-center">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>
-                            <div
-                              className="user-with-avatar clickable"
-                              data-target="#imageModal"
-                              data-toggle="modal"
-                            >
-                              <img src="/logo192.png" alt="" />
-                            </div>
-                          </td>
-                          <td>CKC2020</td>
-                          <td>Christ the King College</td>
-                          <td>CKC</td>
-                          <td className="row-actions text-center">
-                            <a href="#" title="Edit">
-                              <i className="os-icon os-icon-edit"></i>
-                            </a>
-                            <NavLink title="View contact info" to="#">
-                              <i className="os-icon os-icon-eye"></i>
-                            </NavLink>
-                            <a className="danger" href="#" title="Delete">
-                              <i className="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>
-                            <div
-                              className="user-with-avatar clickable"
-                              data-target="#imageModal"
-                              data-toggle="modal"
-                            >
-                              <img src="/logo192.png" alt="" />
-                            </div>
-                          </td>
-                          <td>SPC2020</td>
-                          <td>Saint Patric's College</td>
-                          <td>SPC</td>
-                          <td className="row-actions text-center">
-                            <a href="#" title="Edit">
-                              <i className="os-icon os-icon-edit"></i>
-                            </a>
-                            <NavLink title="View contact info" to="#">
-                              <i className="os-icon os-icon-eye"></i>
-                            </NavLink>
-                            <a className="danger" href="#" title="Delete">
-                              <i className="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="text-center pt-5 fade-in">
+            <LoadingState loading={loading} />
+            <AlertMessage failed={message?.failed} message={message?.message} />
+            {data && data.GetSchools && (
+              <div className="row justify-content-center ">
+                <div className="col-lg-12 pt-5">
+                  <div className="element-box-tp">
+                    <div className="table-responsive">
+                      <table className="table table-padded">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Logo</th>
+                            <th>Name</th>
+                            <th>Alias</th>
+                            <th>Created At</th>
+                            <th className="text-center">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data.GetSchools.docs.map(
+                            (rec: School, index: number) => (
+                              <tr>
+                                <td>{index + 1}</td>
+                                <td>
+                                  <div
+                                    onClick={() => {
+                                      SetActive({
+                                        image: rec.logo,
+                                        name: rec.alias
+                                      });
+                                    }}
+                                    className="user-with-avatar clickable"
+                                    data-target="#imageModal"
+                                    data-toggle="modal"
+                                  >
+                                    <img src={rec.logo} alt="Logo" />
+                                  </div>
+                                </td>
+                                <td>{rec.name}</td>
+                                <td>{rec.alias}</td>
+                                <td>{rec.created_at}</td>
+                                <td className="row-actions text-center">
+                                  <a href="#" title="Edit">
+                                    <i className="os-icon os-icon-edit"></i>
+                                  </a>
+                                  <NavLink title="View contact info" to="#">
+                                    <i className="os-icon os-icon-eye"></i>
+                                  </NavLink>
+                                  <a className="danger" href="#" title="Delete">
+                                    <i className="os-icon os-icon-ui-15"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                            )
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* <div className="text-center pt-5 fade-in">
                     <h2 className="text-danger">No School found!</h2>
+                  </div> */}
                   </div>
                 </div>
+
+                {/* Pagination */}
+                {data && (
+                  <div className="col-lg fade-in">
+                    <div className="element-box">
+                      <Pagination
+                        length={data.GetSchools.docs.length}
+                        {...data.GetSchools}
+                        onPageClicked={(page: number) => {
+                          setPage(page);
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Modal for Schoo Logo */}
-      <ImageModal />
+      <ImageModal image={active?.image} name={active?.name} />
     </>
   );
 };

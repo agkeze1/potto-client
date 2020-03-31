@@ -7,6 +7,10 @@ export const USER_PROPS = gql`
     email
     phone
     image
+    school {
+      id
+      name
+    }
     created_at
   }
 `;

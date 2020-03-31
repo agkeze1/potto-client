@@ -1,6 +1,6 @@
 import { plainToClass } from "class-transformer";
 import { Base64 } from "js-base64";
-import { User } from "../models/User";
+import { User } from "../models/User.model";
 
 const key = "_166@atten_dance";
 class AuthenticationService {

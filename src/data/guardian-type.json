@@ -1,0 +1,20 @@
+{
+  "guardianType": [
+    {
+      "label": "Father",
+      "value": "1"
+    },
+    {
+      "label": "Mother",
+      "value": "2"
+    },
+    {
+      "label": "Uncle",
+      "value": "3"
+    },
+    {
+      "label": "Aunty",
+      "value": "4"
+    }
+  ]
+}

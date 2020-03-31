@@ -291,7 +291,7 @@ const TeacherList = () => {
       </div>
 
       {/* Modal for Image */}
-      <ImageModal />
+      {/* <ImageModal /> */}
     </>
   );
 };

@@ -101,7 +101,7 @@ const SuperAdminList = () => {
       </div>
 
       {/* Modal for Image */}
-      <ImageModal />
+      {/* <ImageModal /> */}
     </>
   );
 };

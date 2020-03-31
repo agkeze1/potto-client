@@ -8,7 +8,6 @@ interface SideProps {
 }
 
 const SideNav: FC<SideProps> = ({ location }) => {
-  // const { name } = authService.GetUser();
   const scrollTop = () => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
@@ -110,6 +109,12 @@ const SideNav: FC<SideProps> = ({ location }) => {
                   <li>
                     <NavLink to="/in/subjects" onClick={() => scrollTop()}>
                       <span>Subjects</span>
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink to="/in/guardian-type" onClick={() => scrollTop()}>
+                      <span>Guardian Type</span>
                     </NavLink>
                   </li>
                 </ul>
@@ -268,14 +273,6 @@ const SideNav: FC<SideProps> = ({ location }) => {
                 </ul>
               </div>
             </div>
-          </li>
-          <li>
-            <NavLink to="/in/guardian-type" onClick={() => scrollTop()}>
-              <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
-              </div>
-              <span>Guardian Type</span>
-            </NavLink>
           </li>
 
           {/* Attendance Mgt */}

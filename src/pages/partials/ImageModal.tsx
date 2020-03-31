@@ -1,7 +1,9 @@
-import React from "react";
-const ImageModal = () => {
+import React, { FC } from "react";
+import { IImageProp } from "../../models/IImageProp";
+
+const ImageModal: FC<IImageProp> = ({ image, name }) => {
   return (
-    //    Modal for Image
+    // Modal for Image
     <div
       aria-hidden="true"
       className="modal fade"
@@ -17,10 +19,10 @@ const ImageModal = () => {
           </div>
           <div className="modal-body">
             <div className="pt-avatar-w text-center">
-              <img alt="" src="/logo192.png" />
+              <img alt="image" src={image} />
             </div>
             <hr />
-            <div className="pt-user-name text-center pb-3">John Mayers</div>
+            <div className="pt-user-name text-center pb-3">{name}</div>
           </div>
         </div>
       </div>

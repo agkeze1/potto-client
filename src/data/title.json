@@ -1,0 +1,20 @@
+{
+  "titles": [
+    {
+      "label": "Mr",
+      "value": "1"
+    },
+    {
+      "label": "Mrs",
+      "value": "2"
+    },
+    {
+      "label": "Chief",
+      "value": "3"
+    },
+    {
+      "label": "Engr.",
+      "value": "4"
+    }
+  ]
+}

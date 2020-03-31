@@ -149,7 +149,7 @@ const UserList = () => {
       </div>
 
       {/* Modal for Image */}
-      <ImageModal />
+      {/* <ImageModal /> */}
     </>
   );
 };

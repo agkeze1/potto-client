@@ -6,7 +6,7 @@ import { IProps } from "../models/IProps";
 import LoadingState from "./partials/loading";
 import ImageUpload from "../pages/partials/ImageUpload";
 import { useQuery } from "@apollo/react-hooks";
-import { USER_SETUP } from "../queries/user.query";
+import { FIRST_USER, USER_SETUP } from "../queries/User.query";
 import { useMutation } from "@apollo/react-hooks";
 import { IMessage } from "../models/IMessage";
 import { authService } from "../services/Auth.Service";
@@ -17,6 +17,12 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
 
   const [record, setRecord] = useState<any>();
   const [message, SetMessage] = useState<IMessage>();
+
+  // Checks if first User already exists
+  const { data: uData } = useQuery(FIRST_USER);
+  if (uData && uData.FirstSetup) {
+    history.push("/login");
+  }
 
   const [SaveUser, { loading }] = useMutation(USER_SETUP, {
     onError: err =>

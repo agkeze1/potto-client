@@ -6,7 +6,7 @@ import { IProps } from "../models/IProps";
 import LoadingState from "./partials/loading";
 import ImageUpload from "../pages/partials/ImageUpload";
 import { useQuery } from "@apollo/react-hooks";
-import { NEW_SCHOOL } from "../queries/school.query";
+import { NEW_SCHOOL } from "../queries/School.query";
 import { useMutation } from "@apollo/react-hooks";
 import { IMessage } from "../models/IMessage";
 import AlertMessage from "../pages/partials/AlertMessage";
@@ -59,7 +59,7 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
               e.preventDefault();
               await SaveSchool({
                 variables: {
-                  schoolInput: record
+                  model: record
                 }
               });
             }}

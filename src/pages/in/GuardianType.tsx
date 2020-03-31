@@ -1,9 +1,66 @@
-import React from "react";
+import React, { FC, useState } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
-import { NavLink } from "react-router-dom";
+import { authService } from "../../services/Auth.Service";
+import { IProps } from "../../models/IProps";
+import { IMessage } from "../../models/IMessage";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import {
+  NEW_GUARDIAN_TYPE,
+  GET_GUARDIAN_TYPES
+} from "../../queries/Guardian.query";
+import AlertMessage from "../partials/AlertMessage";
+import LoadingState from "../partials/loading";
 
-const GuardianType = () => {
+const GuardianType: FC<IProps> = ({ history }) => {
+  const [nMessage, SetNMessage] = useState<IMessage>();
+  const [lMessage, SetLMessage] = useState<IMessage>();
+  const [newGuardianType, SetNewGuardianType] = useState<any>();
+
+  // Check if user is authenticated
+  if (!authService.IsAuthenticated()) {
+    history.push("/login");
+  }
+
+  // Get list of Guardian types
+  const { loading, data } = useQuery(GET_GUARDIAN_TYPES, {
+    onError: err =>
+      SetLMessage({
+        message: err.message,
+        failed: true
+      })
+  });
+
+  // Save New Guardian type
+  const [NewGuardianType, { loading: nLoading }] = useMutation(
+    NEW_GUARDIAN_TYPE,
+    {
+      onError: err =>
+        SetNMessage({
+          message: err.message,
+          failed: true
+        }),
+      onCompleted: data =>
+        SetNMessage({
+          message: data.NewGuardianType.message,
+          failed: false
+        }),
+      update: (cache, { data }) => {
+        const q: any = cache.readQuery({
+          query: GET_GUARDIAN_TYPES
+        });
+
+        q.GetGuardianTypes.docs.unshift(data.NewGuardianType.doc);
+
+        //update cache
+        cache.writeQuery({
+          query: GET_GUARDIAN_TYPES,
+          data: { GetGuardianTypes: q.GetGuardianTypes }
+        });
+      }
+    }
+  );
+
   return (
     <>
       <Helmet>
@@ -18,10 +75,25 @@ const GuardianType = () => {
                 <div className="element-box">
                   <div className="row justify-content-center">
                     <div className="col-lg-12">
+                      <AlertMessage
+                        message={nMessage?.message}
+                        failed={nMessage?.failed}
+                      />
+                      <LoadingState loading={nLoading} />
                       <label htmlFor="">New Guardian Type</label>
                     </div>
                     <div className="col-lg-12">
-                      <form>
+                      <form
+                        onSubmit={async e => {
+                          e.preventDefault();
+
+                          await NewGuardianType({
+                            variables: {
+                              name: newGuardianType
+                            }
+                          });
+                        }}
+                      >
                         <div className="row">
                           <div className="col-sm-12 col-md-8 col-lg-10">
                             <div className="input-group mb-3">
@@ -33,6 +105,9 @@ const GuardianType = () => {
                               <input
                                 className="form-control"
                                 placeholder="Enter guardian type"
+                                onChange={({ currentTarget }) =>
+                                  SetNewGuardianType(currentTarget.value)
+                                }
                               />
                             </div>
                           </div>
@@ -48,49 +123,51 @@ const GuardianType = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="row justify-content-center ">
                   <div className="col-lg-12 pt-5">
                     <div className="element-box-tp">
                       <div className="table-responsive">
-                        <table className="table table-padded">
-                          <thead>
-                            <tr>
-                              <th>#</th>
-                              <th>Name</th>
-                              <th className="text-center">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>1</td>
-                              <td>Father</td>
-                              <td className="row-actions text-center">
-                                <a href="#" title="Edit">
-                                  <i className="os-icon os-icon-edit"></i>
-                                </a>
-                                <a className="danger" href="#" title="Delete">
-                                  <i className="os-icon os-icon-ui-15"></i>
-                                </a>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>2</td>
-                              <td>Mother</td>
-                              <td className="row-actions text-center">
-                                <a href="#" title="Edit">
-                                  <i className="os-icon os-icon-edit"></i>
-                                </a>
-                                <a className="danger" href="#" title="Delete">
-                                  <i className="os-icon os-icon-ui-15"></i>
-                                </a>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                        <AlertMessage
+                          message={lMessage?.message}
+                          failed={lMessage?.failed}
+                        />
+                        <LoadingState loading={loading} />
+
+                        {data && (
+                          <table className="table table-padded">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th className="text-center">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {data.GetGuardianTypes.docs.map(
+                                (type: any, index: number) => (
+                                  <tr>
+                                    <td>{index + 1}</td>
+                                    <td>{type.name}</td>
+                                    <td className="row-actions text-center">
+                                      <a href="#" title="Edit">
+                                        <i className="os-icon os-icon-edit"></i>
+                                      </a>
+                                      <a
+                                        className="danger"
+                                        href="#"
+                                        title="Delete"
+                                      >
+                                        <i className="os-icon os-icon-ui-15"></i>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                )
+                              )}
+                            </tbody>
+                          </table>
+                        )}
                       </div>
-                      {/* <div className="text-center pt-5 fade-in">
-                        <h2 className="text-danger">No Level found!</h2>
-                      </div> */}
                     </div>
                   </div>
                 </div>

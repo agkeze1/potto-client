@@ -30,13 +30,16 @@ import FeedbackType from "./FeedbackType";
 import Role from "./Role";
 import NewTimetable from "./NewTimetable";
 import ViewTimetable from "./ViewTimetable";
+import Dashboard from "./Dashboard";
 import { authService } from "../../services/Auth.Service";
 
-const Home: FC<IProps> = ({ location }) => {
+const Home: FC<IProps> = ({ location, history }) => {
   const [expand, SetExpand] = useState<boolean>(false);
   document.body.className =
     "full-screen with-content-panel menu-position-side menu-side-left";
-  const { IsAuthenticated } = authService;
+
+  // Check if user is authenticated
+  if (!authService.IsAuthenticated()) history.push("./login");
 
   return (
     <>
@@ -63,6 +66,8 @@ const Home: FC<IProps> = ({ location }) => {
             {/* Content */}
             <div className="main-container">
               <Switch>
+                <Route exact path="/in" component={Dashboard} />
+                <Route exact path="/in/dashboard" component={Dashboard} />
                 <Route path="/in/new-school" component={NewSchool} />
                 <Route path="/in/school-list" component={SchoolList} />
                 <Route path="/in/new-user" component={NewUser} />

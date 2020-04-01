@@ -5,7 +5,6 @@ import Input from "./partials/Input";
 import { IProps } from "../models/IProps";
 import LoadingState from "./partials/loading";
 import ImageUpload from "../pages/partials/ImageUpload";
-import { useQuery } from "@apollo/react-hooks";
 import { NEW_SCHOOL } from "../queries/School.query";
 import { useMutation } from "@apollo/react-hooks";
 import { IMessage } from "../models/IMessage";
@@ -166,10 +165,10 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
                   name="primary_colour"
                   placeholder="Enter primary colour"
                   label="Primary Colour"
-                  onChange={(primaryColour: string) =>
+                  onChange={(primaryColor: string) =>
                     setRecord({
                       ...record,
-                      primaryColour
+                      primaryColor
                     })
                   }
                   icon="os-icon-fingerprint"
@@ -183,10 +182,10 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
                   name="secondary_colour"
                   placeholder="Enter secondary colour"
                   label="Secondary Colour"
-                  onChange={(secondaryColour: string) =>
+                  onChange={(secondaryColor: string) =>
                     setRecord({
                       ...record,
-                      secondaryColour
+                      secondaryColor
                     })
                   }
                   required={true}

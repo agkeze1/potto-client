@@ -5,8 +5,8 @@ import Input from "./partials/Input";
 import { IProps } from "../models/IProps";
 import LoadingState from "./partials/loading";
 import ImageUpload from "../pages/partials/ImageUpload";
-import { NEW_SCHOOL } from "../queries/School.query";
-import { useMutation } from "@apollo/react-hooks";
+import { NEW_SCHOOL, HAS_SCHOOL } from "../queries/School.query";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import { IMessage } from "../models/IMessage";
 import AlertMessage from "../pages/partials/AlertMessage";
 
@@ -15,6 +15,13 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
 
   const [record, setRecord] = useState<any>();
   const [message, SetMessage] = useState<IMessage>();
+
+  // Checks if first School already exists
+  const { data: sData } = useQuery(HAS_SCHOOL, {
+    onCompleted: () => {
+      if (sData && sData.HasSchool) history.push("/login");
+    }
+  });
 
   //   Save First School record
   const [SaveSchool, { loading }] = useMutation(NEW_SCHOOL, {
@@ -29,7 +36,7 @@ const FirstSchool: React.FC<IProps> = ({ history }) => {
           message: data.NewSchool.message,
           failed: false
         });
-        history.push("/signup");
+        history.push("/login");
       }
     }
   });

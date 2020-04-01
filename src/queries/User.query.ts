@@ -67,8 +67,8 @@ export const FIRST_USER = gql`
 `;
 
 export const USER_SETUP = gql`
-  mutation USER_SETUP($userInput: UserInput!) {
-    SetUp(UserInput: $userInput) {
+  mutation USER_SETUP($model: UserInput!) {
+    SetUp(model: $model) {
       message
       token
       doc {

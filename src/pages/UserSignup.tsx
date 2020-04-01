@@ -19,10 +19,11 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
   const [message, SetMessage] = useState<IMessage>();
 
   // Checks if first User already exists
-  const { data: uData } = useQuery(FIRST_USER);
-  if (uData && uData.FirstSetup) {
-    history.push("/login");
-  }
+  const { data: uData } = useQuery(FIRST_USER, {
+    onCompleted: () => {
+      if (uData && uData.FirstSetup) history.push("/login");
+    }
+  });
 
   const [SaveUser, { loading }] = useMutation(USER_SETUP, {
     onError: err =>
@@ -31,14 +32,14 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
         failed: true
       }),
     onCompleted: data => {
-      if (data && data.USER_SETUP) {
+      if (data && data.SetUp) {
         SetMessage({
-          message: data.USER_SETUP.message,
+          message: data.SetUp.message,
           failed: false
         });
 
         // Login user
-        const { doc, token } = data.USER_SETUP;
+        const { doc, token } = data.SetUp;
         authService.Login(doc, token);
       }
     }
@@ -63,7 +64,7 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
               e.preventDefault();
               await SaveUser({
                 variables: {
-                  userInput: record
+                  model: record
                 }
               });
               if (authService.IsAuthenticated()) {
@@ -152,12 +153,12 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
                   name="confirmPassword"
                   placeholder="Re-enter password"
                   label="Confirm Password"
-                  onChange={(password: string) =>
-                    setRecord({
-                      ...record,
-                      password
-                    })
-                  }
+                  onChange={(password: string) => {
+                    // setRecord({
+                    //   ...record,
+                    //   password
+                    // });
+                  }}
                   required={true}
                   type="password"
                 />
@@ -195,7 +196,7 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
             className="text-center footer font-sm pb-3"
             href="http://afari.com"
           >
-            <img src="/img/lloydant.png" alt="" className="logo-footer mr-2" />
+            <img src="/avatar.png" alt="" className="logo-footer mr-2" />
             Powered by Afari
           </a>
         </div>

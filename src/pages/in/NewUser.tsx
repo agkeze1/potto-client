@@ -6,10 +6,39 @@ import IconInput from "../partials/IconInput";
 import ImageUpload from "../partials/ImageUpload";
 import Dropdown from "../partials/Dropdown";
 import SwitchInput from "../partials/SwitchInput";
+import { NEW_USER } from "../../queries/User.query";
+import { authService } from "../../services/Auth.Service";
+import { useMutation } from "@apollo/react-hooks";
+import { IMessage } from "../../models/IMessage";
+import gender from "../../data/gender.json";
+import AlertMessage from "../partials/AlertMessage";
+import LoadingState from "../partials/loading";
 
 const NewUser: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
+  const [message, SetMessage] = useState<IMessage>();
   const [isAdmin, SetIsAdmin] = useState<boolean>(true);
+
+  const scrollTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+
+  // Check if user is authenticated
+  if (!authService.IsAuthenticated()) {
+    history.push("/login");
+  }
+
+  const [NewUser, { loading }] = useMutation(NEW_USER, {
+    onError: err =>
+      SetMessage({
+        message: err.message,
+        failed: true
+      }),
+    onCompleted: () => {
+      history.push("/in/user-list");
+    }
+  });
 
   return (
     <>
@@ -33,7 +62,25 @@ const NewUser: FC<IProps> = ({ history }) => {
                   />
                 </div>
                 <h5 className="element-header">Basic Information</h5>
-                <form>
+                <AlertMessage
+                  message={message?.message}
+                  failed={message?.failed}
+                />
+                <LoadingState loading={loading} />
+                <form
+                  onSubmit={async e => {
+                    e.preventDefault();
+                    scrollTop();
+                    await NewUser({
+                      variables: {
+                        model: {
+                          ...record,
+                          admin: isAdmin
+                        }
+                      }
+                    });
+                  }}
+                >
                   {/* Fullname input */}
                   <IconInput
                     placeholder="Enter fullname"
@@ -41,7 +88,12 @@ const NewUser: FC<IProps> = ({ history }) => {
                     icon="os-icon-user-male-circle"
                     required={true}
                     type="text"
-                    onChange={(name: string) => {}}
+                    onChange={(name: string) => {
+                      SetRecord({
+                        ...record,
+                        name
+                      });
+                    }}
                   />
 
                   <div className="row">
@@ -53,7 +105,12 @@ const NewUser: FC<IProps> = ({ history }) => {
                         icon="os-icon-email-2-at2"
                         required={true}
                         type="email"
-                        onChange={(email: string) => {}}
+                        onChange={(email: string) => {
+                          SetRecord({
+                            ...record,
+                            email
+                          });
+                        }}
                       />
                     </div>
                     {/* Phone input */}
@@ -64,18 +121,25 @@ const NewUser: FC<IProps> = ({ history }) => {
                         icon="os-icon-phone"
                         required={true}
                         type="text"
-                        onChange={(phone: string) => {}}
+                        onChange={(phone: string) => {
+                          SetRecord({
+                            ...record,
+                            phone
+                          });
+                        }}
                       />
                     </div>
                   </div>
                   <div className="row">
                     <div className={isAdmin ? "col-sm-12" : "col-sm-6"}>
                       <Dropdown
-                        items={[
-                          { label: "Male", value: "1" },
-                          { label: "Female", value: "2" }
-                        ]}
-                        onSelect={() => {}}
+                        items={gender.gender}
+                        onSelect={(item: any) => {
+                          SetRecord({
+                            ...record,
+                            gender: item.label
+                          });
+                        }}
                         label="Gender"
                       />
                     </div>
@@ -102,7 +166,12 @@ const NewUser: FC<IProps> = ({ history }) => {
                         icon="os-icon-ui-09"
                         required={true}
                         type="password"
-                        onChange={(password: string) => {}}
+                        onChange={(password: string) => {
+                          SetRecord({
+                            ...record,
+                            password
+                          });
+                        }}
                       />
                     </div>
                     <div className="col-sm-6">

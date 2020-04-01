@@ -39,7 +39,7 @@ const Home: FC<IProps> = ({ location, history }) => {
     "full-screen with-content-panel menu-position-side menu-side-left";
 
   // Check if user is authenticated
-  if (!authService.IsAuthenticated()) history.push("./login");
+  if (!authService.IsAuthenticated()) history.push("/login");
 
   return (
     <>

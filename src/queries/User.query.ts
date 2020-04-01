@@ -5,6 +5,7 @@ export const USER_PROPS = gql`
     id
     name
     email
+    gender
     phone
     image
     school {
@@ -50,7 +51,7 @@ export const USER_LOGIN = gql`
 
 export const NEW_USER = gql`
   mutation NEW_USER($model: UserInput!) {
-    NewUserAccount(model: $model) {
+    NewUser(model: $model) {
       message
       doc {
         ...USER_PROPS

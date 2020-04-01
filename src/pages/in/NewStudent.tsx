@@ -43,7 +43,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
     history.push("/login");
   }
 
-  // Get  School ID of logged in user
+  // Get  School of logged in user
   const { school } = authService.GetUser();
 
   const scrollTop = () => {

@@ -5,8 +5,8 @@ import { IProps } from "../../models/IProps";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 import { authService } from "../../services/Auth.Service";
-import { useQuery } from "@apollo/react-hooks";
-import { GET_SCHOOL_LIST } from "../../queries/School.query";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { GET_SCHOOL_LIST, MAKE_PRIMARY } from "../../queries/School.query";
 import { IMessage } from "../../models/IMessage";
 import Pagination from "../partials/Pagination";
 import LoadingState from "../partials/loading";
@@ -18,7 +18,8 @@ const SchoolList: FC<IProps> = ({ history }) => {
   const [message, SetMessage] = useState<IMessage>();
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(25);
-  const [active, SetActive] = useState<IImageProp>({
+  const [activeSchId, SetActiveSchId] = useState<string>();
+  const [activeImg, SetActiveImg] = useState<IImageProp>({
     image: "/avatar.png",
     name: "Undefined"
   });
@@ -27,6 +28,9 @@ const SchoolList: FC<IProps> = ({ history }) => {
   if (!authService.IsAuthenticated()) {
     history.push("/login");
   }
+
+  // Get  School of logged in user
+  const { school } = authService.GetUser();
 
   // Get List of schools
   const { data, loading, fetchMore } = useQuery(GET_SCHOOL_LIST, {
@@ -49,6 +53,17 @@ const SchoolList: FC<IProps> = ({ history }) => {
       }
     });
   }, [page, limit]);
+
+  // Change logged in user's primary school
+  const [ChangePriSchool, { loading: pLoading }] = useMutation(MAKE_PRIMARY, {
+    onCompleted: data => {
+      if (data) {
+        const { doc, token } = data.MakePrimarySchool;
+        authService.Login(doc, token);
+        document.location.reload(true);
+      }
+    }
+  });
 
   return (
     <>
@@ -127,7 +142,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
                                 <td>
                                   <div
                                     onClick={() => {
-                                      SetActive({
+                                      SetActiveImg({
                                         image: rec.logo,
                                         name: rec.alias
                                       });
@@ -139,10 +154,36 @@ const SchoolList: FC<IProps> = ({ history }) => {
                                     <img src={rec.logo} alt="Logo" />
                                   </div>
                                 </td>
-                                <td>{rec.name}</td>
+                                <td>
+                                  {rec.name}
+                                  {rec.id === school.id && (
+                                    <label className="badge badge-success-inverted ml-2">
+                                      Primary
+                                    </label>
+                                  )}
+                                  {activeSchId === rec.id && (
+                                    <LoadingState loading={pLoading} />
+                                  )}
+                                </td>
                                 <td>{rec.alias}</td>
                                 <td>{rec.created_at}</td>
                                 <td className="row-actions text-center">
+                                  {rec.id !== school.id && (
+                                    <a
+                                      href="#"
+                                      title="Make primary School"
+                                      onClick={() => {
+                                        SetActiveSchId(rec.id);
+                                        ChangePriSchool({
+                                          variables: {
+                                            school: rec.id
+                                          }
+                                        });
+                                      }}
+                                    >
+                                      <i className="os-icon os-icon-check-square"></i>
+                                    </a>
+                                  )}
                                   <a href="#" title="Edit">
                                     <i className="os-icon os-icon-edit"></i>
                                   </a>
@@ -186,7 +227,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
       </div>
 
       {/* Modal for Schoo Logo */}
-      <ImageModal image={active?.image} name={active?.name} />
+      <ImageModal image={activeImg?.image} name={activeImg?.name} />
     </>
   );
 };

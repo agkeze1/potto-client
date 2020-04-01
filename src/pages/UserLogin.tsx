@@ -25,16 +25,22 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
   }
 
   // Check if any school exists
-  const { data } = useQuery(HAS_SCHOOL);
-  if (data && !data.HasSchool) {
-    history.push("/default_school");
-  }
+  const { data } = useQuery(HAS_SCHOOL, {
+    onCompleted: () => {
+      if (data && !data.HasSchool) {
+        history.push("/default_school");
+      }
+    }
+  });
 
   // Checks if first User already exists
-  const { data: uData } = useQuery(FIRST_USER);
-  if (uData && uData.FirstSetup) {
-    history.push("/signup");
-  }
+  const { data: uData } = useQuery(FIRST_USER, {
+    onCompleted: () => {
+      if (uData && uData.FirstSetup) {
+        history.push("/signup");
+      }
+    }
+  });
 
   const [Login, { loading }] = useMutation(USER_LOGIN, {
     onError: err =>

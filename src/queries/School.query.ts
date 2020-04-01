@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { USER_PROPS } from "./User.query";
 
 export const SCHOOL_PROPS = gql`
   fragment SCHOOL_PROPS on School {
@@ -21,7 +22,6 @@ export const HAS_SCHOOL = gql`
   }
 `;
 
-// Get list of schools
 export const GET_SCHOOL_LIST = gql`
   query GET_SCHOOL_LIST($page: Int, $limit: Int) {
     GetSchools(page: $page, limit: $limit) {
@@ -50,4 +50,17 @@ export const NEW_SCHOOL = gql`
     }
   }
   ${SCHOOL_PROPS}
+`;
+
+export const MAKE_PRIMARY = gql`
+  mutation MAKE_PRIMARY($school: ID!) {
+    MakePrimarySchool(school: $school) {
+      message
+      token
+      doc {
+        ...USER_PROPS
+      }
+    }
+  }
+  ${USER_PROPS}
 `;

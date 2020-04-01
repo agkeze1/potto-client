@@ -34,7 +34,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
         });
 
         // Redirect to login
-        history.push("/school-list");
+        history.push("/in/school-list");
       }
     }
   });

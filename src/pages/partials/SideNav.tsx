@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { NavLink, Redirect } from "react-router-dom";
 import { GetAppName } from "../../context/App";
+import { authService } from "../../services/Auth.Service";
 // import { authService } from "../../../../services/Auth.Service";
 
 interface SideProps {
@@ -393,7 +394,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="menu-link">
             <a
               onClick={() => {
-                // authService.Logout();
+                authService.Logout();
                 document.location.reload();
               }}
               href="#"

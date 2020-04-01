@@ -21,7 +21,7 @@ const UserSignup: React.FC<IProps> = ({ location, history }) => {
   // Checks if first User already exists
   const { data: uData } = useQuery(FIRST_USER, {
     onCompleted: () => {
-      if (uData && uData.FirstSetup) history.push("/login");
+      if (uData && !uData.FirstSetup) history.push("/login");
     }
   });
 

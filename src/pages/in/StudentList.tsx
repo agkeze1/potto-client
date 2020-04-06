@@ -30,8 +30,7 @@ const StudentList: FC<IProps> = ({ history }) => {
     name: "Undefined"
   });
 
-  const [students, SetStudents] = useState<any>();
-  const [singleStudent, SetSingleStudent] = useState<any>();
+  const [students, SetStudents] = useState<any>([]);
   const [showFilter, SetShowFilter] = useState<boolean>(true);
   const [showProfile, SetShowProfile] = useState<boolean>(false);
   const [showNewGuardian, SetNewGuardian] = useState<boolean>(false);
@@ -51,6 +50,15 @@ const StudentList: FC<IProps> = ({ history }) => {
   const [searchMsg, SetSearchMsg] = useState<IMessage>();
 
   // Pagination
+  const [pageResult, SetPageResult] = useState<any>({
+    docs: [],
+    totalDocs: 0,
+    totalPages: 0,
+    limit: 25,
+    page: 1,
+    nextPage: null,
+    prevPage: null
+  });
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(25);
 
@@ -63,10 +71,8 @@ const StudentList: FC<IProps> = ({ history }) => {
   const { school } = authService.GetUser();
 
   // Get Levels for level input
-  const { loading: lLoading } = useQuery(GET_LEVELS, {
-    variables: {
-      school: school.id
-    },
+  const { loading: lLoading, data: lData } = useQuery(GET_LEVELS, {
+    variables: { school: school.id },
     onError: err => {
       SetLMessage({
         message: err.message,
@@ -74,10 +80,10 @@ const StudentList: FC<IProps> = ({ history }) => {
       });
       SetShowLevelsRefresh(true);
     },
-    onCompleted: data => {
-      if (data && data.GetLevels) {
+    onCompleted: () => {
+      if (lData && lData.GetLevels) {
         SetLevel(
-          data.GetLevels.docs.map((level: any) => ({
+          lData.GetLevels.docs.map((level: any) => ({
             label: level.name,
             value: level.id
           }))
@@ -89,9 +95,6 @@ const StudentList: FC<IProps> = ({ history }) => {
 
   // Get Levels on Reload level button click
   const [GetLevels, { loading: llLoading }] = useLazyQuery(GET_LEVELS, {
-    variables: {
-      school: school.id
-    },
     onError: err => {
       SetLMessage({
         message: err.message,
@@ -133,59 +136,79 @@ const StudentList: FC<IProps> = ({ history }) => {
     }
   });
 
+  // Get a single Students By Reg. number
+  const [GetStuByRegNo, { loading: regNoLoading }] = useLazyQuery(
+    GET_STUDENT_BY_REG_NO,
+    {
+      onError: err =>
+        SetMessage({
+          message: err.message,
+          failed: true
+        }),
+      onCompleted: (regNoData: any) => {
+        if (regNoData.GetStudentByRegNo) {
+          console.log("Student record before setting: ", students);
+          console.log(
+            "Student record from RegNO: ",
+            regNoData.GetStudentByRegNo.doc
+          );
+
+          let docs = [];
+          docs.push(regNoData.GetStudentByRegNo.doc);
+          let newStu = {
+            ...pageResult,
+            docs,
+            page: 1,
+            limit,
+            nextPage: null,
+            prevPage: null,
+            totalPages: 1,
+            totalDocs: 1
+          };
+          SetPageResult(newStu);
+          console.log("Student record After setting: ", students);
+        }
+      }
+    }
+  );
+
   // Get List of Students By Level
   const [
     GetStuByLevel,
-    { data: levelData, loading: levelLoading, fetchMore: levelFetchMore }
+    { loading: levelLoading, fetchMore: levelFetchMore }
   ] = useLazyQuery(GET_STUDENTS_BY_LEVEL, {
-    variables: { level: searchByLevel?.id, page, limit },
     onError: err =>
       SetMessage({
         message: err.message,
         failed: true
       }),
-    onCompleted: () => {
-      if (levelData) {
-        SetStudents(levelData.GetStudentsOfSameLevel.docs);
+    onCompleted: levelData => {
+      if (levelData.GetStudentsOfSameLevel) {
+        SetPageResult({
+          ...levelData.GetStudentsOfSameLevel
+        });
       }
     }
   });
 
   // Get List of Students By Class
-  const [
-    GetStuByClass,
-    { data: classData, loading: classLoading }
-  ] = useLazyQuery(GET_STUDENTS_BY_CLASS, {
-    variables: { classId: searchByClass?.id, page, limit },
-    onError: err =>
-      SetMessage({
-        message: err.message,
-        failed: true
-      }),
-    onCompleted: () => {
-      if (classData) {
-        SetStudents(classData.GetStudentOfSameClass.docs);
+  const [GetStuByClass, { loading: classLoading }] = useLazyQuery(
+    GET_STUDENTS_BY_CLASS,
+    {
+      onError: err =>
+        SetMessage({
+          message: err.message,
+          failed: true
+        }),
+      onCompleted: classData => {
+        if (classData.GetStudentOfSameClass) {
+          SetPageResult({
+            ...classData.GetStudentOfSameClass
+          });
+        }
       }
     }
-  });
-
-  // Get a single Students By Reg. number
-  const [
-    GetStuByRegNo,
-    { data: regNoData, loading: regNoLoading }
-  ] = useLazyQuery(GET_STUDENT_BY_REG_NO, {
-    variables: { id: searchByRegNo },
-    onError: err =>
-      SetMessage({
-        message: err.message,
-        failed: true
-      }),
-    onCompleted: () => {
-      if (regNoData) {
-        SetSingleStudent(regNoData.GetStudentByRegNo.doc);
-      }
-    }
-  });
+  );
 
   // Fetch More students of same Level on Page change
   useEffect(() => {
@@ -209,6 +232,24 @@ const StudentList: FC<IProps> = ({ history }) => {
     }
   }, [searchByLevel]);
 
+  // Makes API call for records
+  const SerchRecord = () => {
+    SetMessage(undefined);
+    SetSearchMsg(undefined);
+    if (searchByRegNo) {
+      GetStuByRegNo({ variables: { id: searchByRegNo } });
+    } else if (searchByClass) {
+      GetStuByClass({ variables: { classId: searchByClass?.id, page, limit } });
+    } else if (searchByLevel) {
+      GetStuByLevel({ variables: { level: searchByLevel?.id, page, limit } });
+      SetShowPagination(true);
+    } else {
+      SetSearchMsg({
+        message: "No Search field selected!",
+        failed: true
+      });
+    }
+  };
   return (
     <>
       <Helmet>
@@ -261,9 +302,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                       required={true}
                       type="text"
                       onChange={(reg_no: string) => {
-                        SetShowPagination(false);
-                        SetSingleStudent(undefined);
-                        SetMessage(undefined);
                         SetSearchByRegNo(reg_no);
                       }}
                     />
@@ -273,7 +311,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                     <Dropdown
                       items={levels}
                       onSelect={(item: any) => {
-                        SetStudents(undefined);
                         SetCMessage(undefined);
                         SetSearchByLevel({ name: item.label, id: item.value });
                       }}
@@ -285,7 +322,11 @@ const StudentList: FC<IProps> = ({ history }) => {
                         onClick={() => {
                           SetShowLevelsRefresh(false);
                           SetLMessage(undefined);
-                          GetLevels();
+                          GetLevels({
+                            variables: {
+                              school: school.id
+                            }
+                          });
                         }}
                         className="btn btn-primary btn-sm px-1 mb-2"
                         type="submit"
@@ -304,8 +345,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                     <Dropdown
                       items={classes}
                       onSelect={(item: any) => {
-                        SetStudents(undefined);
-                        SetShowPagination(false);
                         SetSearchByClass({ name: item.label, id: item.value });
                       }}
                       disabled={searchByRegNo ? true : false}
@@ -317,7 +356,9 @@ const StudentList: FC<IProps> = ({ history }) => {
                           SetShowClassesRefresh(false);
                           SetCMessage(undefined);
                           SetMessage(undefined);
-                          GetClasses();
+                          GetClasses({
+                            variables: { level: searchByLevel.id }
+                          });
                         }}
                         className="btn btn-primary btn-sm px-1 mb-2"
                         type="submit"
@@ -335,20 +376,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                     <button
                       className="btn btn-primary"
                       onClick={() => {
-                        SetSearchMsg(undefined);
-                        if (searchByRegNo) {
-                          GetStuByRegNo();
-                        } else if (searchByClass) {
-                          GetStuByClass();
-                        } else if (searchByLevel) {
-                          GetStuByLevel();
-                          SetShowPagination(true);
-                        } else {
-                          SetSearchMsg({
-                            message: "No Search field selected!",
-                            failed: true
-                          });
-                        }
+                        SerchRecord();
                       }}
                     >
                       Search record
@@ -381,49 +409,50 @@ const StudentList: FC<IProps> = ({ history }) => {
                     />
                   </span>
                 )}
-                {students && (
+                {pageResult.docs.length > 0 && (
                   <div className="element-box-tp">
                     <div className="table-responsive">
-                      {!singleStudent && (
-                        <h6 className="element-header">
-                          List of Students of -{" "}
-                          <b className="text-primary">
-                            {searchByLevel?.name} - {searchByClass?.name}
-                          </b>
-                        </h6>
-                      )}
-
-                      {singleStudent && (
-                        <table className="table table-padded">
-                          <thead>
-                            <tr>
-                              <th>Image</th>
-                              <th>Fullname</th>
-                              <th>Gender</th>
-                              <th>dob</th>
-                              <th className="text-center">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
+                      <h6 className="element-header">
+                        List of Students of -{" "}
+                        <b className="text-primary">
+                          {searchByLevel?.name} - {searchByClass?.name}
+                        </b>
+                      </h6>
+                      <table className="table table-padded">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Image</th>
+                            <th>Fullname</th>
+                            <th>Reg. No</th>
+                            <th>Class</th>
+                            <th>Gender</th>
+                            <th className="text-center">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {pageResult.docs.map((stu: any, index: number) => (
+                            <tr key={index}>
+                              <td>{index + 1}</td>
                               <td>
                                 <div
                                   className="user-with-avatar clickable"
                                   data-target="#imageModal"
                                   data-toggle="modal"
                                 >
-                                  <img src={singleStudent.passport} alt="" />
+                                  <img src={stu.passport} alt="" />
                                 </div>
                               </td>
                               <td>
-                                {singleStudent.first_name +
+                                {stu.first_name +
                                   " " +
-                                  singleStudent.middle_name +
+                                  stu.middle_name +
                                   " " +
-                                  singleStudent.surname}
+                                  stu.surname}
                               </td>
-                              <td>{singleStudent.gender}</td>
-                              <td>{singleStudent.dob}</td>
+                              <td>{stu.reg_no}</td>
+                              <td>{stu.current_class?.name}</td>
+                              <td>{stu.gender}</td>
                               <td className="row-actions text-center">
                                 <a
                                   href="#"
@@ -442,72 +471,9 @@ const StudentList: FC<IProps> = ({ history }) => {
                                 </a>
                               </td>
                             </tr>
-                          </tbody>
-                        </table>
-                      )}
-                      {!singleStudent && (
-                        <>
-                          <table className="table table-padded">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-                                <th>Image</th>
-                                <th>Fullname</th>
-                                <th>Gender</th>
-                                <th>dob</th>
-                                <th className="text-center">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {students &&
-                                students.map((stu: any, index: number) => (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td>
-                                      <div
-                                        className="user-with-avatar clickable"
-                                        data-target="#imageModal"
-                                        data-toggle="modal"
-                                      >
-                                        <img src={stu.passport} alt="" />
-                                      </div>
-                                    </td>
-                                    <td>
-                                      {stu.first_name +
-                                        " " +
-                                        stu.middle_name +
-                                        " " +
-                                        stu.surname}
-                                    </td>
-                                    <td>{stu.gender}</td>
-                                    <td>{stu.dob}</td>
-                                    <td className="row-actions text-center">
-                                      <a
-                                        href="#"
-                                        title="View more"
-                                        onClick={() => {
-                                          SetShowProfile(true);
-                                        }}
-                                      >
-                                        <i className="os-icon os-icon-eye"></i>
-                                      </a>
-                                      <a href="#" title="Edit">
-                                        <i className="os-icon os-icon-edit"></i>
-                                      </a>
-                                      <a
-                                        className="danger"
-                                        href="#"
-                                        title="Delete"
-                                      >
-                                        <i className="os-icon os-icon-ui-15"></i>
-                                      </a>
-                                    </td>
-                                  </tr>
-                                ))}
-                            </tbody>
-                          </table>
-                        </>
-                      )}
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
 
                     {/* <div className="text-center pt-5 fade-in">
@@ -518,19 +484,17 @@ const StudentList: FC<IProps> = ({ history }) => {
               </div>
 
               {/* Pagination */}
-              {levelData && showPagination && (
-                <div className="col-lg fade-in">
-                  <div className="element-box">
-                    <Pagination
-                      length={levelData.GetStudentsOfSameLevel.totalDocs}
-                      {...levelData.GetStudentsOfSameLevel}
-                      onPageClicked={(page: number) => {
-                        setPage(page);
-                      }}
-                    />
-                  </div>
+              <div className="col-lg fade-in">
+                <div className="element-box">
+                  <Pagination
+                    length={pageResult.totalDocs}
+                    {...pageResult}
+                    onPageClicked={(page: number) => {
+                      setPage(page);
+                    }}
+                  />
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>

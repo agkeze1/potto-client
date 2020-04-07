@@ -29,6 +29,7 @@ const NewUser: FC<IProps> = ({ history }) => {
     history.push("/login");
   }
 
+  // New User Mutation
   const [NewUser, { loading }] = useMutation(NEW_USER, {
     onError: err =>
       SetMessage({

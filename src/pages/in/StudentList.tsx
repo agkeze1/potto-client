@@ -41,7 +41,6 @@ const StudentList: FC<IProps> = ({ history }) => {
   const [showClassesRefresh, SetShowClassesRefresh] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
   const [classes, SetClasses] = useState<any>([]);
-  const [showPagination, SetShowPagination] = useState<boolean>(false);
 
   //Fileters
   const [searchByRegNo, SetSearchByRegNo] = useState<string>();
@@ -147,12 +146,6 @@ const StudentList: FC<IProps> = ({ history }) => {
         }),
       onCompleted: (regNoData: any) => {
         if (regNoData.GetStudentByRegNo) {
-          console.log("Student record before setting: ", students);
-          console.log(
-            "Student record from RegNO: ",
-            regNoData.GetStudentByRegNo.doc
-          );
-
           let docs = [];
           docs.push(regNoData.GetStudentByRegNo.doc);
           let newStu = {
@@ -166,7 +159,6 @@ const StudentList: FC<IProps> = ({ history }) => {
             totalDocs: 1
           };
           SetPageResult(newStu);
-          console.log("Student record After setting: ", students);
         }
       }
     }
@@ -242,7 +234,6 @@ const StudentList: FC<IProps> = ({ history }) => {
       GetStuByClass({ variables: { classId: searchByClass?.id, page, limit } });
     } else if (searchByLevel) {
       GetStuByLevel({ variables: { level: searchByLevel?.id, page, limit } });
-      SetShowPagination(true);
     } else {
       SetSearchMsg({
         message: "No Search field selected!",
@@ -477,7 +468,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                     </div>
 
                     {/* <div className="text-center pt-5 fade-in">
-                    <h2 className="text-danger">No User found!</h2>
+                    <h2 className="text-danger">No Student found!</h2>
                   </div> */}
                   </div>
                 )}

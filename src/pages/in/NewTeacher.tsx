@@ -5,11 +5,39 @@ import { GetAppName } from "../../context/App";
 import IconInput from "../partials/IconInput";
 import ImageUpload from "../partials/ImageUpload";
 import Dropdown from "../partials/Dropdown";
-import SwitchInput from "../partials/SwitchInput";
+import { IMessage } from "../../models/IMessage";
+import { authService } from "../../services/Auth.Service";
+import { useMutation } from "@apollo/react-hooks";
+import { NEW_TEACHER } from "../../queries/Teacher.query";
+import gender from "../../data/gender.json";
+import AlertMessage from "../partials/AlertMessage";
+import LoadingState from "../partials/loading";
 
 const NewTeacher: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
-  const [isAdmin, SetIsAdmin] = useState(true);
+  const [message, SetMessage] = useState<IMessage>();
+
+  // Check if user is authenticated
+  if (!authService.IsAuthenticated()) {
+    history.push("/login");
+  }
+
+  const scrollTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+
+  // New Teacher Mutation
+  const [NewTeacher, { loading }] = useMutation(NEW_TEACHER, {
+    onError: err =>
+      SetMessage({
+        message: err.message,
+        failed: true
+      }),
+    onCompleted: () => {
+      history.push("/in/teacher-list");
+    }
+  });
 
   return (
     <>
@@ -24,7 +52,23 @@ const NewTeacher: FC<IProps> = ({ history }) => {
             <div className="row justify-content-center element-box">
               <div className="col-lg-10 pt-5">
                 <h5 className="element-header">Basic Information</h5>
-                <form>
+                <AlertMessage
+                  message={message?.message}
+                  failed={message?.failed}
+                />
+                <LoadingState loading={loading} />
+                <form
+                  onSubmit={async e => {
+                    e.preventDefault();
+                    // Scroll to top of page
+                    scrollTop();
+                    NewTeacher({
+                      variables: {
+                        model: record
+                      }
+                    });
+                  }}
+                >
                   <div className="row">
                     {/* First Name input */}
                     <div className="col-sm-6">
@@ -33,8 +77,13 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         label="First Name"
                         icon="os-icon-email-2-at2"
                         required={true}
-                        type="email"
-                        onChange={(firstName: string) => {}}
+                        type="text"
+                        onChange={(firstname: string) => {
+                          SetRecord({
+                            ...record,
+                            firstname
+                          });
+                        }}
                       />
                     </div>
                     {/* Middle Name input */}
@@ -45,7 +94,12 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         icon="os-icon-phone"
                         required={true}
                         type="text"
-                        onChange={(middleName: string) => {}}
+                        onChange={(middlename: string) => {
+                          SetRecord({
+                            ...record,
+                            middlename
+                          });
+                        }}
                       />
                     </div>
                   </div>
@@ -58,7 +112,12 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         icon="os-icon-phone"
                         required={true}
                         type="text"
-                        onChange={(lastName: string) => {}}
+                        onChange={(lastname: string) => {
+                          SetRecord({
+                            ...record,
+                            lastname
+                          });
+                        }}
                       />
                     </div>
                     {/* Email input */}
@@ -69,7 +128,12 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         icon="os-icon-email-2-at2"
                         required={true}
                         type="email"
-                        onChange={(email: string) => {}}
+                        onChange={(email: string) => {
+                          SetRecord({
+                            ...record,
+                            email
+                          });
+                        }}
                       />
                     </div>
                   </div>
@@ -82,7 +146,12 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         icon="os-icon-phone"
                         required={true}
                         type="text"
-                        onChange={(phone: string) => {}}
+                        onChange={(phone: string) => {
+                          SetRecord({
+                            ...record,
+                            phone
+                          });
+                        }}
                       />
                     </div>
                     <div className="col-sm-6">
@@ -98,7 +167,13 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                           type="date"
                           className="form-control"
                           required
-                          onChange={() => {}}
+                          onChange={({ currentTarget }) => {
+                            SetRecord({
+                              ...record,
+                              employmentDate:
+                                currentTarget.value || "Not supplied"
+                            });
+                          }}
                         />
                       </div>
                     </div>
@@ -107,13 +182,14 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                     {/* Gender input */}
                     <div className="col-sm-6">
                       <Dropdown
-                        items={[
-                          { label: "Male", value: "1" },
-                          { label: "Female", value: "2" }
-                        ]}
-                        onSelect={() => {}}
+                        items={gender.gender}
+                        onSelect={(item: any) => {
+                          SetRecord({
+                            ...record,
+                            gender: item.label
+                          });
+                        }}
                         label="Gender"
-                        icon="phone"
                       />
                     </div>
                     <div className="col-sm-6">
@@ -129,18 +205,29 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                           type="date"
                           className="form-control"
                           required
-                          onChange={() => {}}
+                          onChange={({ currentTarget }) => {
+                            SetRecord({
+                              ...record,
+                              dob: currentTarget.value
+                            });
+                          }}
                         />
                       </div>
                     </div>
                   </div>
+                  {/* Address Input */}
                   <IconInput
                     placeholder="Enter address"
                     label="Address"
                     icon="os-icon-ui-09"
                     required={true}
                     type="text"
-                    onChange={(address: string) => {}}
+                    onChange={(address: string) => {
+                      SetRecord({
+                        ...record,
+                        address
+                      });
+                    }}
                   />
                   <div className="row">
                     <div className="col-sm-6">
@@ -151,7 +238,12 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         icon="os-icon-ui-09"
                         required={true}
                         type="password"
-                        onChange={(password: string) => {}}
+                        onChange={(password: string) => {
+                          SetRecord({
+                            ...record,
+                            password
+                          });
+                        }}
                       />
                     </div>
                     <div className="col-sm-6">

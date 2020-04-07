@@ -20,15 +20,16 @@ export const USER_PROPS = gql`
 export const USER_LIST = gql`
   query GET_USER_LIST($page: Int, $limit: Int) {
     GetUsers(page: $page, limit: $limit) {
-      docs {
-        ...USER_PROPS
-      }
+      message
       totalDocs
       totalPages
       page
       limit
       nextPage
       prevPage
+      docs {
+        ...USER_PROPS
+      }
     }
   }
   ${USER_PROPS}

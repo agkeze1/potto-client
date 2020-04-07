@@ -16,7 +16,7 @@ import { IImageProp } from "../../models/IImageProp";
 
 const SchoolList: FC<IProps> = ({ history }) => {
   const [message, SetMessage] = useState<IMessage>();
-  const [page, setPage] = useState<number>(1);
+  const [page, SetPage] = useState<number>(1);
   const [limit] = useState<number>(25);
   const [activeSchId, SetActiveSchId] = useState<string>();
   const [activeImg, SetActiveImg] = useState<IImageProp>({
@@ -42,6 +42,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
       });
     }
   });
+
   useEffect(() => {
     fetchMore({
       variables: { page, limit },
@@ -214,7 +215,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
                         length={data.GetSchools.docs.length}
                         {...data.GetSchools}
                         onPageClicked={(page: number) => {
-                          setPage(page);
+                          SetPage(page);
                         }}
                       />
                     </div>

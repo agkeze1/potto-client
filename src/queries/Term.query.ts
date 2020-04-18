@@ -33,3 +33,26 @@ export const NEW_TERM = gql`
   }
   ${TERM_PROPS}
 `;
+
+export const REMOVE_TERM = gql`
+  mutation REMOVE_TERM($id: ID!) {
+    RemoveTerm(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_TERM = gql`
+  mutation UPDATE_TERM($id: ID!, $name: String!) {
+    UpdateTerm(id: $id, name: $name) {
+      message
+      doc {
+        ...TERM_PROPS
+      }
+    }
+  }
+  ${TERM_PROPS}
+`;

@@ -33,3 +33,26 @@ export const NEW_LEVEL = gql`
   }
   ${LEVEL_PROPS}
 `;
+
+export const REMOVE_LEVEL = gql`
+  mutation REMOVE_LEVEL($id: ID!) {
+    RemoveLevel(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_LEVEL = gql`
+  mutation UPDATE_LEVEL($id: ID!, $name: String!) {
+    UpdateLevel(id: $id, name: $name) {
+      message
+      doc {
+        ...LEVEL_PROPS
+      }
+    }
+  }
+  ${LEVEL_PROPS}
+`;

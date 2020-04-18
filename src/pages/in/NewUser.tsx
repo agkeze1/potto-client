@@ -7,8 +7,9 @@ import ImageUpload from "../partials/ImageUpload";
 import Dropdown from "../partials/Dropdown";
 import SwitchInput from "../partials/SwitchInput";
 import { NEW_USER } from "../../queries/User.query";
+import { GET_ROLES } from "../../queries/Role.query";
 import { authService } from "../../services/Auth.Service";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import { IMessage } from "../../models/IMessage";
 import gender from "../../data/gender.json";
 import AlertMessage from "../partials/AlertMessage";
@@ -17,7 +18,13 @@ import LoadingState from "../partials/loading";
 const NewUser: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
   const [message, SetMessage] = useState<IMessage>();
+  const [roleMsg, SetRoleMsg] = useState<IMessage>();
+  const [roles, SetRoles] = useState<any>([]);
   const [isAdmin, SetIsAdmin] = useState<boolean>(true);
+
+  // for confirm password
+  const [bdrClass, SetBdrClass] = useState<string>();
+  const [cPassword, SetCPassword] = useState<string>();
 
   const scrollTop = () => {
     document.body.scrollTop = 0;
@@ -29,16 +36,36 @@ const NewUser: FC<IProps> = ({ history }) => {
     history.push("/login");
   }
 
+  // Get Roles for Role input
+  const { loading: rLoading, data: rData } = useQuery(GET_ROLES, {
+    onError: (err) =>
+      SetRoleMsg({
+        message: err.message,
+        failed: true,
+      }),
+    onCompleted: () => {
+      if (rData && rData.GetRoles) {
+        SetRoles(
+          rData.GetRoles.docs.map((role: any) => ({
+            label: role.name,
+            value: role.id,
+          }))
+        );
+      }
+      console.log("Roles: ", roles);
+    },
+  });
+
   // New User Mutation
   const [NewUser, { loading }] = useMutation(NEW_USER, {
-    onError: err =>
+    onError: (err) =>
       SetMessage({
         message: err.message,
-        failed: true
+        failed: true,
       }),
     onCompleted: () => {
       history.push("/in/user-list");
-    }
+    },
   });
 
   return (
@@ -69,17 +96,24 @@ const NewUser: FC<IProps> = ({ history }) => {
                 />
                 <LoadingState loading={loading} />
                 <form
-                  onSubmit={async e => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
-                    scrollTop();
-                    await NewUser({
-                      variables: {
-                        model: {
-                          ...record,
-                          admin: isAdmin
-                        }
-                      }
-                    });
+                    //Check password match before submitting form
+                    if (cPassword && cPassword !== record?.password) {
+                      SetBdrClass("bdr-danger");
+                    } else {
+                      // Scroll to top of page
+                      scrollTop();
+                      // Save New User
+                      await NewUser({
+                        variables: {
+                          model: {
+                            ...record,
+                            admin: isAdmin,
+                          },
+                        },
+                      });
+                    }
                   }}
                 >
                   {/* Fullname input */}
@@ -92,7 +126,7 @@ const NewUser: FC<IProps> = ({ history }) => {
                     onChange={(name: string) => {
                       SetRecord({
                         ...record,
-                        name
+                        name,
                       });
                     }}
                   />
@@ -109,7 +143,7 @@ const NewUser: FC<IProps> = ({ history }) => {
                         onChange={(email: string) => {
                           SetRecord({
                             ...record,
-                            email
+                            email,
                           });
                         }}
                       />
@@ -125,36 +159,36 @@ const NewUser: FC<IProps> = ({ history }) => {
                         onChange={(phone: string) => {
                           SetRecord({
                             ...record,
-                            phone
+                            phone,
                           });
                         }}
                       />
                     </div>
                   </div>
                   <div className="row">
+                    {/* Gender input */}
                     <div className={isAdmin ? "col-sm-12" : "col-sm-6"}>
                       <Dropdown
                         items={gender.gender}
                         onSelect={(item: any) => {
                           SetRecord({
                             ...record,
-                            gender: item.label
+                            gender: item.label,
                           });
                         }}
                         label="Gender"
                       />
                     </div>
                     {!isAdmin && (
+                      // Role input
                       <div className="col-sm-6">
                         <Dropdown
-                          items={[
-                            { label: "Front Desker", value: "1" },
-                            { label: "Oga", value: "2" }
-                          ]}
+                          items={roles}
                           onSelect={() => {}}
                           label="Role"
                           icon="phone"
                         />
+                        <LoadingState loading={rLoading} />
                       </div>
                     )}
                   </div>
@@ -170,7 +204,7 @@ const NewUser: FC<IProps> = ({ history }) => {
                         onChange={(password: string) => {
                           SetRecord({
                             ...record,
-                            password
+                            password,
                           });
                         }}
                       />
@@ -183,7 +217,15 @@ const NewUser: FC<IProps> = ({ history }) => {
                         icon="os-icon-ui-09"
                         required={true}
                         type="password"
-                        onChange={(password: string) => {}}
+                        classStyle={bdrClass}
+                        onChange={(cPass: string) => {
+                          SetCPassword(cPass);
+                          if (cPass !== record?.password) {
+                            SetBdrClass("bdr-danger");
+                          } else {
+                            SetBdrClass("");
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -193,7 +235,7 @@ const NewUser: FC<IProps> = ({ history }) => {
                     onData={(path: string) =>
                       SetRecord({
                         ...record,
-                        image: path
+                        image: path,
                       })
                     }
                   />

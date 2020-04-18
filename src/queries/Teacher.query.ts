@@ -58,3 +58,26 @@ export const NEW_TEACHER = gql`
   }
   ${TEACHER_PROPS}
 `;
+
+export const REMOVE_TEACHER = gql`
+  mutation REMOVE_TEACHER($id: ID!) {
+    RemoveTeacher(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_TEACHER = gql`
+  mutation UPDATE_TEACHER($id: ID!, $model: TeacherUpdateInput!) {
+    UpdateTeacher(id: $id, model: $model) {
+      message
+      doc {
+        ...TEACHER_PROPS
+      }
+    }
+  }
+  ${TEACHER_PROPS}
+`;

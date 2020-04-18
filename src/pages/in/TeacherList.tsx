@@ -4,8 +4,12 @@ import { GetAppName } from "../../context/App";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 import TeacherTTAccordion from "../partials/TeacherTTAccordion";
-import { useQuery } from "@apollo/react-hooks";
-import { TEACHER_LIST } from "../../queries/Teacher.query";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import {
+  TEACHER_LIST,
+  REMOVE_TEACHER,
+  UPDATE_TEACHER,
+} from "../../queries/Teacher.query";
 import { authService } from "../../services/Auth.Service";
 import { IProps } from "../../models/IProps";
 import { IMessage } from "../../models/IMessage";
@@ -13,34 +17,46 @@ import LoadingState from "../partials/loading";
 import AlertMessage from "../partials/AlertMessage";
 import { IImageProp } from "../../models/IImageProp";
 import Pagination from "../partials/Pagination";
+import IconInput from "../partials/IconInput";
+import ImageUpload from "../partials/ImageUpload";
+import Dropdown from "../partials/Dropdown";
+import gender from "../../data/gender.json";
+import DatePicker from "react-datepicker";
+import Select from "react-select";
 
 const TeacherList: FC<IProps> = ({ history }) => {
   const [message, SetMessage] = useState<IMessage>();
+  const [rMessage, SetRMessage] = useState<IMessage>();
+  const [uMessage, SetUMessage] = useState<IMessage>();
+
+  const [activeTeacherId, SetActiveTeacherId] = useState<string>();
+  const [editTeacher, SetEditTeacher] = useState<any>({});
   const [showProfile, SetShowProfile] = useState<boolean>(false);
   const [page, SetPage] = useState<number>(1);
   const [limit] = useState<number>(25);
   const [activeImg, SetActiveImg] = useState<IImageProp>({
     image: "/avatar.png",
-    name: "Undefined"
+    name: "Undefined",
   });
-
-  const subjects = [
-    { label: "English language JSS1", value: 1 },
-    { label: "Mathematics JSS2", value: 2 },
-    { label: "Inter Science SS1", value: 3 }
-  ];
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
     history.push("/login");
   }
+
+  const scrollTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+
+  // Fetch List of Teachers
   const { loading, data, fetchMore } = useQuery(TEACHER_LIST, {
     variables: { page, limit },
-    onError: err =>
+    onError: (err) =>
       SetMessage({
         message: err.message,
-        failed: true
-      })
+        failed: true,
+      }),
   });
 
   useEffect(() => {
@@ -49,11 +65,74 @@ const TeacherList: FC<IProps> = ({ history }) => {
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev;
         return {
-          GetTeachers: fetchMoreResult.GetTeachers
+          GetTeachers: fetchMoreResult.GetTeachers,
         };
-      }
+      },
     });
   }, [page, limit]);
+
+  // Remove Teacher
+  const [RemoveTeacher, { loading: rLoading }] = useMutation(REMOVE_TEACHER, {
+    onError: (err) =>
+      SetRMessage({
+        message: err.message,
+        failed: true,
+      }),
+    update: (cache, { data }) => {
+      const q: any = cache.readQuery({
+        query: TEACHER_LIST,
+        variables: { page, limit },
+      });
+
+      const index = q.GetTeachers.docs.findIndex(
+        (i: any) => i.id === data.RemoveTeacher.doc.id
+      );
+
+      q.GetTeachers.docs.splice(index, 1);
+
+      //update
+      cache.writeQuery({
+        query: TEACHER_LIST,
+        variables: { page, limit },
+        data: { GetTeachers: q.GetTeachers },
+      });
+    },
+  });
+
+  // Update Teacher
+  const [UpdateTeacher, { loading: uLoading }] = useMutation(UPDATE_TEACHER, {
+    onError: (err) =>
+      SetUMessage({
+        message: err.message,
+        failed: true,
+      }),
+    onCompleted: (data) => {
+      SetUMessage({
+        message: data.UpdateTeacher.message,
+        failed: false,
+      });
+    },
+    update: (cache, { data }) => {
+      const q: any = cache.readQuery({
+        query: TEACHER_LIST,
+        variables: { page, limit },
+      });
+
+      const index = q.GetTeachers.docs.findIndex(
+        (i: any) => i.id === data.UpdateTeacher.doc.id
+      );
+
+      q.GetTeachers.docs.splice(index, 1);
+      q.GetTeachers.docs.unshift(data.UpdateTeacher.doc);
+
+      //update
+      cache.writeQuery({
+        query: TEACHER_LIST,
+        variables: { page, limit },
+        data: { GetTeachers: q.GetTeachers },
+      });
+    },
+  });
 
   return (
     <>
@@ -66,13 +145,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
             {!showProfile && (
               <>
                 <span className="element-actions mt-n2">
-                  <button
-                    className="btn btn-primary "
-                    data-target="#exampleModal1"
-                    id="#newMax"
-                    data-toggle="modal"
-                    type="button"
-                  >
+                  <button className="btn btn-primary" type="button">
                     Create New
                   </button>
                 </span>
@@ -108,10 +181,14 @@ const TeacherList: FC<IProps> = ({ history }) => {
                     </div>
                   </div>
                 </div>
-                <LoadingState loading={loading} />
+                <LoadingState loading={loading || rLoading} />
                 <AlertMessage
                   failed={message?.failed}
                   message={message?.message}
+                />
+                <AlertMessage
+                  failed={rMessage?.failed}
+                  message={rMessage?.message}
                 />
                 {data && data.GetTeachers && (
                   <div className="row justify-content-center ">
@@ -133,7 +210,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                             <tbody>
                               {data.GetTeachers.docs.map(
                                 (teacher: any, index: number) => (
-                                  <tr>
+                                  <tr key={index}>
                                     <td>{index + 1}</td>
                                     <td>
                                       <div
@@ -145,7 +222,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                               " " +
                                               teacher.middle_name +
                                               " " +
-                                              teacher.last_name
+                                              teacher.last_name,
                                           });
                                         }}
                                         className="user-with-avatar clickable"
@@ -153,7 +230,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                         data-toggle="modal"
                                       >
                                         <img
-                                          src={teacher.image}
+                                          src={teacher.image || "/avatar.png"}
                                           alt="passport"
                                         />
                                       </div>
@@ -178,13 +255,54 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                       >
                                         <i className="os-icon os-icon-eye"></i>
                                       </a>
-                                      <a href="#" title="Edit">
+                                      <a
+                                        href="#"
+                                        title="Edit"
+                                        onClick={() => {
+                                          SetActiveTeacherId(teacher.id);
+                                          SetEditTeacher({
+                                            firstname: teacher.first_name,
+                                            middlename: teacher.middle_name,
+                                            lastname: teacher.last_name,
+                                            email: teacher.email,
+                                            phone: teacher.phone,
+                                            gender: teacher.gender,
+                                            address: teacher.address,
+                                            dob: teacher.dob,
+                                          });
+                                          if (editTeacher) {
+                                            setTimeout(() => {
+                                              document
+                                                .getElementById("btnModal")
+                                                ?.click();
+                                            }, 0);
+                                          }
+                                        }}
+                                      >
                                         <i className="os-icon os-icon-edit"></i>
                                       </a>
                                       <a
                                         className="danger"
                                         href="#"
                                         title="Delete"
+                                        onClick={async () => {
+                                          let edit = window.confirm(
+                                            `Are you sure you want to delete "${
+                                              teacher.first_name +
+                                              " " +
+                                              teacher.middle_name +
+                                              " " +
+                                              teacher.last_name
+                                            }"?`
+                                          );
+                                          if (edit) {
+                                            await RemoveTeacher({
+                                              variables: {
+                                                id: teacher.id,
+                                              },
+                                            });
+                                          }
+                                        }}
                                       >
                                         <i className="os-icon os-icon-ui-15"></i>
                                       </a>
@@ -195,6 +313,16 @@ const TeacherList: FC<IProps> = ({ history }) => {
                             </tbody>
                           </table>
                         </div>
+
+                        {/* Hidden button to lunch edit modal */}
+                        <button
+                          type="button"
+                          id="btnModal"
+                          data-target="#editModal"
+                          data-toggle="modal"
+                          style={{ display: "none" }}
+                        ></button>
+
                         {/* <div className="text-center pt-5 fade-in">
                     <h2 className="text-danger">No Teacher record found!</h2>
                   </div> */}
@@ -343,8 +471,196 @@ const TeacherList: FC<IProps> = ({ history }) => {
         </div>
       </div>
 
-      {/* Modal for Image */}
+      {/*Image  Modal*/}
       <ImageModal image={activeImg?.image} name={activeImg?.name} />
+
+      {/* Edit Teacher Modal */}
+      {editTeacher.dob && (
+        <div
+          aria-hidden="true"
+          className="modal fade"
+          id="editModal"
+          role="dialog"
+        >
+          <div className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Edit Teacher's Info <hr />
+                </h5>
+
+                <button className="close" data-dismiss="modal" type="button">
+                  <span aria-hidden="true"> &times;</span>
+                </button>
+              </div>
+              <div className="modal-body pb-2">
+                <LoadingState loading={uLoading} />
+                <AlertMessage
+                  message={uMessage?.message}
+                  failed={uMessage?.failed}
+                />
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    // Scroll to top of page
+                    scrollTop();
+                    UpdateTeacher({
+                      variables: {
+                        id: activeTeacherId,
+                        model: editTeacher,
+                      },
+                    });
+                  }}
+                >
+                  <div className="row">
+                    {/* First Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter first name"
+                        label="First Name"
+                        icon="os-icon-email-2-at2"
+                        required={true}
+                        type="text"
+                        initVal={editTeacher.firstname}
+                        onChange={(firstname: string) => {
+                          SetEditTeacher({
+                            ...editTeacher,
+                            firstname,
+                          });
+                        }}
+                      />
+                    </div>
+                    {/* Middle Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter middle name"
+                        label="Middle Name"
+                        icon="os-icon-phone"
+                        required={true}
+                        type="text"
+                        initVal={editTeacher.middlename}
+                        onChange={(middlename: string) => {
+                          SetEditTeacher({
+                            ...editTeacher,
+                            middlename,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    {/* Last Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter last name"
+                        label="Last Name"
+                        icon="os-icon-phone"
+                        required={true}
+                        type="text"
+                        initVal={editTeacher.lastname}
+                        onChange={(lastname: string) => {
+                          SetEditTeacher({
+                            ...editTeacher,
+                            lastname,
+                          });
+                        }}
+                      />
+                    </div>
+                    {/* Email input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter email"
+                        label="Email"
+                        icon="os-icon-email-2-at2"
+                        required={true}
+                        type="email"
+                        initVal={editTeacher.email}
+                        onChange={(email: string) => {
+                          SetEditTeacher({
+                            ...editTeacher,
+                            email,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    {/* Phone input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter phone number"
+                        label="Phone Number"
+                        icon="os-icon-phone"
+                        required={true}
+                        type="text"
+                        initVal={editTeacher.phone}
+                        onChange={(phone: string) => {
+                          SetEditTeacher({
+                            ...editTeacher,
+                            phone,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="col-sm-6">
+                      <label htmlFor="">Date of Birth </label>
+                      <br />
+                      <DatePicker
+                        selected={new Date(editTeacher.dob)}
+                        onChange={(date) =>
+                          SetEditTeacher({
+                            ...editTeacher,
+                            dob: date,
+                          })
+                        }
+                        className="form-control"
+                        dateFormat="MMMM d, yyyy"
+                      />
+                    </div>
+                  </div>
+                  {/* Gender input */}
+                  <div className="form-group">
+                    <label htmlFor="departmental">Gender</label>
+                    <Select
+                      options={gender.gender}
+                      value={{
+                        label: editTeacher.gender,
+                        value: editTeacher.gender,
+                      }}
+                      onChange={(item: any) => {
+                        SetEditTeacher({
+                          ...editTeacher,
+                          gender: item.label,
+                        });
+                      }}
+                    />
+                  </div>
+                  {/* Address Input */}
+                  <IconInput
+                    placeholder="Enter address"
+                    label="Address"
+                    icon="os-icon-ui-09"
+                    required={true}
+                    type="text"
+                    initVal={editTeacher.address}
+                    onChange={(address: string) => {
+                      SetEditTeacher({
+                        ...editTeacher,
+                        address,
+                      });
+                    }}
+                  />
+                  <div className="buttons-w mt-3 mb-5">
+                    <button className="btn btn-primary px-5 mt-3" type="submit">
+                      Update Teacher
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

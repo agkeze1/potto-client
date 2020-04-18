@@ -7,6 +7,8 @@ interface props {
   required: boolean;
   type: string;
   onChange?: any;
+  classStyle?: string;
+  initVal?: string;
 }
 
 const IconInput: FC<props> = ({
@@ -15,7 +17,9 @@ const IconInput: FC<props> = ({
   label,
   required,
   type,
-  onChange
+  onChange,
+  classStyle,
+  initVal,
 }) => {
   return (
     <>
@@ -27,9 +31,10 @@ const IconInput: FC<props> = ({
           </div>
         </div>
         <input
-          className="form-control"
+          className={`form-control ${classStyle}`}
           placeholder={placeholder}
           required={required}
+          value={initVal}
           onChange={({ target }) => {
             if (onChange) onChange(target.value);
           }}

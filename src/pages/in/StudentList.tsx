@@ -12,31 +12,44 @@ import { IImageProp } from "../../models/IImageProp";
 import { authService } from "../../services/Auth.Service";
 import { IProps } from "../../models/IProps";
 import { GET_LEVELS } from "../../queries/Level.query";
-import { useQuery, useLazyQuery } from "@apollo/react-hooks";
+import gender from "../../data/gender.json";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { IMessage } from "../../models/IMessage";
 import { GET_CLASSES } from "../../queries/Class.query";
 import LoadingState from "../partials/loading";
 import AlertMessage from "../partials/AlertMessage";
+import state from "../../data/state.json";
+import Select from "react-select";
 import Pagination from "../partials/Pagination";
+import DatePicker from "react-datepicker";
 import {
   GET_STUDENTS_BY_LEVEL,
   GET_STUDENTS_BY_CLASS,
-  GET_STUDENT_BY_REG_NO
+  GET_STUDENT_BY_REG_NO,
+  REMOVE_STUDENT,
+  UPDATE_STUDENT,
 } from "../../queries/Student.query";
 
 const StudentList: FC<IProps> = ({ history }) => {
   const [active, SetActive] = useState<IImageProp>({
     image: "/avatar.png",
-    name: "Undefined"
+    name: "Undefined",
   });
 
-  const [students, SetStudents] = useState<any>([]);
   const [showFilter, SetShowFilter] = useState<boolean>(true);
   const [showProfile, SetShowProfile] = useState<boolean>(false);
   const [showNewGuardian, SetNewGuardian] = useState<boolean>(false);
+  const [locals, SetLocals] = useState<any>([]);
+
   const [message, SetMessage] = useState<IMessage>();
   const [lMessage, SetLMessage] = useState<IMessage>();
   const [cMessage, SetCMessage] = useState<IMessage>();
+  const [rMessage, SetRMessage] = useState<IMessage>();
+  const [uMessage, SetUMessage] = useState<IMessage>();
+
+  const [activeStudentId, SetActiveStudentId] = useState<string>();
+  const [editStudent, SetEditStudent] = useState<any>({});
+
   const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>(false);
   const [showClassesRefresh, SetShowClassesRefresh] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
@@ -56,7 +69,7 @@ const StudentList: FC<IProps> = ({ history }) => {
     limit: 25,
     page: 1,
     nextPage: null,
-    prevPage: null
+    prevPage: null,
   });
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(25);
@@ -66,16 +79,21 @@ const StudentList: FC<IProps> = ({ history }) => {
     history.push("/login");
   }
 
-  // Get  School ID of logged in user
+  const scrollTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+
+  // Get School of logged in user
   const { school } = authService.GetUser();
 
   // Get Levels for level input
   const { loading: lLoading, data: lData } = useQuery(GET_LEVELS, {
     variables: { school: school.id },
-    onError: err => {
+    onError: (err) => {
       SetLMessage({
         message: err.message,
-        failed: true
+        failed: true,
       });
       SetShowLevelsRefresh(true);
     },
@@ -84,65 +102,65 @@ const StudentList: FC<IProps> = ({ history }) => {
         SetLevel(
           lData.GetLevels.docs.map((level: any) => ({
             label: level.name,
-            value: level.id
+            value: level.id,
           }))
         );
         SetShowLevelsRefresh(false);
       }
-    }
+    },
   });
 
   // Get Levels on Reload level button click
   const [GetLevels, { loading: llLoading }] = useLazyQuery(GET_LEVELS, {
-    onError: err => {
+    onError: (err) => {
       SetLMessage({
         message: err.message,
-        failed: true
+        failed: true,
       });
       SetShowLevelsRefresh(true);
     },
-    onCompleted: data => {
+    onCompleted: (data) => {
       if (data && data.GetLevels) {
         SetLevel(
           data.GetLevels.docs.map((level: any) => ({
             label: level.name,
-            value: level.id
+            value: level.id,
           }))
         );
         SetShowLevelsRefresh(false);
       }
-    }
+    },
   });
 
   // Get classes for class input
   const [GetClasses, { loading: cLoading }] = useLazyQuery(GET_CLASSES, {
-    onError: err => {
+    onError: (err) => {
       SetCMessage({
         message: err.message,
-        failed: true
+        failed: true,
       });
       SetShowClassesRefresh(true);
     },
-    onCompleted: data => {
+    onCompleted: (data) => {
       if (data)
         SetClasses(
           data.GetClasses.docs.map((item: any) => ({
             label: item.name,
-            value: item.id
+            value: item.id,
           }))
         );
       SetShowClassesRefresh(false);
-    }
+    },
   });
 
   // Get a single Students By Reg. number
   const [GetStuByRegNo, { loading: regNoLoading }] = useLazyQuery(
     GET_STUDENT_BY_REG_NO,
     {
-      onError: err =>
+      onError: (err) =>
         SetMessage({
           message: err.message,
-          failed: true
+          failed: true,
         }),
       onCompleted: (regNoData: any) => {
         if (regNoData.GetStudentByRegNo) {
@@ -156,49 +174,49 @@ const StudentList: FC<IProps> = ({ history }) => {
             nextPage: null,
             prevPage: null,
             totalPages: 1,
-            totalDocs: 1
+            totalDocs: 1,
           };
           SetPageResult(newStu);
         }
-      }
+      },
     }
   );
 
   // Get List of Students By Level
   const [
     GetStuByLevel,
-    { loading: levelLoading, fetchMore: levelFetchMore }
+    { loading: levelLoading, fetchMore: levelFetchMore },
   ] = useLazyQuery(GET_STUDENTS_BY_LEVEL, {
-    onError: err =>
+    onError: (err) =>
       SetMessage({
         message: err.message,
-        failed: true
+        failed: true,
       }),
-    onCompleted: levelData => {
+    onCompleted: (levelData) => {
       if (levelData.GetStudentsOfSameLevel) {
         SetPageResult({
-          ...levelData.GetStudentsOfSameLevel
+          ...levelData.GetStudentsOfSameLevel,
         });
       }
-    }
+    },
   });
 
   // Get List of Students By Class
   const [GetStuByClass, { loading: classLoading }] = useLazyQuery(
     GET_STUDENTS_BY_CLASS,
     {
-      onError: err =>
+      onError: (err) =>
         SetMessage({
           message: err.message,
-          failed: true
+          failed: true,
         }),
-      onCompleted: classData => {
+      onCompleted: (classData) => {
         if (classData.GetStudentOfSameClass) {
           SetPageResult({
-            ...classData.GetStudentOfSameClass
+            ...classData.GetStudentOfSameClass,
           });
         }
-      }
+      },
     }
   );
 
@@ -210,9 +228,9 @@ const StudentList: FC<IProps> = ({ history }) => {
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
           return {
-            GetStudentsOfSameLevel: fetchMoreResult.GetStudentsOfSameLevel
+            GetStudentsOfSameLevel: fetchMoreResult.GetStudentsOfSameLevel,
           };
-        }
+        },
       });
   }, [page]);
 
@@ -237,10 +255,58 @@ const StudentList: FC<IProps> = ({ history }) => {
     } else {
       SetSearchMsg({
         message: "No Search field selected!",
-        failed: true
+        failed: true,
       });
     }
   };
+
+  // Remove Student
+  const [RemoveStudent, { loading: rLoading }] = useMutation(REMOVE_STUDENT, {
+    onError: (err) =>
+      SetRMessage({
+        message: err.message,
+        failed: true,
+      }),
+    onCompleted: (data) => {
+      if (data) {
+        const result = { ...pageResult };
+        if (result?.docs) {
+          const index = result.docs.findIndex(
+            (i: any) => i.id === data.RemoveStudent.doc.id
+          );
+          result.docs.splice(index, 1);
+          SetPageResult(result);
+        }
+      }
+    },
+  });
+
+  // Update Student
+  const [UpdateStudent, { loading: uLoading }] = useMutation(UPDATE_STUDENT, {
+    onError: (err) =>
+      SetUMessage({
+        message: err.message,
+        failed: true,
+      }),
+    onCompleted: (data) => {
+      if (data) {
+        const result = { ...pageResult };
+        if (result?.docs) {
+          const index = result.docs.findIndex(
+            (i: any) => i.id === data.UpdateStudent.doc.id
+          );
+          result.docs.splice(index, 1);
+          result.docs.unshift(data.UpdateStudent.doc);
+          SetPageResult(result);
+        }
+        SetUMessage({
+          message: data.UpdateStudent.message,
+          failed: false,
+        });
+      }
+    },
+  });
+
   return (
     <>
       <Helmet>
@@ -315,8 +381,8 @@ const StudentList: FC<IProps> = ({ history }) => {
                           SetLMessage(undefined);
                           GetLevels({
                             variables: {
-                              school: school.id
-                            }
+                              school: school.id,
+                            },
                           });
                         }}
                         className="btn btn-primary btn-sm px-1 mb-2"
@@ -348,7 +414,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                           SetCMessage(undefined);
                           SetMessage(undefined);
                           GetClasses({
-                            variables: { level: searchByLevel.id }
+                            variables: { level: searchByLevel.id },
                           });
                         }}
                         className="btn btn-primary btn-sm px-1 mb-2"
@@ -379,13 +445,6 @@ const StudentList: FC<IProps> = ({ history }) => {
 
             <div className="row justify-content-center ">
               <div className="col-lg-12 pt-5">
-                <LoadingState
-                  loading={levelLoading || classLoading || regNoLoading}
-                />
-                <AlertMessage
-                  message={message?.message}
-                  failed={message?.failed}
-                />
                 {!showFilter && (
                   <span
                     className="element-actions mb-5"
@@ -400,15 +459,23 @@ const StudentList: FC<IProps> = ({ history }) => {
                     />
                   </span>
                 )}
+                <LoadingState
+                  loading={
+                    levelLoading || classLoading || regNoLoading || rLoading
+                  }
+                />
+                <AlertMessage
+                  message={message?.message}
+                  failed={message?.failed}
+                />
+                <AlertMessage
+                  message={rMessage?.message}
+                  failed={rMessage?.failed}
+                />
                 {pageResult.docs.length > 0 && (
                   <div className="element-box-tp">
                     <div className="table-responsive">
-                      <h6 className="element-header">
-                        List of Students of -{" "}
-                        <b className="text-primary">
-                          {searchByLevel?.name} - {searchByClass?.name}
-                        </b>
-                      </h6>
+                      <h6 className="element-header">Student List</h6>
                       <table className="table table-padded">
                         <thead>
                           <tr>
@@ -454,10 +521,56 @@ const StudentList: FC<IProps> = ({ history }) => {
                                 >
                                   <i className="os-icon os-icon-eye"></i>
                                 </a>
-                                <a href="#" title="Edit">
+                                <a
+                                  href="#"
+                                  title="Edit"
+                                  onClick={() => {
+                                    SetActiveStudentId(stu.id);
+                                    SetEditStudent({
+                                      firstname: stu.first_name,
+                                      middlename: stu.middle_name,
+                                      surname: stu.surname,
+                                      regNo: stu.reg_no,
+                                      gender: stu.gender,
+                                      address: stu.address,
+                                      dob: stu.dob,
+                                      state: stu.state,
+                                      lga: stu.lga,
+                                    });
+                                    if (editStudent) {
+                                      setTimeout(() => {
+                                        document
+                                          .getElementById("btnModal")
+                                          ?.click();
+                                      }, 0);
+                                    }
+                                  }}
+                                >
                                   <i className="os-icon os-icon-edit"></i>
                                 </a>
-                                <a className="danger" href="#" title="Delete">
+                                <a
+                                  className="danger"
+                                  href="#"
+                                  title="Delete"
+                                  onClick={async () => {
+                                    let edit = window.confirm(
+                                      `Are you sure you want to delete "${
+                                        stu.firstname +
+                                        " " +
+                                        stu.middlename +
+                                        " " +
+                                        stu.surname
+                                      }"?`
+                                    );
+                                    if (edit) {
+                                      await RemoveStudent({
+                                        variables: {
+                                          id: stu.id,
+                                        },
+                                      });
+                                    }
+                                  }}
+                                >
                                   <i className="os-icon os-icon-ui-15"></i>
                                 </a>
                               </td>
@@ -466,7 +579,14 @@ const StudentList: FC<IProps> = ({ history }) => {
                         </tbody>
                       </table>
                     </div>
-
+                    {/* Hidden button to lunch edit modal */}
+                    <button
+                      type="button"
+                      id="btnModal"
+                      data-target="#editModal"
+                      data-toggle="modal"
+                      style={{ display: "none" }}
+                    ></button>
                     {/* <div className="text-center pt-5 fade-in">
                     <h2 className="text-danger">No Student found!</h2>
                   </div> */}
@@ -523,7 +643,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                     src="/3.jpeg"
                     style={{
                       width: "150px",
-                      height: "150px"
+                      height: "150px",
                     }}
                   />
 
@@ -723,7 +843,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                   <h5 className="element-header">
                                     Basic Information
                                   </h5>
-                                  <form onSubmit={e => {}}>
+                                  <form onSubmit={(e) => {}}>
                                     <div className="row">
                                       <div className="col-sm-6">
                                         {/* Title input */}
@@ -731,7 +851,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           items={[
                                             { label: "Mr", value: "1" },
                                             { label: "Mrs", value: "2" },
-                                            { label: "Sergeant", value: "2" }
+                                            { label: "Sergeant", value: "2" },
                                           ]}
                                           onSelect={() => {}}
                                           label="Title"
@@ -743,7 +863,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                         <Dropdown
                                           items={[
                                             { label: "Father", value: "1" },
-                                            { label: "Mother", value: "2" }
+                                            { label: "Mother", value: "2" },
                                           ]}
                                           onSelect={() => {}}
                                           label="Relationship"
@@ -792,9 +912,9 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           items={[
                                             {
                                               label: "Front Desker",
-                                              value: "1"
+                                              value: "1",
                                             },
-                                            { label: "Oga", value: "2" }
+                                            { label: "Oga", value: "2" },
                                           ]}
                                           onSelect={() => {}}
                                           label="Gender"
@@ -807,9 +927,9 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           items={[
                                             {
                                               label: "Front Desker",
-                                              value: "1"
+                                              value: "1",
                                             },
-                                            { label: "Oga", value: "2" }
+                                            { label: "Oga", value: "2" },
                                           ]}
                                           onSelect={() => {}}
                                           label="State of Origin"
@@ -824,9 +944,9 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           items={[
                                             {
                                               label: "Front Desker",
-                                              value: "1"
+                                              value: "1",
                                             },
-                                            { label: "Oga", value: "2" }
+                                            { label: "Oga", value: "2" },
                                           ]}
                                           onSelect={() => {}}
                                           label="LGA"
@@ -1063,6 +1183,235 @@ const StudentList: FC<IProps> = ({ history }) => {
       )}
       {/* Modal for Image */}
       <ImageModal image={active?.image} name={active?.name} />
+
+      {/* Edit Teacher Modal */}
+      {editStudent.dob && (
+        <div
+          aria-hidden="true"
+          className="modal fade"
+          id="editModal"
+          role="dialog"
+        >
+          <div className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Edit Student's Info <hr />
+                </h5>
+
+                <button className="close" data-dismiss="modal" type="button">
+                  <span aria-hidden="true"> &times;</span>
+                </button>
+              </div>
+              <div className="modal-body pb-2">
+                <LoadingState loading={uLoading} />
+                <AlertMessage
+                  message={uMessage?.message}
+                  failed={uMessage?.failed}
+                />
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    // Scroll to top of page
+                    scrollTop();
+                    UpdateStudent({
+                      variables: {
+                        id: activeStudentId,
+                        model: editStudent,
+                      },
+                    });
+                  }}
+                >
+                  <div className="row">
+                    {/* First Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter first name"
+                        label="First Name"
+                        icon="os-icon-email-2-at2"
+                        required={true}
+                        type="text"
+                        initVal={editStudent.firstname}
+                        onChange={(firstname: string) => {
+                          SetEditStudent({
+                            ...editStudent,
+                            firstname,
+                          });
+                        }}
+                      />
+                    </div>
+                    {/* Middle Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter middle name"
+                        label="Middle Name"
+                        icon="os-icon-phone"
+                        required={true}
+                        type="text"
+                        initVal={editStudent.middlename}
+                        onChange={(middlename: string) => {
+                          SetEditStudent({
+                            ...editStudent,
+                            middlename,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    {/* Last Name input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter last name"
+                        label="Last Name"
+                        icon="os-icon-phone"
+                        required={true}
+                        type="text"
+                        initVal={editStudent.surname}
+                        onChange={(surname: string) => {
+                          SetEditStudent({
+                            ...editStudent,
+                            surname,
+                          });
+                        }}
+                      />
+                    </div>
+                    {/* Reg. Number input */}
+                    <div className="col-sm-6">
+                      <IconInput
+                        placeholder="Enter Reg. umber"
+                        label="Reg. Number"
+                        icon="os-icon-email-2-at2"
+                        required={true}
+                        type="text"
+                        initVal={editStudent.regNo}
+                        onChange={(regNo: string) => {
+                          SetEditStudent({
+                            ...editStudent,
+                            regNo,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      {/* Gender input */}
+                      <div className="form-group">
+                        <label htmlFor="departmental">Gender</label>
+                        <Select
+                          options={gender.gender}
+                          value={{
+                            label: editStudent.gender,
+                            value: editStudent.gender,
+                          }}
+                          onChange={(item: any) => {
+                            SetEditStudent({
+                              ...editStudent,
+                              gender: item.label,
+                            });
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-sm-6">
+                      <label htmlFor="">Date of Birth </label>
+                      <br />
+                      <DatePicker
+                        selected={new Date(editStudent.dob)}
+                        onChange={(date) =>
+                          SetEditStudent({
+                            ...editStudent,
+                            dob: date,
+                          })
+                        }
+                        className="form-control"
+                        dateFormat="MMMM d, yyyy"
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-sm-6">
+                      <div className="form-group">
+                        <label htmlFor="departmental">State</label>
+                        {/* State of Origin input */}
+                        <Select
+                          options={state.map((item: any, index: number) => ({
+                            label: item.state.name,
+                            value: index + "",
+                          }))}
+                          value={{
+                            label: editStudent.state,
+                            value: editStudent.state,
+                          }}
+                          onChange={(item: any) => {
+                            SetEditStudent({
+                              ...editStudent,
+                              state: item.label,
+                            });
+                            SetLocals(
+                              state[item.value].state.locals.map(
+                                (item: any) => ({
+                                  value: item.name,
+                                  label: item.name,
+                                })
+                              )
+                            );
+                          }}
+                          label="State of Origin"
+                          icon="phone"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-sm-6">
+                      <div className="form-group">
+                        <label htmlFor="departmental">LGA</label>
+                        {/* LGA input */}
+                        <Select
+                          options={locals}
+                          value={{
+                            label: editStudent.lga,
+                            value: editStudent.lga,
+                          }}
+                          onChange={(item: any) =>
+                            SetEditStudent({
+                              ...editStudent,
+                              lga: item.label,
+                            })
+                          }
+                          label="LGA"
+                          icon="phone"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Address Input */}
+                  <IconInput
+                    placeholder="Enter address"
+                    label="Address"
+                    icon="os-icon-ui-09"
+                    required={true}
+                    type="text"
+                    initVal={editStudent.address}
+                    onChange={(address: string) => {
+                      SetEditStudent({
+                        ...editStudent,
+                        address,
+                      });
+                    }}
+                  />
+                  <div className="buttons-w mt-3 mb-5">
+                    <button className="btn btn-primary px-5 mt-3" type="submit">
+                      Update Student
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

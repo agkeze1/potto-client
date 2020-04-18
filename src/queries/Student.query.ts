@@ -122,3 +122,26 @@ export const NEW_STUDENT = gql`
   }
   ${STU_MIN_PROPS}
 `;
+
+export const REMOVE_STUDENT = gql`
+  mutation REMOVE_STUDENT($id: ID!) {
+    RemoveStudent(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_STUDENT = gql`
+  mutation UPDATE_STUDENT($id: ID!, $model: StudentUpdateInput!) {
+    UpdateStudent(id: $id, model: $model) {
+      message
+      doc {
+        ...STU_PROPS
+      }
+    }
+  }
+  ${STU_PROPS}
+`;

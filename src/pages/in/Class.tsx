@@ -1,12 +1,13 @@
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
+import { GetAppName, CLEAN_DATE } from "../../context/App";
 import Dropdown from "../partials/Dropdown";
 import IconInput from "../partials/IconInput";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { IProps } from "../../models/IProps";
 import { GET_LEVELS } from "../../queries/Level.query";
 import { GET_CLASSES, NEW_CLASS } from "../../queries/Class.query";
+import { TEACHER_LIST } from "../../queries/Teacher.query";
 import { IMessage } from "../../models/IMessage";
 import { authService } from "../../services/Auth.Service";
 import LoadingState from "../partials/loading";
@@ -16,10 +17,11 @@ import SwitchInput from "../partials/SwitchInput";
 const Class: FC<IProps> = ({ history }) => {
   const [message, SetMessage] = useState<IMessage>();
   const [nMessage, SetNMessage] = useState<IMessage>();
-  const [newClass, SetNewClass] = useState<any>();
+  const [newClass, SetNewClass] = useState<any>({});
   const [activeLevelId, SetActiveLevelId] = useState<any>();
   const [showNewClass, SetShowNewClass] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
+  const [teachers, SetTeachers] = useState<any>([]);
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
@@ -29,47 +31,70 @@ const Class: FC<IProps> = ({ history }) => {
   // Get  School ID of logged in user
   const { school } = authService.GetUser();
 
+  // Fetch Teachers for Form Teacher input
+  const { loading: tLoading } = useQuery(TEACHER_LIST, {
+    variables: { page: 1, limit: 100 },
+    onCompleted: (data) => {
+      if (data.GetTeachers) {
+        SetTeachers(
+          data.GetTeachers.docs.map((teacher: any) => ({
+            label:
+              teacher.first_name +
+              " " +
+              teacher.middle_name +
+              " " +
+              teacher.last_name +
+              " ( " +
+              teacher.phone +
+              " )",
+            value: teacher.id,
+          }))
+        );
+      }
+    },
+  });
+
   // Fetch Levels for Level input
   const { loading: lLoading } = useQuery(GET_LEVELS, {
     variables: { school: school.id },
-    onCompleted: data => {
+    onCompleted: (data) => {
       if (data.GetLevels) {
         SetLevel(
           data.GetLevels.docs.map((level: any) => ({
             label: level.name,
-            value: level.id
+            value: level.id,
           }))
         );
       }
-    }
+    },
   });
 
   // Fetch list of Classes
   const [GetClasses, { loading, data }] = useLazyQuery(GET_CLASSES, {
-    onError: err =>
+    onError: (err) =>
       SetMessage({
         message: err.message,
-        failed: true
-      })
+        failed: true,
+      }),
   });
 
   //Save new Class
   const [NewClass, { loading: nLoading }] = useMutation(NEW_CLASS, {
-    onError: err =>
+    onError: (err) =>
       SetNMessage({
         message: err.message,
-        failed: true
+        failed: true,
       }),
-    onCompleted: data => {
+    onCompleted: (data) => {
       SetNMessage({
         message: data.NewClass.message,
-        failed: false
+        failed: false,
       });
     },
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
         query: GET_CLASSES,
-        variables: { level: activeLevelId }
+        variables: { level: newClass?.level },
       });
 
       q.GetClasses.docs.unshift(data.NewClass.doc);
@@ -77,15 +102,15 @@ const Class: FC<IProps> = ({ history }) => {
       //update
       cache.writeQuery({
         query: GET_CLASSES,
-        variables: { level: activeLevelId },
-        data: { GetClasses: q.GetClasses }
+        variables: { level: newClass?.level },
+        data: { GetClasses: q.GetClasses },
       });
-    }
+    },
   });
 
   useEffect(() => {
-    if (activeLevelId) GetClasses({ variables: { level: activeLevelId } });
-  }, [activeLevelId]);
+    if (newClass?.level) GetClasses({ variables: { level: newClass?.level } });
+  }, [newClass?.level]);
 
   return (
     <>
@@ -110,25 +135,25 @@ const Class: FC<IProps> = ({ history }) => {
             <div className="element-box">
               <div className="row justify-content-center">
                 <div className="col-lg-12">
+                  <LoadingState loading={nLoading} />
+                  <AlertMessage
+                    message={nMessage?.message}
+                    failed={nMessage?.failed}
+                  />
                   <form
-                    onSubmit={async e => {
+                    onSubmit={async (e) => {
                       e.preventDefault();
                       SetNMessage(undefined);
                       await NewClass({
                         variables: {
-                          level: activeLevelId,
-                          name: newClass
-                        }
+                          name: newClass?.name,
+                          level: newClass?.level,
+                          formTeacher: newClass?.formTeacher,
+                        },
                       });
                     }}
                   >
                     <div className="row">
-                      <div className="col-12">
-                        <AlertMessage
-                          message={nMessage?.message}
-                          failed={nMessage?.failed}
-                        />
-                      </div>
                       {showNewClass && (
                         <div className="col-md-6">
                           {/* Class name input */}
@@ -139,19 +164,40 @@ const Class: FC<IProps> = ({ history }) => {
                             required={true}
                             type="text"
                             onChange={(name: string) => {
-                              SetNewClass(name);
+                              SetNewClass({
+                                ...newClass,
+                                name,
+                              });
                             }}
                           />
+                          {/* Form Teacher input */}
+                          <Dropdown
+                            items={teachers}
+                            onSelect={(item: any) =>
+                              SetNewClass({
+                                ...newClass,
+                                formTeacher: item.value,
+                              })
+                            }
+                            label="Form Teacher"
+                          />
+                          <LoadingState loading={tLoading} />
                         </div>
                       )}
                       <div className={showNewClass ? "col-md-6" : "col-12"}>
+                        {/* Level input */}
                         <Dropdown
                           items={levels}
-                          onSelect={(item: any) => SetActiveLevelId(item.value)}
+                          onSelect={(item: any) =>
+                            SetNewClass({
+                              ...newClass,
+                              level: item.value,
+                            })
+                          }
                           label="Level"
                         />
+                        <LoadingState loading={lLoading} />
                       </div>
-                      <LoadingState loading={nLoading} />
                       {showNewClass && (
                         <div className="col-sm-12">
                           <div className="buttons-w">
@@ -163,7 +209,6 @@ const Class: FC<IProps> = ({ history }) => {
                       )}
                     </div>
                   </form>
-                  <LoadingState loading={lLoading} />
                 </div>
               </div>
             </div>
@@ -195,7 +240,7 @@ const Class: FC<IProps> = ({ history }) => {
                                   {clas.form_teacher?.first_name ||
                                     "None assigned"}
                                 </td>
-                                <td>{clas.created_at}</td>
+                                <td>{CLEAN_DATE(clas.created_at)}</td>
                                 <td className="row-actions text-center">
                                   <a href="#" title="Edit">
                                     <i className="os-icon os-icon-edit"></i>
@@ -251,7 +296,7 @@ const Class: FC<IProps> = ({ history }) => {
                 <Dropdown
                   items={[
                     { label: "Mrs. Antai Grace", value: "1" },
-                    { label: "Sir Innocent Okoli", value: "2" }
+                    { label: "Sir Innocent Okoli", value: "2" },
                   ]}
                   onSelect={() => {}}
                   label="Select Form Teacher"

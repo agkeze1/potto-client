@@ -17,6 +17,10 @@ const NewTeacher: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
   const [message, SetMessage] = useState<IMessage>();
 
+  // For comfirm password
+  const [bdrClass, SetBdrClass] = useState<string>();
+  const [cPassword, SetCPassword] = useState<string>();
+
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
     history.push("/login");
@@ -29,14 +33,14 @@ const NewTeacher: FC<IProps> = ({ history }) => {
 
   // New Teacher Mutation
   const [NewTeacher, { loading }] = useMutation(NEW_TEACHER, {
-    onError: err =>
+    onError: (err) =>
       SetMessage({
         message: err.message,
-        failed: true
+        failed: true,
       }),
     onCompleted: () => {
       history.push("/in/teacher-list");
-    }
+    },
   });
 
   return (
@@ -58,15 +62,21 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                 />
                 <LoadingState loading={loading} />
                 <form
-                  onSubmit={async e => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
-                    // Scroll to top of page
-                    scrollTop();
-                    NewTeacher({
-                      variables: {
-                        model: record
-                      }
-                    });
+                    //Check password match before submitting form
+                    if (cPassword && cPassword !== record?.password) {
+                      SetBdrClass("bdr-danger");
+                    } else {
+                      // Scroll to top of page
+                      scrollTop();
+                      // Save New Teacher
+                      NewTeacher({
+                        variables: {
+                          model: record,
+                        },
+                      });
+                    }
                   }}
                 >
                   <div className="row">
@@ -81,7 +91,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         onChange={(firstname: string) => {
                           SetRecord({
                             ...record,
-                            firstname
+                            firstname,
                           });
                         }}
                       />
@@ -97,7 +107,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         onChange={(middlename: string) => {
                           SetRecord({
                             ...record,
-                            middlename
+                            middlename,
                           });
                         }}
                       />
@@ -115,7 +125,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         onChange={(lastname: string) => {
                           SetRecord({
                             ...record,
-                            lastname
+                            lastname,
                           });
                         }}
                       />
@@ -131,7 +141,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         onChange={(email: string) => {
                           SetRecord({
                             ...record,
-                            email
+                            email,
                           });
                         }}
                       />
@@ -149,7 +159,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         onChange={(phone: string) => {
                           SetRecord({
                             ...record,
-                            phone
+                            phone,
                           });
                         }}
                       />
@@ -171,7 +181,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                             SetRecord({
                               ...record,
                               employmentDate:
-                                currentTarget.value || "Not supplied"
+                                currentTarget.value || "Not supplied",
                             });
                           }}
                         />
@@ -186,7 +196,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         onSelect={(item: any) => {
                           SetRecord({
                             ...record,
-                            gender: item.label
+                            gender: item.label,
                           });
                         }}
                         label="Gender"
@@ -208,7 +218,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                           onChange={({ currentTarget }) => {
                             SetRecord({
                               ...record,
-                              dob: currentTarget.value
+                              dob: currentTarget.value,
                             });
                           }}
                         />
@@ -225,7 +235,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                     onChange={(address: string) => {
                       SetRecord({
                         ...record,
-                        address
+                        address,
                       });
                     }}
                   />
@@ -241,7 +251,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         onChange={(password: string) => {
                           SetRecord({
                             ...record,
-                            password
+                            password,
                           });
                         }}
                       />
@@ -254,7 +264,15 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         icon="os-icon-ui-09"
                         required={true}
                         type="password"
-                        onChange={(password: string) => {}}
+                        classStyle={bdrClass}
+                        onChange={(cPass: string) => {
+                          SetCPassword(cPass);
+                          if (cPass !== record?.password) {
+                            SetBdrClass("bdr-danger");
+                          } else {
+                            SetBdrClass("");
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -264,7 +282,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                     onData={(path: string) =>
                       SetRecord({
                         ...record,
-                        image: path
+                        image: path,
                       })
                     }
                   />

@@ -337,3 +337,10 @@ body.full-screen .all-wrapper,
 .nav-item > .active {
   color: black !important;
 }
+
+.bdr-danger {
+  border: 2px solid #f11919 !important;
+}
+.react-datepicker-wrapper {
+  width: 100% !important;
+}

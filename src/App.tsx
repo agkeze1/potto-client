@@ -5,6 +5,7 @@ import UserLogin from "./pages/UserLogin";
 import UserSignup from "./pages/UserSignup";
 import FirstSchool from "./pages/FirstSchool";
 import In from "./pages/in";
+import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   return (

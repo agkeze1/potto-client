@@ -12,18 +12,21 @@ interface InputProp {
   items: Array<Item>;
   onSelect: any;
   disabled?: boolean;
+  selected?: {};
 }
 const Dropdown: FC<InputProp> = ({
   icon,
   label,
   items,
   onSelect,
-  disabled
+  disabled,
+  selected,
 }) => {
   return (
     <div className="form-group">
       <label htmlFor=""> {label}</label>
       <Select
+        defaultValue={selected}
         options={items}
         onChange={(i: any) => onSelect(i)}
         isDisabled={disabled}

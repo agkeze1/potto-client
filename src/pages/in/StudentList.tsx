@@ -553,7 +553,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                   href="#"
                                   title="Delete"
                                   onClick={async () => {
-                                    let edit = window.confirm(
+                                    let del = window.confirm(
                                       `Are you sure you want to delete "${
                                         stu.firstname +
                                         " " +
@@ -562,7 +562,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                         stu.surname
                                       }"?`
                                     );
-                                    if (edit) {
+                                    if (del) {
                                       await RemoveStudent({
                                         variables: {
                                           id: stu.id,

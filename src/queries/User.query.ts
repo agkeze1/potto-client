@@ -18,8 +18,8 @@ export const USER_PROPS = gql`
 
 // Query section
 export const USER_LIST = gql`
-  query GET_USER_LIST($page: Int, $limit: Int) {
-    GetUsers(page: $page, limit: $limit) {
+  query USER_LIST($school: ID!, $page: Int, $limit: Int) {
+    GetUsers(school: $school, page: $page, limit: $limit) {
       message
       totalDocs
       totalPages
@@ -73,6 +73,29 @@ export const USER_SETUP = gql`
     SetUp(model: $model) {
       message
       token
+      doc {
+        ...USER_PROPS
+      }
+    }
+  }
+  ${USER_PROPS}
+`;
+
+export const REMOVE_USER = gql`
+  mutation REMOVE_USER($id: ID!) {
+    RemoveUser(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation UPDATE_USER($id: ID!, $model: UserUpdateInput!) {
+    UpdateUser(id: $id, model: $model) {
+      message
       doc {
         ...USER_PROPS
       }

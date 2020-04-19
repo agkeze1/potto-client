@@ -286,7 +286,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                         href="#"
                                         title="Delete"
                                         onClick={async () => {
-                                          let edit = window.confirm(
+                                          let del = window.confirm(
                                             `Are you sure you want to delete "${
                                               teacher.first_name +
                                               " " +
@@ -295,7 +295,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                               teacher.last_name
                                             }"?`
                                           );
-                                          if (edit) {
+                                          if (del) {
                                             await RemoveTeacher({
                                               variables: {
                                                 id: teacher.id,

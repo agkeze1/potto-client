@@ -234,10 +234,10 @@ const Term: FC<IProps> = ({ history }) => {
                                         title="Delete"
                                         onClick={async () => {
                                           ClearMessages();
-                                          let edit = window.confirm(
+                                          let del = window.confirm(
                                             `Are you sure you want to delete "${term.name}"?`
                                           );
-                                          if (edit) {
+                                          if (del) {
                                             await RemoveTerm({
                                               variables: {
                                                 id: term.id,

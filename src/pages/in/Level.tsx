@@ -254,10 +254,10 @@ const Level: FC<IProps> = ({ history }) => {
                                         onClick={async () => {
                                           ClearMessages();
 
-                                          let edit = window.confirm(
+                                          let del = window.confirm(
                                             `Are you sure you want to delete "${level.name}"?`
                                           );
-                                          if (edit) {
+                                          if (del) {
                                             await RemoveLevel({
                                               variables: {
                                                 id: level.id,

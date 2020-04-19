@@ -42,3 +42,26 @@ export const NEW_CLASS = gql`
   }
   ${CLASS_PROPS}
 `;
+
+export const REMOVE_CLASS = gql`
+  mutation REMOVE_CLASS($id: ID!) {
+    RemoveClass(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_CLASS = gql`
+  mutation UPDATE_CLASS($id: ID, $name: String, $formTeacher: ID) {
+    UpdateClass(id: $id, name: $name, formTeacher: $formTeacher) {
+      message
+      doc {
+        ...CLASS_PROPS
+      }
+    }
+  }
+  ${CLASS_PROPS}
+`;

@@ -14,6 +14,7 @@ import { IMessage } from "../../models/IMessage";
 import gender from "../../data/gender.json";
 import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
+import Select from "react-select";
 
 const NewUser: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
@@ -102,9 +103,12 @@ const NewUser: FC<IProps> = ({ history }) => {
                     if (cPassword && cPassword !== record?.password) {
                       SetBdrClass("bdr-danger");
                     } else {
-                      // Scroll to top of page
-                      scrollTop();
-                      // Save New User
+                      if (isAdmin && record?.roles) {
+                        SetRecord({
+                          ...record,
+                          roles: undefined,
+                        });
+                      }
                       await NewUser({
                         variables: {
                           model: {
@@ -182,13 +186,25 @@ const NewUser: FC<IProps> = ({ history }) => {
                     {!isAdmin && (
                       // Role input
                       <div className="col-sm-6">
-                        <Dropdown
-                          items={roles}
-                          onSelect={() => {}}
+                        <label htmlFor="">Roles</label>
+                        <br />
+                        <Select
+                          options={roles}
+                          isMulti={true}
+                          onChange={(items: any) => {
+                            SetRecord({
+                              ...record,
+                              roles: items.map((i: any) => i.value),
+                            });
+                          }}
                           label="Role"
                           icon="phone"
                         />
                         <LoadingState loading={rLoading} />
+                        <AlertMessage
+                          message={roleMsg?.message}
+                          failed={roleMsg?.failed}
+                        />
                       </div>
                     )}
                   </div>

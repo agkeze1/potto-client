@@ -6,22 +6,35 @@ import IconInput from "../partials/IconInput";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { IProps } from "../../models/IProps";
 import { GET_LEVELS } from "../../queries/Level.query";
-import { GET_CLASSES, NEW_CLASS } from "../../queries/Class.query";
+import {
+  GET_CLASSES,
+  NEW_CLASS,
+  REMOVE_CLASS,
+  UPDATE_CLASS,
+} from "../../queries/Class.query";
 import { TEACHER_LIST } from "../../queries/Teacher.query";
 import { IMessage } from "../../models/IMessage";
 import { authService } from "../../services/Auth.Service";
 import LoadingState from "../partials/loading";
 import AlertMessage from "../partials/AlertMessage";
 import SwitchInput from "../partials/SwitchInput";
+import Select from "react-select";
 
 const Class: FC<IProps> = ({ history }) => {
   const [message, SetMessage] = useState<IMessage>();
+  const [lMessage, SetLMessage] = useState<IMessage>();
   const [nMessage, SetNMessage] = useState<IMessage>();
+  const [uMessage, SetUMessage] = useState<IMessage>();
+  const [rMessage, SetRMessage] = useState<IMessage>();
   const [newClass, SetNewClass] = useState<any>({});
   const [activeLevelId, SetActiveLevelId] = useState<any>();
   const [showNewClass, SetShowNewClass] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
   const [teachers, SetTeachers] = useState<any>([]);
+
+  // Update Class
+  const [activeClassId, SetActiveClassId] = useState<string>();
+  const [editClass, SetEditClass] = useState<any>({});
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
@@ -57,6 +70,12 @@ const Class: FC<IProps> = ({ history }) => {
   // Fetch Levels for Level input
   const { loading: lLoading } = useQuery(GET_LEVELS, {
     variables: { school: school.id },
+    onError: (err) => {
+      SetLMessage({
+        message: err.message,
+        failed: true,
+      });
+    },
     onCompleted: (data) => {
       if (data.GetLevels) {
         SetLevel(
@@ -112,6 +131,83 @@ const Class: FC<IProps> = ({ history }) => {
     if (newClass?.level) GetClasses({ variables: { level: newClass?.level } });
   }, [newClass?.level]);
 
+  // Remove Class
+  const [RemoveClass, { loading: rLoading }] = useMutation(REMOVE_CLASS, {
+    onError: (err) =>
+      SetRMessage({
+        message: err.message,
+        failed: true,
+      }),
+    update: (cache, { data }) => {
+      const q: any = cache.readQuery({
+        query: GET_CLASSES,
+        variables: { level: newClass?.level },
+      });
+
+      const index = q.GetClasses.docs.findIndex(
+        (i: any) => i.id === data.RemoveClass.doc.id
+      );
+
+      q.GetClasses.docs.splice(index, 1);
+
+      //update
+      cache.writeQuery({
+        query: TEACHER_LIST,
+        variables: { level: newClass?.level },
+        data: { GetClasses: q.GetClasses },
+      });
+    },
+  });
+
+  // Update Class
+  const [UpdateClass, { loading: uLoading }] = useMutation(UPDATE_CLASS, {
+    onError: (err) =>
+      SetUMessage({
+        message: err.message,
+        failed: true,
+      }),
+    onCompleted: (data) => {
+      SetUMessage({
+        message: data.UpdateClass.message,
+        failed: false,
+      });
+    },
+    update: (cache, { data }) => {
+      const q: any = cache.readQuery({
+        query: GET_CLASSES,
+        variables: { level: newClass?.level },
+      });
+
+      const index = q.GetClasses.docs.findIndex(
+        (i: any) => i.id === data.UpdateClass.doc.id
+      );
+
+      q.GetClasses.docs.splice(index, 1);
+      q.GetClasses.docs.unshift(data.UpdateClass.doc);
+
+      //update
+      cache.writeQuery({
+        query: GET_CLASSES,
+        variables: { level: newClass?.level },
+        data: { GetClasses: q.GetClasses },
+      });
+    },
+  });
+
+  // Get Form Teacher basic info from Form Teacher object passed
+  const FormTeacher = (formTeacherObj: any) => {
+    if (formTeacherObj) {
+      return (
+        formTeacherObj.first_name +
+        " " +
+        formTeacherObj.middle_name +
+        " " +
+        formTeacherObj.last_name
+      );
+    } else {
+      return null;
+    }
+  };
   return (
     <>
       <Helmet>
@@ -197,6 +293,10 @@ const Class: FC<IProps> = ({ history }) => {
                           label="Level"
                         />
                         <LoadingState loading={lLoading} />
+                        <AlertMessage
+                          message={lMessage?.message}
+                          failed={lMessage?.failed}
+                        />
                       </div>
                       {showNewClass && (
                         <div className="col-sm-12">
@@ -213,7 +313,7 @@ const Class: FC<IProps> = ({ history }) => {
               </div>
             </div>
 
-            <LoadingState loading={loading} />
+            <LoadingState loading={loading || rLoading} />
             <AlertMessage message={message?.message} failed={message?.failed} />
             {data && data.GetClasses && (
               <div className="row justify-content-center ">
@@ -237,23 +337,46 @@ const Class: FC<IProps> = ({ history }) => {
                                 <td>{index + 1}</td>
                                 <td>{clas.name}</td>
                                 <td>
-                                  {clas.form_teacher?.first_name ||
+                                  {FormTeacher(clas.form_teacher) ||
                                     "None assigned"}
                                 </td>
                                 <td>{CLEAN_DATE(clas.created_at)}</td>
                                 <td className="row-actions text-center">
-                                  <a href="#" title="Edit">
+                                  <a
+                                    href="#"
+                                    title="Edit"
+                                    data-target="#editModal"
+                                    data-toggle="modal"
+                                    onClick={() => {
+                                      SetActiveClassId(clas.id);
+                                      SetEditClass({
+                                        name: clas.name,
+                                        formTeacher: {
+                                          id: clas.form_teacher?.id,
+                                          name: FormTeacher(clas.form_teacher),
+                                        },
+                                      });
+                                    }}
+                                  >
                                     <i className="os-icon os-icon-edit"></i>
                                   </a>
                                   <a
+                                    className="danger"
                                     href="#"
-                                    title="Assign Form teacher"
-                                    data-target="#FormTeacherModal"
-                                    data-toggle="modal"
+                                    title="Delete"
+                                    onClick={async () => {
+                                      let del = window.confirm(
+                                        `Are you sure you want to delete "${clas.name}"?`
+                                      );
+                                      if (del) {
+                                        await RemoveClass({
+                                          variables: {
+                                            id: clas.id,
+                                          },
+                                        });
+                                      }
+                                    }}
                                   >
-                                    <i className="os-icon os-icon-file-text"></i>
-                                  </a>
-                                  <a className="danger" href="#" title="Delete">
                                     <i className="os-icon os-icon-ui-15"></i>
                                   </a>
                                 </td>
@@ -271,17 +394,19 @@ const Class: FC<IProps> = ({ history }) => {
         </div>
       </div>
 
-      {/* Assign Form Teacher Modal*/}
+      {/* Edit Class Modal*/}
       <div
         aria-hidden="true"
         className="modal fade"
-        id="FormTeacherModal"
+        id="editModal"
         role="dialog"
       >
-        <div className="modal-dialog" role="document">
+        <div className="modal-dialog modal-lg" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Assign Form Teacher</h5>
+              <h5 className="modal-title">
+                Edit Class <hr />
+              </h5>
               <button
                 aria-label="Close"
                 className="close"
@@ -292,18 +417,67 @@ const Class: FC<IProps> = ({ history }) => {
               </button>
             </div>
             <div className="modal-body">
-              <form>
-                <Dropdown
-                  items={[
-                    { label: "Mrs. Antai Grace", value: "1" },
-                    { label: "Sir Innocent Okoli", value: "2" },
-                  ]}
-                  onSelect={() => {}}
-                  label="Select Form Teacher"
-                />
-                <button className="btn btn-primary" type="submit">
-                  Assign
-                </button>
+              <LoadingState loading={uLoading} />
+              <AlertMessage
+                message={uMessage?.message}
+                failed={uMessage?.failed}
+              />
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  await UpdateClass({
+                    variables: {
+                      id: activeClassId,
+                      name: editClass?.name,
+                      formTeacher: editClass?.formTeacher?.id,
+                    },
+                  });
+                }}
+              >
+                <div className="row">
+                  <div className="col-md-6">
+                    {/* Class name input */}
+                    <IconInput
+                      placeholder="Enter class name"
+                      label="Class Name"
+                      icon="os-icon-user-male-circle"
+                      required={true}
+                      type="text"
+                      initVal={editClass.name}
+                      onChange={(name: string) => {
+                        SetEditClass({
+                          ...editClass,
+                          name,
+                        });
+                      }}
+                    />
+                  </div>
+                  {/* Form Teacher input */}
+                  <div className="col-md-6">
+                    <label htmlFor="">Form Teacher</label>
+                    <br />
+                    <Select
+                      options={teachers}
+                      value={{
+                        label: editClass.formTeacher?.name,
+                        value: editClass.formTeacher?.id,
+                      }}
+                      onChange={(item: any) =>
+                        SetEditClass({
+                          ...editClass,
+                          formTeacher: { id: item.value, name: item.label },
+                        })
+                      }
+                      label="Form Teacher"
+                    />
+                    <LoadingState loading={tLoading} />
+                  </div>
+                  <div className="buttons-w col-12 pb-3">
+                    <button className="btn btn-primary" type="submit">
+                      Update Class
+                    </button>
+                  </div>
+                </div>
               </form>
             </div>
           </div>

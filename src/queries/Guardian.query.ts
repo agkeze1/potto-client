@@ -59,3 +59,27 @@ export const NEW_GUARDIAN_TYPE = gql`
     }
   }
 `;
+
+export const REMOVE_GUARDIAN_TYPE = gql`
+  mutation REMOVE_GUARDIAN_TYPE($id: ID!) {
+    RemoveGuardianType(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_GUARDIAN_TYPE = gql`
+  mutation UPDATE_GUARDIAN_TYPE($id: ID, $name: String) {
+    UpdateGuardianType(id: $id, name: $name) {
+      message
+      doc {
+        id
+        name
+        created_at
+      }
+    }
+  }
+`;

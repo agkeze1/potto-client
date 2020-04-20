@@ -159,6 +159,7 @@ const Subjects: FC<IProps> = ({ history }) => {
       });
     },
   });
+
   return (
     <>
       <Helmet>

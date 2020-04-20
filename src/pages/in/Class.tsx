@@ -202,7 +202,10 @@ const Class: FC<IProps> = ({ history }) => {
         " " +
         formTeacherObj.middle_name +
         " " +
-        formTeacherObj.last_name
+        formTeacherObj.last_name +
+        " ( " +
+        formTeacherObj.phone +
+        " )"
       );
     } else {
       return null;
@@ -333,7 +336,7 @@ const Class: FC<IProps> = ({ history }) => {
                         <tbody>
                           {data.GetClasses.docs.map(
                             (clas: any, index: number) => (
-                              <tr>
+                              <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{clas.name}</td>
                                 <td>
@@ -348,6 +351,7 @@ const Class: FC<IProps> = ({ history }) => {
                                     data-target="#editModal"
                                     data-toggle="modal"
                                     onClick={() => {
+                                      SetUMessage(undefined);
                                       SetActiveClassId(clas.id);
                                       SetEditClass({
                                         name: clas.name,
@@ -459,7 +463,9 @@ const Class: FC<IProps> = ({ history }) => {
                     <Select
                       options={teachers}
                       value={{
-                        label: editClass.formTeacher?.name,
+                        label: editClass.formTeacher?.name || (
+                          <span className="text-muted">Select...</span>
+                        ),
                         value: editClass.formTeacher?.id,
                       }}
                       onChange={(item: any) =>

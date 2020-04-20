@@ -10,9 +10,12 @@ export const CLASS_PROPS = gql`
       name
     }
     form_teacher {
+      id
       first_name
       middle_name
       last_name
+      phone
+      created_at
     }
   }
 `;

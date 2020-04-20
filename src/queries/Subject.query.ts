@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
-export const SUB_FRAGMENT = gql`
-  fragment SUB_FRAGMENT on Subject {
+export const SUB_PROPS = gql`
+  fragment SUB_PROPS on Subject {
     id
     title
     code
@@ -18,11 +18,11 @@ export const GET_SUBJECTS = gql`
     GetSubjects(school: $school) {
       message
       docs {
-        ...SUB_FRAGMENT
+        ...SUB_PROPS
       }
     }
   }
-  ${SUB_FRAGMENT}
+  ${SUB_PROPS}
 `;
 
 // Mutation Section
@@ -31,9 +31,32 @@ export const NEW_SUBJECT = gql`
     NewSubject(model: $model) {
       message
       doc {
-        ...SUB_FRAGMENT
+        ...SUB_PROPS
       }
     }
   }
-  ${SUB_FRAGMENT}
+  ${SUB_PROPS}
+`;
+
+export const REMOVE_SUBJECT = gql`
+  mutation REMOVE_SUBJECT($id: ID!) {
+    RemoveSubject(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_SUBJECT = gql`
+  mutation UPDATE_SUBJECT($id: ID!, $title: String!, $code: String!) {
+    UpdateSubject(id: $id, title: $title, code: $code) {
+      message
+      doc {
+        ...SUB_PROPS
+      }
+    }
+  }
+  ${SUB_PROPS}
 `;

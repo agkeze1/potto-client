@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { NavLink, Redirect } from "react-router-dom";
 // import { authService } from "../../../../services/Auth.Service";
 import { IProps } from "../../models/IProps";
+import { authService } from "../../services/Auth.Service";
 
 const Header: FC<IProps> = ({ location }) => {
   return (
@@ -69,7 +70,7 @@ const Header: FC<IProps> = ({ location }) => {
                 <li>
                   <a
                     onClick={() => {
-                      // authService.Logout();
+                      authService.Logout();
                       document.location.reload();
                     }}
                     href="#"

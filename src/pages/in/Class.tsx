@@ -339,8 +339,11 @@ const Class: FC<IProps> = ({ history }) => {
                                 <td>{index + 1}</td>
                                 <td>{clas.name}</td>
                                 <td>
-                                  {FormTeacher(clas.form_teacher) ||
-                                    "None assigned"}
+                                  {FormTeacher(clas.form_teacher) || (
+                                    <span className="text-danger">
+                                      None assigned!
+                                    </span>
+                                  )}
                                 </td>
                                 <td>{CLEAN_DATE(clas.created_at)}</td>
                                 <td className="row-actions text-center">
@@ -463,7 +466,7 @@ const Class: FC<IProps> = ({ history }) => {
                       options={teachers}
                       value={{
                         label: editClass.formTeacher?.name || (
-                          <span className="text-muted">Select...</span>
+                          <span className="text-gray">Select...</span>
                         ),
                         value: editClass.formTeacher?.id,
                       }}

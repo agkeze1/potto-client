@@ -365,14 +365,22 @@ const StudentList: FC<IProps> = ({ history }) => {
                   </div>
                   <div className="col-lg-4">
                     {/* Level input */}
-                    <Dropdown
-                      items={levels}
-                      onSelect={(item: any) => {
+                    <label>
+                      Level <br />
+                    </label>
+                    <Select
+                      options={levels}
+                      value={{
+                        label: searchByLevel?.name || (
+                          <span className="text-gray">Select...</span>
+                        ),
+                        value: searchByLevel?.id,
+                      }}
+                      onChange={(item: any) => {
                         SetCMessage(undefined);
                         SetSearchByLevel({ name: item.label, id: item.value });
                       }}
                       disabled={searchByRegNo ? true : false}
-                      label="Level"
                     />
                     {showLevelsRefresh && (
                       <button
@@ -399,13 +407,21 @@ const StudentList: FC<IProps> = ({ history }) => {
                   </div>
                   <div className="col-lg-4">
                     {/* Current Class input */}
-                    <Dropdown
-                      items={classes}
-                      onSelect={(item: any) => {
+                    <label>
+                      Class <br />
+                    </label>
+                    <Select
+                      options={classes}
+                      value={{
+                        label: searchByClass?.name || (
+                          <span className="text-gray">Select...</span>
+                        ),
+                        value: searchByClass?.id,
+                      }}
+                      onChange={(item: any) => {
                         SetSearchByClass({ name: item.label, id: item.value });
                       }}
                       disabled={searchByRegNo ? true : false}
-                      label="Class"
                     />
                     {showClassesRefresh && (
                       <button

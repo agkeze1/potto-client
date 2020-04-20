@@ -344,3 +344,6 @@ body.full-screen .all-wrapper,
 .react-datepicker-wrapper {
   width: 100% !important;
 }
+.text-gray {
+  color: #777;
+}

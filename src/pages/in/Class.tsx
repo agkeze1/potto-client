@@ -407,7 +407,7 @@ const Class: FC<IProps> = ({ history }) => {
         id="editModal"
         role="dialog"
       >
-        <div className="modal-dialog modal-lg" role="document">
+        <div className="modal-dialog modal-md" role="document">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">
@@ -441,7 +441,7 @@ const Class: FC<IProps> = ({ history }) => {
                 }}
               >
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-12">
                     {/* Class name input */}
                     <IconInput
                       placeholder="Enter class name"
@@ -459,7 +459,7 @@ const Class: FC<IProps> = ({ history }) => {
                     />
                   </div>
                   {/* Form Teacher input */}
-                  <div className="col-md-6">
+                  <div className="col-12">
                     <label htmlFor="">Form Teacher</label>
                     <br />
                     <Select
@@ -480,7 +480,7 @@ const Class: FC<IProps> = ({ history }) => {
                     />
                     <LoadingState loading={tLoading} />
                   </div>
-                  <div className="buttons-w col-12 pb-3">
+                  <div className="buttons-w col-12 pb-3 mt-4">
                     <button className="btn btn-primary" type="submit">
                       Update Class
                     </button>

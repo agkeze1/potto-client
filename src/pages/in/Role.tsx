@@ -4,7 +4,12 @@ import { GetAppName } from "../../context/App";
 import Select from "react-select";
 import IconInput from "../partials/IconInput";
 import { authService } from "../../services/Auth.Service";
-import { NEW_ROLE, GET_ROLES } from "../../queries/Role.query";
+import {
+  NEW_ROLE,
+  GET_ROLES,
+  REMOVE_ROLE,
+  UPDATE_ROLE,
+} from "../../queries/Role.query";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { IMessage } from "../../models/IMessage";
 import { IProps } from "../../models/IProps";
@@ -16,10 +21,19 @@ const Role: FC<IProps> = ({ history }) => {
   const [message, SetMessage] = useState<IMessage>();
   const [lMessage, SetLMessage] = useState<IMessage>();
 
+  const [rMessage, SetRMessage] = useState<IMessage>();
+  const [uMessage, SetUMessage] = useState<IMessage>();
+  const [editRole, SetEditRole] = useState<any>({});
+
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
     history.push("/login");
   }
+
+  const scrollTop = () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
 
   // Create New Role
   const [NewRole, { loading }] = useMutation(NEW_ROLE, {
@@ -55,6 +69,65 @@ const Role: FC<IProps> = ({ history }) => {
         message: err.message,
         failed: true,
       }),
+  });
+
+  // Remove Role
+  const [RemoveRole, { loading: rLoading }] = useMutation(REMOVE_ROLE, {
+    onError: (err) =>
+      SetRMessage({
+        message: err.message,
+        failed: true,
+      }),
+    update: (cache, { data }) => {
+      const q: any = cache.readQuery({
+        query: GET_ROLES,
+      });
+
+      const index = q.GetRoles.docs.findIndex(
+        (i: any) => i.id === data.RemoveRole.doc.id
+      );
+
+      q.GetRoles.docs.splice(index, 1);
+
+      //update
+      cache.writeQuery({
+        query: GET_ROLES,
+        data: { GetRoles: q.GetRoles },
+      });
+    },
+  });
+
+  // Update Role
+  const [UpdateRole, { loading: uLoading }] = useMutation(UPDATE_ROLE, {
+    onError: (err) =>
+      SetUMessage({
+        message: err.message,
+        failed: true,
+      }),
+    onCompleted: (data) => {
+      SetUMessage({
+        message: data.UpdateRole.message,
+        failed: false,
+      });
+    },
+    update: (cache, { data }) => {
+      const q: any = cache.readQuery({
+        query: GET_ROLES,
+      });
+
+      const index = q.GetRoles.docs.findIndex(
+        (i: any) => i.id === data.UpdateRole.doc.id
+      );
+
+      q.GetRoles.docs.splice(index, 1);
+      q.GetRoles.docs.unshift(data.UpdateRole.doc);
+
+      //update
+      cache.writeQuery({
+        query: GET_ROLES,
+        data: { GetTRoles: q.GetTRoles },
+      });
+    },
   });
 
   return (
@@ -132,7 +205,7 @@ const Role: FC<IProps> = ({ history }) => {
                 {/* Role List */}
                 <div className="row justify-content-center ">
                   <div className="col-lg-12 mt-5">
-                    <LoadingState loading={lLoading} />
+                    <LoadingState loading={lLoading || rLoading} />
                     <AlertMessage
                       message={lMessage?.message}
                       failed={lMessage?.failed}
@@ -158,9 +231,42 @@ const Role: FC<IProps> = ({ history }) => {
                                     <td>{role.desc}</td>
                                     <td className="row-actions text-center">
                                       <a
+                                        href="#"
+                                        title="Edit"
+                                        onClick={() => {
+                                          SetUMessage(undefined);
+                                          SetEditRole({
+                                            id: role.id,
+                                            name: role.name,
+                                            desc: role.desc,
+                                          });
+                                          if (editRole) {
+                                            setTimeout(() => {
+                                              document
+                                                .getElementById("btnModal")
+                                                ?.click();
+                                            }, 0);
+                                          }
+                                        }}
+                                      >
+                                        <i className="os-icon os-icon-edit"></i>
+                                      </a>
+                                      <a
                                         className="danger"
                                         href="#"
                                         title="Delete"
+                                        onClick={async () => {
+                                          let del = window.confirm(
+                                            `Are you sure you want to delete "${role.name}"?`
+                                          );
+                                          if (del) {
+                                            await RemoveRole({
+                                              variables: {
+                                                id: role.id,
+                                              },
+                                            });
+                                          }
+                                        }}
                                       >
                                         <i className="os-icon os-icon-ui-15"></i>
                                       </a>
@@ -171,6 +277,15 @@ const Role: FC<IProps> = ({ history }) => {
                             </tbody>
                           </table>
                         </div>
+
+                        {/* Hidden button to lunch edit modal */}
+                        <button
+                          type="button"
+                          id="btnModal"
+                          data-target="#editModal"
+                          data-toggle="modal"
+                          style={{ display: "none" }}
+                        ></button>
                         {/* <div className="text-center pt-5 fade-in">
                         <h2 className="text-danger">No Navigation Group found!</h2>
                       </div> */}
@@ -183,6 +298,93 @@ const Role: FC<IProps> = ({ history }) => {
           </div>
         </div>
       </div>
+      {/* Edit Role Modal */}
+      {editRole && (
+        <div
+          aria-hidden="true"
+          className="modal fade"
+          id="editModal"
+          role="dialog"
+        >
+          <div className="modal-dialog modal-md" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Edit Role <hr />
+                </h5>
+
+                <button className="close" data-dismiss="modal" type="button">
+                  <span aria-hidden="true"> &times;</span>
+                </button>
+              </div>
+              <div className="modal-body pb-2">
+                <LoadingState loading={uLoading} />
+                <AlertMessage
+                  message={uMessage?.message}
+                  failed={uMessage?.failed}
+                />
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    // Scroll to top of page
+                    scrollTop();
+                    SetUMessage(undefined);
+                    UpdateRole({
+                      variables: {
+                        id: editRole?.id,
+                        name: editRole?.name,
+                        desc: editRole?.desc,
+                      },
+                    });
+                  }}
+                >
+                  <div className="row">
+                    {/* Role name input */}
+                    <div className="col-12">
+                      <IconInput
+                        placeholder="Enter Role name"
+                        label="Role"
+                        icon="os-icon-email-2-at2"
+                        required={true}
+                        type="text"
+                        initVal={editRole?.name}
+                        onChange={(name: string) => {
+                          SetEditRole({
+                            ...editRole,
+                            name,
+                          });
+                        }}
+                      />
+                    </div>
+                    {/* Role description input */}
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label> Description </label>
+                        <textarea
+                          className="form-control"
+                          placeholder="Enter description"
+                          value={editRole?.desc}
+                          onChange={({ currentTarget }) => {
+                            SetEditRole({
+                              ...editRole,
+                              desc: currentTarget.value,
+                            });
+                          }}
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="buttons-w mb-5">
+                    <button className="btn btn-primary px-3" type="submit">
+                      Update Role
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

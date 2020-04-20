@@ -391,7 +391,7 @@ const Subjects: FC<IProps> = ({ history }) => {
           id="editModal"
           role="dialog"
         >
-          <div className="modal-dialog modal-lg" role="document">
+          <div className="modal-dialog modal-md" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
@@ -424,7 +424,7 @@ const Subjects: FC<IProps> = ({ history }) => {
                 >
                   <div className="row">
                     {/* Subject title input */}
-                    <div className="col-sm-6">
+                    <div className="col-12">
                       <IconInput
                         placeholder="Enter subject title"
                         label="Title"
@@ -441,7 +441,7 @@ const Subjects: FC<IProps> = ({ history }) => {
                       />
                     </div>
                     {/* Subject code input */}
-                    <div className="col-sm-6">
+                    <div className="col-12">
                       <IconInput
                         placeholder="Enter subject code"
                         label="Code"
@@ -458,7 +458,7 @@ const Subjects: FC<IProps> = ({ history }) => {
                       />
                     </div>
                   </div>
-                  <div className="buttons-w mb-5">
+                  <div className="buttons-w mb-5 mt-2">
                     <button className="btn btn-primary px-3" type="submit">
                       Update Subject
                     </button>

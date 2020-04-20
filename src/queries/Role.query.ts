@@ -34,3 +34,26 @@ export const NEW_ROLE = gql`
   }
   ${ROLE_PROPS}
 `;
+
+export const REMOVE_ROLE = gql`
+  mutation REMOVE_ROLE($id: ID!) {
+    RemoveRole(id: $id) {
+      message
+      doc {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_ROLE = gql`
+  mutation UPDATE_ROLE($id: ID!, $name: String!, $desc: String!) {
+    UpdateRole(id: $id, name: $name, desc: $desc) {
+      message
+      doc {
+        ...ROLE_PROPS
+      }
+    }
+  }
+  ${ROLE_PROPS}
+`;

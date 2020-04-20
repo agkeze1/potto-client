@@ -27,7 +27,6 @@ const Class: FC<IProps> = ({ history }) => {
   const [uMessage, SetUMessage] = useState<IMessage>();
   const [rMessage, SetRMessage] = useState<IMessage>();
   const [newClass, SetNewClass] = useState<any>({});
-  const [activeLevelId, SetActiveLevelId] = useState<any>();
   const [showNewClass, SetShowNewClass] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
   const [teachers, SetTeachers] = useState<any>([]);

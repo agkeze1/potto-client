@@ -35,8 +35,8 @@ export const GET_CLASSES = gql`
 
 // Mutation Section
 export const NEW_CLASS = gql`
-  mutation NEW_CLASS($name: String!, $level: ID!) {
-    NewClass(name: $name, level: $level) {
+  mutation NEW_CLASS($name: String!, $level: ID!, $formTeacher: ID) {
+    NewClass(name: $name, level: $level, formTeacher: $formTeacher) {
       message
       doc {
         ...CLASS_PROPS

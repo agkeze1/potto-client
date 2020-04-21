@@ -17,6 +17,7 @@ import AlertMessage from "../partials/AlertMessage";
 import { IMessage } from "../../models/IMessage";
 import { Subject } from "../../models/Subject.model";
 import IconInput from "../partials/IconInput";
+import SwitchInput from "../partials/SwitchInput";
 
 const Subjects: FC<IProps> = ({ history }) => {
   const [message, SetMessage] = useState<IMessage>();
@@ -25,7 +26,7 @@ const Subjects: FC<IProps> = ({ history }) => {
   const [uMessage, SetUMessage] = useState<IMessage>();
   const [newSubject, SetNewSubject] = useState<any>();
   const [levels, SetLevel] = useState<any>([]);
-
+  const [showNewSubject, SetShowNewSubject] = useState<boolean>(false);
   const [editSubject, SetEditSubject] = useState<any>({});
 
   // Check if user is authenticated
@@ -170,18 +171,111 @@ const Subjects: FC<IProps> = ({ history }) => {
           <div className="content-i">
             <div className="content-box">
               <div className="element-wrapper">
-                <span className="element-actions">
-                  <button
-                    className="btn btn-primary "
-                    data-target="#NewSubjectModal"
-                    data-toggle="modal"
-                    type="button"
-                  >
-                    Create New
-                  </button>
-                </span>
+                <div className="element-actions" style={{ marginTop: "-20px" }}>
+                  {/* New Subject Switch */}
+                  <SwitchInput
+                    isOn={showNewSubject}
+                    handleToggle={() => {
+                      SetShowNewSubject(!showNewSubject);
+                    }}
+                    label="New Subject"
+                  />
+                </div>
                 <h5 className="element-header">Subjects</h5>
-                <div className="row justify-content-center ">
+                <div className="row">
+                  {showNewSubject && (
+                    <div className="col-12">
+                      {/* New Subject  */}
+                      <div className="element-box">
+                        <h6 className="element-header">New Subject</h6>
+
+                        <div className="row justify-content-center">
+                          <div className="col-lg-12">
+                            <LoadingState loading={nLoading} />
+                            <AlertMessage
+                              message={nMessage?.message}
+                              failed={nMessage?.failed}
+                            />
+                            <form
+                              onSubmit={async (e) => {
+                                e.preventDefault();
+                                SetNMessage(undefined);
+                                await NewSubject({
+                                  variables: {
+                                    model: { ...newSubject, school: school.id },
+                                  },
+                                });
+                              }}
+                            >
+                              <div className="row">
+                                <div className="col-6">
+                                  {/* Class subject title input */}
+                                  <IconInput
+                                    placeholder="Enter subject title"
+                                    label="Subject Title"
+                                    icon="os-icon-user-male-circle"
+                                    required={true}
+                                    type="text"
+                                    onChange={(title: string) => {
+                                      SetNewSubject({
+                                        ...newSubject,
+                                        title,
+                                      });
+                                    }}
+                                  />
+                                </div>
+                                <div className="col-6">
+                                  {/* Class subject title code */}
+                                  <IconInput
+                                    placeholder="Enter subject code"
+                                    label="Subject Code"
+                                    icon="os-icon-user-male-circle"
+                                    required={true}
+                                    type="text"
+                                    onChange={(code: string) => {
+                                      SetNewSubject({
+                                        ...newSubject,
+                                        code,
+                                      });
+                                    }}
+                                  />
+                                </div>
+                                <div className="col-md-6">
+                                  <div className="form-group">
+                                    <label htmlFor="departmental">Levels</label>
+                                    <Select
+                                      isMulti={true}
+                                      options={levels}
+                                      onChange={(items: any) => {
+                                        SetNewSubject({
+                                          ...newSubject,
+                                          levels: items.map(
+                                            (i: any) => i.value
+                                          ),
+                                        });
+                                      }}
+                                    />
+                                  </div>
+                                  <LoadingState loading={lLoading} />
+                                </div>
+                                <div className="col-12">
+                                  <button
+                                    className="btn btn-primary mt-3"
+                                    type="submit"
+                                  >
+                                    {" "}
+                                    Save New
+                                  </button>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Subject list */}
                   <div className="col-lg-12">
                     <LoadingState loading={loading || rLoading} />
                     <AlertMessage
@@ -296,96 +390,6 @@ const Subjects: FC<IProps> = ({ history }) => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Modal for New Subject*/}
-      <div
-        aria-hidden="true"
-        className="modal fade"
-        id="NewSubjectModal"
-        role="dialog"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Add New Subject</h5>
-              <button
-                aria-label="Close"
-                className="close"
-                data-dismiss="modal"
-                type="button"
-              >
-                <span aria-hidden="true"> ×</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  SetNMessage(undefined);
-                  await NewSubject({
-                    variables: {
-                      model: { ...newSubject, school: school.id },
-                    },
-                  });
-                }}
-              >
-                <LoadingState loading={nLoading} />
-                <AlertMessage
-                  message={nMessage?.message}
-                  failed={nMessage?.failed}
-                />
-
-                {/* Class subject title input */}
-                <IconInput
-                  placeholder="Enter subject title"
-                  label="Subject Title"
-                  icon="os-icon-user-male-circle"
-                  required={true}
-                  type="text"
-                  onChange={(title: string) => {
-                    SetNewSubject({
-                      ...newSubject,
-                      title,
-                    });
-                  }}
-                />
-                {/* Class subject title code */}
-                <IconInput
-                  placeholder="Enter subject code"
-                  label="Subject Code"
-                  icon="os-icon-user-male-circle"
-                  required={true}
-                  type="text"
-                  onChange={(code: string) => {
-                    SetNewSubject({
-                      ...newSubject,
-                      code,
-                    });
-                  }}
-                />
-                <div className="form-group">
-                  <label htmlFor="departmental">Levels</label>
-                  <Select
-                    isMulti={true}
-                    options={levels}
-                    onChange={(items: any) => {
-                      SetNewSubject({
-                        ...newSubject,
-                        levels: items.map((i: any) => i.value),
-                      });
-                    }}
-                  />
-                </div>
-                <LoadingState loading={lLoading} />
-                <button className="btn btn-primary mt-3" type="submit">
-                  {" "}
-                  Save New
-                </button>
-              </form>
             </div>
           </div>
         </div>

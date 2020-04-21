@@ -232,6 +232,8 @@ const Class: FC<IProps> = ({ history }) => {
             <h5 className="element-header">Class</h5>
             {/* Show New class Inputs */}
             <div className="element-box">
+              {showNewClass && <h6 className="element-header">New Class</h6>}
+
               <div className="row justify-content-center">
                 <div className="col-lg-12">
                   <LoadingState loading={nLoading} />

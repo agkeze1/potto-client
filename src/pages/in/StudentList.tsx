@@ -61,6 +61,8 @@ const StudentList: FC<IProps> = ({ history }) => {
   const [searchByClass, SetSearchByClass] = useState<any>();
   const [searchMsg, SetSearchMsg] = useState<IMessage>();
 
+  const [searchedStu, SetSearchedStu] = useState<boolean>();
+
   // Pagination
   const [pageResult, SetPageResult] = useState<any>({
     docs: [],
@@ -163,6 +165,7 @@ const StudentList: FC<IProps> = ({ history }) => {
           failed: true,
         }),
       onCompleted: (regNoData: any) => {
+        SetSearchedStu(true);
         if (regNoData.GetStudentByRegNo) {
           let docs = [];
           docs.push(regNoData.GetStudentByRegNo.doc);
@@ -193,6 +196,7 @@ const StudentList: FC<IProps> = ({ history }) => {
         failed: true,
       }),
     onCompleted: (levelData) => {
+      SetSearchedStu(true);
       if (levelData.GetStudentsOfSameLevel) {
         SetPageResult({
           ...levelData.GetStudentsOfSameLevel,
@@ -211,6 +215,7 @@ const StudentList: FC<IProps> = ({ history }) => {
           failed: true,
         }),
       onCompleted: (classData) => {
+        SetSearchedStu(true);
         if (classData.GetStudentOfSameClass) {
           SetPageResult({
             ...classData.GetStudentOfSameClass,
@@ -246,6 +251,10 @@ const StudentList: FC<IProps> = ({ history }) => {
   const SerchRecord = () => {
     SetMessage(undefined);
     SetSearchMsg(undefined);
+    SetPageResult({
+      ...pageResult,
+      docs: [],
+    });
     if (searchByRegNo) {
       GetStuByRegNo({ variables: { id: searchByRegNo } });
     } else if (searchByClass) {
@@ -358,7 +367,10 @@ const StudentList: FC<IProps> = ({ history }) => {
                       icon="os-icon-ui-09"
                       required={true}
                       type="text"
+                      initVal={searchByRegNo}
                       onChange={(reg_no: string) => {
+                        SetSearchByClass(undefined);
+                        SetSearchByLevel(undefined);
                         SetSearchByRegNo(reg_no);
                       }}
                     />
@@ -378,6 +390,8 @@ const StudentList: FC<IProps> = ({ history }) => {
                       }}
                       onChange={(item: any) => {
                         SetCMessage(undefined);
+                        SetSearchByClass(undefined);
+                        SetSearchByRegNo("");
                         SetSearchByLevel({ name: item.label, id: item.value });
                       }}
                       disabled={searchByRegNo ? true : false}
@@ -419,6 +433,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                         value: searchByClass?.id,
                       }}
                       onChange={(item: any) => {
+                        SetSearchByRegNo(undefined);
                         SetSearchByClass({ name: item.label, id: item.value });
                       }}
                       disabled={searchByRegNo ? true : false}
@@ -489,139 +504,152 @@ const StudentList: FC<IProps> = ({ history }) => {
                   failed={rMessage?.failed}
                 />
                 {pageResult.docs.length > 0 && (
-                  <div className="element-box-tp">
-                    <div className="table-responsive">
-                      <h6 className="element-header">Student List</h6>
-                      <table className="table table-padded">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Image</th>
-                            <th>Fullname</th>
-                            <th>Reg. No</th>
-                            <th>Class</th>
-                            <th>Gender</th>
-                            <th className="text-center">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {pageResult.docs.map((stu: any, index: number) => (
-                            <tr key={index}>
-                              <td>{index + 1}</td>
-                              <td>
-                                <div
-                                  className="user-with-avatar clickable"
-                                  data-target="#imageModal"
-                                  data-toggle="modal"
-                                >
-                                  <img src={stu.passport} alt="" />
-                                </div>
-                              </td>
-                              <td>
-                                {stu.first_name +
-                                  " " +
-                                  stu.middle_name +
-                                  " " +
-                                  stu.surname}
-                              </td>
-                              <td>{stu.reg_no}</td>
-                              <td>{stu.current_class?.name}</td>
-                              <td>{stu.gender}</td>
-                              <td className="row-actions text-center">
-                                <a
-                                  href="#"
-                                  title="View more"
-                                  onClick={() => {
-                                    SetShowProfile(true);
-                                  }}
-                                >
-                                  <i className="os-icon os-icon-eye"></i>
-                                </a>
-                                <a
-                                  href="#"
-                                  title="Edit"
-                                  onClick={() => {
-                                    SetActiveStudentId(stu.id);
-                                    SetEditStudent({
-                                      firstname: stu.first_name,
-                                      middlename: stu.middle_name,
-                                      surname: stu.surname,
-                                      regNo: stu.reg_no,
-                                      gender: stu.gender,
-                                      address: stu.address,
-                                      dob: stu.dob,
-                                      state: stu.state,
-                                      lga: stu.lga,
-                                    });
-                                    if (editStudent) {
-                                      setTimeout(() => {
-                                        document
-                                          .getElementById("btnModal")
-                                          ?.click();
-                                      }, 0);
-                                    }
-                                  }}
-                                >
-                                  <i className="os-icon os-icon-edit"></i>
-                                </a>
-                                <a
-                                  className="danger"
-                                  href="#"
-                                  title="Delete"
-                                  onClick={async () => {
-                                    let del = window.confirm(
-                                      `Are you sure you want to delete "${
-                                        stu.firstname +
-                                        " " +
-                                        stu.middlename +
-                                        " " +
-                                        stu.surname
-                                      }"?`
-                                    );
-                                    if (del) {
-                                      await RemoveStudent({
-                                        variables: {
-                                          id: stu.id,
-                                        },
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <i className="os-icon os-icon-ui-15"></i>
-                                </a>
-                              </td>
+                  <>
+                    <div className="element-box-tp">
+                      <div className="table-responsive">
+                        <h6 className="element-header">
+                          Returned Students of{" "}
+                          <b className="text-primary">
+                            ( {pageResult?.docs[0]?.current_class?.level?.name}{" "}
+                            )
+                          </b>
+                        </h6>
+                        <table className="table table-padded">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Image</th>
+                              <th>Fullname</th>
+                              <th>Reg. No</th>
+                              <th>Class</th>
+                              <th>Gender</th>
+                              <th className="text-center">Actions</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    {/* Hidden button to lunch edit modal */}
-                    <button
-                      type="button"
-                      id="btnModal"
-                      data-target="#editModal"
-                      data-toggle="modal"
-                      style={{ display: "none" }}
-                    ></button>
-                    {/* <div className="text-center pt-5 fade-in">
+                          </thead>
+                          <tbody>
+                            {pageResult.docs.map((stu: any, index: number) => (
+                              <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>
+                                  <div
+                                    className="user-with-avatar clickable"
+                                    data-target="#imageModal"
+                                    data-toggle="modal"
+                                  >
+                                    <img src={stu.passport} alt="" />
+                                  </div>
+                                </td>
+                                <td>
+                                  {stu.first_name +
+                                    " " +
+                                    stu.middle_name +
+                                    " " +
+                                    stu.surname}
+                                </td>
+                                <td>{stu.reg_no}</td>
+                                <td>{stu.current_class?.name}</td>
+                                <td>{stu.gender}</td>
+                                <td className="row-actions text-center">
+                                  <a
+                                    href="#"
+                                    title="View more"
+                                    onClick={() => {
+                                      SetShowProfile(true);
+                                    }}
+                                  >
+                                    <i className="os-icon os-icon-eye"></i>
+                                  </a>
+                                  <a
+                                    href="#"
+                                    title="Edit"
+                                    onClick={() => {
+                                      SetActiveStudentId(stu.id);
+                                      SetEditStudent({
+                                        firstname: stu.first_name,
+                                        middlename: stu.middle_name,
+                                        surname: stu.surname,
+                                        regNo: stu.reg_no,
+                                        gender: stu.gender,
+                                        address: stu.address,
+                                        dob: stu.dob,
+                                        state: stu.state,
+                                        lga: stu.lga,
+                                      });
+                                      if (editStudent) {
+                                        setTimeout(() => {
+                                          document
+                                            .getElementById("btnModal")
+                                            ?.click();
+                                        }, 0);
+                                      }
+                                    }}
+                                  >
+                                    <i className="os-icon os-icon-edit"></i>
+                                  </a>
+                                  <a
+                                    className="danger"
+                                    href="#"
+                                    title="Delete"
+                                    onClick={async () => {
+                                      let del = window.confirm(
+                                        `Are you sure you want to delete "${
+                                          stu.firstname +
+                                          " " +
+                                          stu.middlename +
+                                          " " +
+                                          stu.surname
+                                        }"?`
+                                      );
+                                      if (del) {
+                                        await RemoveStudent({
+                                          variables: {
+                                            id: stu.id,
+                                          },
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <i className="os-icon os-icon-ui-15"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      {/* Hidden button to lunch edit modal */}
+                      <button
+                        type="button"
+                        id="btnModal"
+                        data-target="#editModal"
+                        data-toggle="modal"
+                        style={{ display: "none" }}
+                      ></button>
+                      {/* <div className="text-center pt-5 fade-in">
                     <h2 className="text-danger">No Student found!</h2>
                   </div> */}
-                  </div>
+                    </div>
+                    {/* Pagination */}
+                    <div className="col-lg fade-in">
+                      <div className="element-box">
+                        <Pagination
+                          length={pageResult.totalDocs}
+                          {...pageResult}
+                          onPageClicked={(page: number) => {
+                            setPage(page);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
 
-              {/* Pagination */}
-              <div className="col-lg fade-in">
-                <div className="element-box">
-                  <Pagination
-                    length={pageResult.totalDocs}
-                    {...pageResult}
-                    onPageClicked={(page: number) => {
-                      setPage(page);
-                    }}
-                  />
+              {searchedStu && pageResult.docs.length === 0 && (
+                <div className="text-center pt-5 fade-in">
+                  <h3 className="text-danger"> No Student record found!</h3>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

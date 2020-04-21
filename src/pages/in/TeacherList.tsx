@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FC } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
-import { NavLink } from "react-router-dom";
+import { NavLink, Redirect } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 import TeacherTTAccordion from "../partials/TeacherTTAccordion";
 import { useQuery, useMutation } from "@apollo/react-hooks";
@@ -145,42 +145,51 @@ const TeacherList: FC<IProps> = ({ history }) => {
             {!showProfile && (
               <>
                 <span className="element-actions mt-n2">
-                  <button className="btn btn-primary" type="button">
+                  <button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={() => {
+                      history.push("/in/new-teacher");
+                    }}
+                  >
                     Create New
                   </button>
                 </span>
                 <h5 className="element-header">Teacher List</h5>
-                <div className="element-box">
-                  <div className="row justify-content-center">
-                    <div className="col-lg-12">
-                      <label htmlFor="">Filter Teacher</label>
-                    </div>
-                    <div className="col-lg-12">
-                      <div className="row">
-                        <div className="col-sm-12 col-md-8 col-lg-10">
-                          <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                              <div className="input-group-text">
-                                <div className="os-icon os-icon-search"></div>
+                {data && data.GetTeachers.docs.length > 0 && (
+                  <div className="element-box">
+                    <div className="row justify-content-center">
+                      <div className="col-lg-12">
+                        <label htmlFor="">Filter Teacher</label>
+                      </div>
+                      <div className="col-lg-12">
+                        <div className="row">
+                          <div className="col-sm-12 col-md-8 col-lg-10">
+                            <div className="input-group mb-3">
+                              <div className="input-group-prepend">
+                                <div className="input-group-text">
+                                  <div className="os-icon os-icon-search"></div>
+                                </div>
                               </div>
+                              <input
+                                className="form-control"
+                                placeholder="Enter teacher's email or phone"
+                              />
                             </div>
-                            <input
-                              className="form-control"
-                              placeholder="Enter teacher's email or phone"
-                            />
                           </div>
-                        </div>
-                        <div className="col-sm-12 col-md-4 col-lg-2">
-                          <div className="buttons-w">
-                            <button className="btn btn-primary">
-                              Search Teacher
-                            </button>
+                          <div className="col-sm-12 col-md-4 col-lg-2">
+                            <div className="buttons-w">
+                              <button className="btn btn-primary">
+                                Search Teacher
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
+
                 <LoadingState loading={loading || rLoading} />
                 <AlertMessage
                   failed={message?.failed}
@@ -190,7 +199,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                   failed={rMessage?.failed}
                   message={rMessage?.message}
                 />
-                {data && data.GetTeachers && (
+                {data && data.GetTeachers.docs.length > 0 && (
                   <div className="row justify-content-center ">
                     <div className="col-lg-12 pt-5">
                       <div className="element-box-tp">
@@ -322,10 +331,6 @@ const TeacherList: FC<IProps> = ({ history }) => {
                           data-toggle="modal"
                           style={{ display: "none" }}
                         ></button>
-
-                        {/* <div className="text-center pt-5 fade-in">
-                    <h2 className="text-danger">No Teacher record found!</h2>
-                  </div> */}
                       </div>
                     </div>
 
@@ -346,6 +351,11 @@ const TeacherList: FC<IProps> = ({ history }) => {
                   </div>
                 )}
               </>
+            )}
+            {data && data.GetTeachers.docs.length === 0 && (
+              <div className="text-center pt-5 fade-in">
+                <h3 className="text-danger"> No Teacher record found!</h3>
+              </div>
             )}
 
             {/* Profile Section */}

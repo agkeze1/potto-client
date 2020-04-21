@@ -192,7 +192,7 @@ const Subjects: FC<IProps> = ({ history }) => {
                       message={rMessage?.message}
                       failed={rMessage?.failed}
                     />
-                    {data && (
+                    {data && data.GetSubjects.docs.length > 0 && (
                       <div className="element-box-tp">
                         <div className="table-responsive">
                           <table className="table table-padded">
@@ -283,6 +283,14 @@ const Subjects: FC<IProps> = ({ history }) => {
                         {/* <div className="text-center pt-5 fade-in">
                         <h2 className="text-danger">No Subject found!</h2>
                       </div> */}
+                      </div>
+                    )}
+                    {data && data.GetSubjects.docs.length === 0 && (
+                      <div className="text-center pt-5 fade-in">
+                        <h3 className="text-danger">
+                          {" "}
+                          No Subject record found!
+                        </h3>
                       </div>
                     )}
                   </div>

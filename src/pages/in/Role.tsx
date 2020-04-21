@@ -142,8 +142,8 @@ const Role: FC<IProps> = ({ history }) => {
               <div className="element-wrapper">
                 <h5 className="element-header">Role</h5>
                 <div className="element-box">
-                  <div className="row justify-content-center">
-                    <div className="col-lg-12"></div>
+                  <h6 className="element-header">New Role</h6>
+                  <div className="row">
                     <div className="col-lg-12">
                       <AlertMessage
                         message={message?.message}
@@ -210,7 +210,7 @@ const Role: FC<IProps> = ({ history }) => {
                       message={lMessage?.message}
                       failed={lMessage?.failed}
                     />
-                    {lData && (
+                    {lData && lData.GetRoles.docs.length > 0 && (
                       <div className="element-box-tp">
                         <div className="table-responsive">
                           <table className="table table-padded">
@@ -289,6 +289,11 @@ const Role: FC<IProps> = ({ history }) => {
                         {/* <div className="text-center pt-5 fade-in">
                         <h2 className="text-danger">No Navigation Group found!</h2>
                       </div> */}
+                      </div>
+                    )}
+                    {lData && lData.GetRoles.docs.length === 0 && (
+                      <div className="text-center pt-5 fade-in">
+                        <h3 className="text-danger"> No Role record found!</h3>
                       </div>
                     )}
                   </div>

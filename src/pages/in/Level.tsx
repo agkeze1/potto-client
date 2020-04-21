@@ -212,7 +212,7 @@ const Level: FC<IProps> = ({ history }) => {
                       failed={message?.failed}
                     />
                     <LoadingState loading={loading || rLoading} />
-                    {data && (
+                    {data && data.GetLevels.docs.length > 0 && (
                       <div className="element-box-tp">
                         <div className="table-responsive">
                           <table className="table table-padded">
@@ -277,12 +277,11 @@ const Level: FC<IProps> = ({ history }) => {
                         </div>
                       </div>
                     )}
-
-                    {/* {!data && (
+                    {data && data.GetLevels.docs.length === 0 && (
                       <div className="text-center pt-5 fade-in">
-                        <h2 className="text-danger">No Level found!</h2>
+                        <h3 className="text-danger"> No Level record found!</h3>
                       </div>
-                    )} */}
+                    )}
                   </div>
                 </div>
               </div>

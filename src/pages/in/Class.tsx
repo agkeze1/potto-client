@@ -210,6 +210,7 @@ const Class: FC<IProps> = ({ history }) => {
       return null;
     }
   };
+
   return (
     <>
       <Helmet>
@@ -317,7 +318,7 @@ const Class: FC<IProps> = ({ history }) => {
 
             <LoadingState loading={loading || rLoading} />
             <AlertMessage message={message?.message} failed={message?.failed} />
-            {data && data.GetClasses && (
+            {data && data.GetClasses.docs.length > 0 && (
               <div className="row justify-content-center ">
                 <div className="col-lg-12 pt-5">
                   <div className="element-box-tp">
@@ -394,6 +395,11 @@ const Class: FC<IProps> = ({ history }) => {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+            {data && data.GetClasses.docs.length === 0 && (
+              <div className="text-center pt-5 fade-in">
+                <h3 className="text-danger"> No Class record found!</h3>
               </div>
             )}
           </div>

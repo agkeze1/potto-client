@@ -215,7 +215,7 @@ const GuardianType: FC<IProps> = ({ history }) => {
                         />
                         <LoadingState loading={loading || rLoading} />
 
-                        {data && (
+                        {data && data.GetGuardianTypes.docs.length > 0 && (
                           <table className="table table-padded">
                             <thead>
                               <tr>
@@ -276,6 +276,14 @@ const GuardianType: FC<IProps> = ({ history }) => {
                               )}
                             </tbody>
                           </table>
+                        )}
+                        {data && data.GetGuardianTypes.docs.length === 0 && (
+                          <div className="text-center pt-5 fade-in">
+                            <h3 className="text-danger">
+                              {" "}
+                              No Guardian Type record found!
+                            </h3>
+                          </div>
                         )}
                         {/* Hidden button to lunch edit modal */}
                         <button

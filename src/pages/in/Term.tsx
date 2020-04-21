@@ -195,8 +195,8 @@ const Term: FC<IProps> = ({ history }) => {
                       failed={lMessage?.failed || rMessage?.failed}
                     />
                     <LoadingState loading={lLoading || rLoading} />
-                    <div className="element-box-tp">
-                      {lData && (
+                    {lData && lData.GetTerms.docs.length > 0 && (
+                      <div className="element-box-tp">
                         <div className="table-responsive">
                           <table className="table table-padded">
                             <thead>
@@ -255,8 +255,13 @@ const Term: FC<IProps> = ({ history }) => {
                             </tbody>
                           </table>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
+                    {lData && lData.GetTerms.docs.length === 0 && (
+                      <div className="text-center pt-5 fade-in">
+                        <h3 className="text-danger"> No Term record found!</h3>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

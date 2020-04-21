@@ -12,6 +12,7 @@ import { NEW_TEACHER } from "../../queries/Teacher.query";
 import gender from "../../data/gender.json";
 import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
+import DatePicker from "react-datepicker";
 
 const NewTeacher: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
@@ -164,28 +165,22 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         }}
                       />
                     </div>
-                    <div className="col-sm-6">
+                    <div className="col-sm-6 mb-3">
                       {/* Employment Date input */}
                       <label htmlFor="">Employment Date </label>
-                      <div className="input-group mb-3">
-                        <div className="input-group-prepend">
-                          <div className="input-group-text">
-                            <div className="os-icon os-icon-calendar"></div>
-                          </div>
-                        </div>
-                        <input
-                          type="date"
-                          className="form-control"
-                          required
-                          onChange={({ currentTarget }) => {
-                            SetRecord({
-                              ...record,
-                              employmentDate:
-                                currentTarget.value || "Not supplied",
-                            });
-                          }}
-                        />
-                      </div>
+                      <br />
+                      <DatePicker
+                        placeholderText="Select employment date"
+                        selected={record?.employmentDate}
+                        onChange={(date) =>
+                          SetRecord({
+                            ...record,
+                            employmentDate: date,
+                          })
+                        }
+                        className="form-control"
+                        dateFormat="d, MMMM yyyy"
+                      />
                     </div>
                   </div>
                   <div className="row">
@@ -202,27 +197,22 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         label="Gender"
                       />
                     </div>
-                    <div className="col-sm-6">
-                      {/* Date of birth input */}
+                    <div className="col-sm-6 mb-3">
+                      {/* Date of Birth input */}
                       <label htmlFor="">Date of Birth </label>
-                      <div className="input-group mb-3">
-                        <div className="input-group-prepend">
-                          <div className="input-group-text">
-                            <div className="os-icon os-icon-calendar"></div>
-                          </div>
-                        </div>
-                        <input
-                          type="date"
-                          className="form-control"
-                          required
-                          onChange={({ currentTarget }) => {
-                            SetRecord({
-                              ...record,
-                              dob: currentTarget.value,
-                            });
-                          }}
-                        />
-                      </div>
+                      <br />
+                      <DatePicker
+                        placeholderText="Select date of birth"
+                        selected={record?.dob}
+                        onChange={(date) =>
+                          SetRecord({
+                            ...record,
+                            dob: date,
+                          })
+                        }
+                        className="form-control"
+                        dateFormat="d, MMMM yyyy"
+                      />
                     </div>
                   </div>
                   {/* Address Input */}

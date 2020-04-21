@@ -624,7 +624,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                           })
                         }
                         className="form-control"
-                        dateFormat="MMMM d, yyyy"
+                        dateFormat="d, MMMM yyyy"
                       />
                     </div>
                   </div>

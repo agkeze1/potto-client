@@ -18,7 +18,7 @@ import { GET_LEVELS } from "../../queries/Level.query";
 import { NEW_GUARDIAN } from "../../queries/Guardian.query";
 import gender from "../../data/gender.json";
 import titles from "../../data/title.json";
-import type from "../../data/guardian-type.json";
+import DatePicker from "react-datepicker";
 
 const NewStudent: FC<IProps> = ({ history }) => {
   const [lMessage, SetLMessage] = useState<IMessage>();
@@ -322,49 +322,39 @@ const NewStudent: FC<IProps> = ({ history }) => {
                     </div>
 
                     <div className="row">
-                      <div className="col-sm-6">
+                      <div className="col-sm-6 mb-3">
                         {/* Date of Birth input */}
-                        <label htmlFor="">Date of Birth</label>
-                        <div className="input-group mb-3">
-                          <div className="input-group-prepend">
-                            <div className="input-group-text">
-                              <div className="os-icon os-icon-calendar"></div>
-                            </div>
-                          </div>
-                          <input
-                            type="date"
-                            className="form-control"
-                            required
-                            onChange={({ currentTarget }) =>
-                              SetNewStudent({
-                                ...newStudent,
-                                dob: currentTarget.value,
-                              })
-                            }
-                          />
-                        </div>
+                        <label htmlFor="">Date of Birth </label>
+                        <br />
+                        <DatePicker
+                          placeholderText="Select date of birth"
+                          selected={newStudent?.dob}
+                          onChange={(date) =>
+                            SetNewStudent({
+                              ...newStudent,
+                              dob: date,
+                            })
+                          }
+                          className="form-control"
+                          dateFormat="d, MMMM yyyy"
+                        />
                       </div>
-                      <div className="col-sm-6">
-                        {/* Admission Date */}
-                        <label htmlFor="">Date of Admission</label>
-                        <div className="input-group mb-3">
-                          <div className="input-group-prepend">
-                            <div className="input-group-text">
-                              <div className="os-icon os-icon-calendar"></div>
-                            </div>
-                          </div>
-                          <input
-                            type="date"
-                            className="form-control"
-                            required
-                            onChange={({ currentTarget }) =>
-                              SetNewStudent({
-                                ...newStudent,
-                                admissionDate: currentTarget.value,
-                              })
-                            }
-                          />
-                        </div>
+                      <div className="col-sm-6 mb-3">
+                        {/*  Date Admission Input */}
+                        <label htmlFor="">Date of Admission </label>
+                        <br />
+                        <DatePicker
+                          placeholderText="Select admission date"
+                          selected={newStudent?.admissionDate}
+                          onChange={(date) =>
+                            SetNewStudent({
+                              ...newStudent,
+                              admissionDate: date,
+                            })
+                          }
+                          className="form-control"
+                          dateFormat="d, MMMM yyyy"
+                        />
                       </div>
                     </div>
                     <div className="row">

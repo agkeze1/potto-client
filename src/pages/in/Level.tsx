@@ -300,6 +300,9 @@ const Level: FC<IProps> = ({ history }) => {
         <div className="modal-dialog modal-md" role="document">
           <div className="modal-content">
             <div className="modal-header">
+              <h5 className="modal-title">
+                Edit Level <hr />
+              </h5>
               <button className="close" data-dismiss="modal" type="button">
                 <span aria-hidden="true"> &times;</span>
               </button>
@@ -327,7 +330,7 @@ const Level: FC<IProps> = ({ history }) => {
                     {/* Level input */}
                     <IconInput
                       placeholder="Enter Level name"
-                      label="New Level "
+                      label="Level "
                       icon="os-icon-ui-09"
                       required={true}
                       type="text"

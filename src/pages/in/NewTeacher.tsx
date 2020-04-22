@@ -137,7 +137,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                         placeholder="Enter email"
                         label="Email"
                         icon="os-icon-email-2-at2"
-                        required={true}
+                        required={false}
                         type="email"
                         onChange={(email: string) => {
                           SetRecord({

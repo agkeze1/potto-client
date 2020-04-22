@@ -19,7 +19,6 @@ import { IImageProp } from "../../models/IImageProp";
 import Pagination from "../partials/Pagination";
 import IconInput from "../partials/IconInput";
 import ImageUpload from "../partials/ImageUpload";
-import Dropdown from "../partials/Dropdown";
 import gender from "../../data/gender.json";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
@@ -268,6 +267,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                         href="#"
                                         title="Edit"
                                         onClick={() => {
+                                          SetUMessage(undefined);
                                           SetActiveTeacherId(teacher.id);
                                           SetEditTeacher({
                                             firstname: teacher.first_name,
@@ -495,8 +495,8 @@ const TeacherList: FC<IProps> = ({ history }) => {
           <div className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Edit Teacher's Info <hr />
+                <h5 className="modal-title">
+                  Edit Teacher Info <hr />
                 </h5>
 
                 <button className="close" data-dismiss="modal" type="button">
@@ -634,7 +634,9 @@ const TeacherList: FC<IProps> = ({ history }) => {
                     <Select
                       options={gender.gender}
                       value={{
-                        label: editTeacher.gender,
+                        label: editTeacher.gender || (
+                          <span className="text-gray">Select...</span>
+                        ),
                         value: editTeacher.gender,
                       }}
                       onChange={(item: any) => {

@@ -280,6 +280,9 @@ const Term: FC<IProps> = ({ history }) => {
         <div className="modal-dialog modal-md" role="document">
           <div className="modal-content">
             <div className="modal-header">
+              <h5 className="modal-title">
+                Edit Term <hr />
+              </h5>
               <button className="close" data-dismiss="modal" type="button">
                 <span aria-hidden="true"> &times;</span>
               </button>
@@ -307,7 +310,7 @@ const Term: FC<IProps> = ({ history }) => {
                     {/* Term input */}
                     <IconInput
                       placeholder="Enter Term name"
-                      label="New Term "
+                      label="Term "
                       icon="os-icon-ui-09"
                       required={true}
                       type="text"

@@ -29,7 +29,6 @@ const TeacherList: FC<IProps> = ({ history }) => {
   const [uMessage, SetUMessage] = useState<IMessage>();
 
   const [activeTeacherId, SetActiveTeacherId] = useState<string>();
-  const [editTeacher, SetEditTeacher] = useState<any>({});
   const [showProfile, SetShowProfile] = useState<boolean>(false);
   const [page, SetPage] = useState<number>(1);
   const [limit] = useState<number>(25);
@@ -37,6 +36,10 @@ const TeacherList: FC<IProps> = ({ history }) => {
     image: "/avatar.png",
     name: "Undefined",
   });
+
+  // For Teacher profile
+  const [editTeacher, SetEditTeacher] = useState<any>({});
+  const [activeTeacher, SetActiveTeacher] = useState<any>({});
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
@@ -259,6 +262,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                         title="View profile"
                                         onClick={() => {
                                           SetShowProfile(true);
+                                          SetActiveTeacher(teacher);
                                         }}
                                       >
                                         <i className="os-icon os-icon-eye"></i>
@@ -359,7 +363,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
             )}
 
             {/* Profile Section */}
-            {showProfile && (
+            {showProfile && activeTeacher && (
               <div>
                 <div className="content-box">
                   <div className="element-wrapper">
@@ -582,7 +586,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                         placeholder="Enter email"
                         label="Email"
                         icon="os-icon-email-2-at2"
-                        required={true}
+                        required={false}
                         type="email"
                         initVal={editTeacher.email}
                         onChange={(email: string) => {

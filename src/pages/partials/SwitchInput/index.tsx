@@ -9,8 +9,8 @@ interface SwitchProps {
 const SwitchInput: FC<SwitchProps> = ({ isOn, handleToggle, label }) => {
   return (
     <>
-      <div className="row">
-        <div className="col-3">
+      <div className="row element-box" style={{ padding: "0 0 10px 50px" }}>
+        <div className="col-3" style={{ marginTop: "-10px" }}>
           <div className=" float-right">
             <input
               checked={isOn}
@@ -25,7 +25,7 @@ const SwitchInput: FC<SwitchProps> = ({ isOn, handleToggle, label }) => {
               style={{
                 background: isOn ? "#16a820" : "",
                 width: "60px",
-                height: "22px"
+                height: "22px",
               }}
             >
               <span
@@ -34,15 +34,15 @@ const SwitchInput: FC<SwitchProps> = ({ isOn, handleToggle, label }) => {
                   width: "33px",
                   height: "33px",
                   marginTop: "-2px",
-                  border: isOn ? "1px solid #16a820" : "1px solid darkgray"
+                  border: isOn ? "1px solid #16a820" : "1px solid darkgray",
                 }}
               />
             </label>
           </div>
         </div>
-        <div className="col-7" style={{ marginTop: "23px" }}>
+        <div className="col-7" style={{ marginTop: "13px" }}>
           <span style={{ cursor: "pointer" }} onClick={handleToggle}>
-            {label}
+            <b>{label}</b>
           </span>
         </div>
       </div>

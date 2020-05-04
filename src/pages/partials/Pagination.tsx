@@ -1,7 +1,7 @@
 import React from "react";
 import { iPagination } from "../../models/Pagination.model";
 
-const Pagination: React.FC<iPagination> = props => {
+const Pagination: React.FC<iPagination> = (props) => {
   const maxPage = 5;
 
   const {
@@ -12,7 +12,7 @@ const Pagination: React.FC<iPagination> = props => {
     length,
     prevPage,
     nextPage,
-    onPageClicked
+    onPageClicked,
   } = props;
   // Get page number
   const getPageNumber = () => (page - 1) * limit + 1;
@@ -48,7 +48,7 @@ const Pagination: React.FC<iPagination> = props => {
             id="example1_paginate"
           >
             <ul className="pagination">
-              <li id="example1_previous">
+              <li id="example1_previous" className="mr-2">
                 <button
                   onClick={() => {
                     if (prevPage) {
@@ -60,12 +60,12 @@ const Pagination: React.FC<iPagination> = props => {
                   disabled={prevPage === null}
                   className="btn btn-outline-primary"
                 >
-                  <i className="os-icon os-icon-chevron-left"></i> Prev
+                  <i className="os-icon os-icon-chevron-left"></i>
                 </button>
               </li>
               {makeArrayFromDocs()
                 .slice(0, 10)
-                .map(item => (
+                .map((item) => (
                   <li key={item}>
                     <button
                       onClick={() => {
@@ -95,7 +95,7 @@ const Pagination: React.FC<iPagination> = props => {
                   </button>
                 </li>
               )}
-              <li id="example1_next">
+              <li id="example1_next" className="ml-2">
                 <button
                   disabled={nextPage === null}
                   tabIndex={0}
@@ -107,7 +107,7 @@ const Pagination: React.FC<iPagination> = props => {
                     return;
                   }}
                 >
-                  Next <i className="os-icon os-icon-chevron-right"></i>
+                  <i className="os-icon os-icon-chevron-right"></i>
                 </button>
               </li>
             </ul>

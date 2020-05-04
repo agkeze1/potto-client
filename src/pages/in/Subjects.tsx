@@ -225,7 +225,7 @@ const Subjects: FC<IProps> = ({ history }) => {
                                   />
                                 </div>
                                 <div className="col-6">
-                                  {/* Class subject title code */}
+                                  {/* Class subject code  input*/}
                                   <IconInput
                                     placeholder="Enter subject code"
                                     label="Subject Code"
@@ -414,7 +414,7 @@ const Subjects: FC<IProps> = ({ history }) => {
                   <span aria-hidden="true"> &times;</span>
                 </button>
               </div>
-              <div className="modal-body pb-2">
+              <div className="modal-body element-box no-shadow pb-2">
                 <LoadingState loading={uLoading} />
                 <AlertMessage
                   message={uMessage?.message}

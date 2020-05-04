@@ -139,10 +139,10 @@ const UserList: FC<IProps> = ({ history }) => {
             <span className="element-actions mt-n2">
               <button
                 className="btn btn-primary "
-                data-target="#exampleModal1"
-                id="#newMax"
-                data-toggle="modal"
                 type="button"
+                onClick={() => {
+                  history.push("/in/new-user");
+                }}
               >
                 Create New
               </button>

@@ -2,7 +2,6 @@ import React, { FC } from "react";
 import { NavLink, Redirect } from "react-router-dom";
 import { GetAppName } from "../../context/App";
 import { authService } from "../../services/Auth.Service";
-// import { authService } from "../../../../services/Auth.Service";
 
 interface SideProps {
   location?: any;
@@ -13,6 +12,10 @@ const SideNav: FC<SideProps> = ({ location }) => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   };
+
+  // Logged in User
+  const user = authService.GetUser();
+  console.log("Logged in user: ", user);
   return (
     <>
       <div className="menu-w color-scheme-light color-style-transparent menu-position-side menu-side-left menu-layout-compact sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link">
@@ -27,8 +30,8 @@ const SideNav: FC<SideProps> = ({ location }) => {
         <div className="logged-user-w avatar-inline">
           <div className="logged-user-i">
             <div className="logged-user-info-w">
-              <div className="logged-user-name">Douglas Cage</div>
-              <div className="logged-user-role">Administrator</div>
+              <div className="logged-user-name">{user?.name}</div>
+              <div className="logged-user-role">{user?.email}</div>
             </div>
           </div>
         </div>

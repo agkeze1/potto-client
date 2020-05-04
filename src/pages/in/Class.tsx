@@ -40,7 +40,7 @@ const Class: FC<IProps> = ({ history }) => {
     history.push("/login");
   }
 
-  // Get  School ID of logged in user
+  // Get  School of logged in user
   const { school } = authService.GetUser();
 
   // Fetch Teachers for Form Teacher input
@@ -430,7 +430,7 @@ const Class: FC<IProps> = ({ history }) => {
                 <span aria-hidden="true"> ×</span>
               </button>
             </div>
-            <div className="modal-body">
+            <div className="modal-body element-box no-shadow">
               <LoadingState loading={uLoading} />
               <AlertMessage
                 message={uMessage?.message}

@@ -6,6 +6,7 @@ export const STU_PROPS = gql`
     first_name
     middle_name
     surname
+    full_name
     reg_no
     gender
     address
@@ -22,6 +23,7 @@ export const STU_PROPS = gql`
     current_class {
       name
       level {
+        id
         name
       }
     }
@@ -43,6 +45,7 @@ export const STU_MIN_PROPS = gql`
     first_name
     middle_name
     surname
+    full_name
     reg_no
     gender
     passport
@@ -68,21 +71,63 @@ export const GET_STUDENT = gql`
   ${STU_PROPS}
 `;
 
-export const GET_STUDENT_BY_REG_NO = gql`
-  query GET_STUDENT_BY_REG_NO($id: String!) {
-    GetStudentByRegNo(id: $id) {
-      message
-      doc {
-        ...STU_PROPS
-      }
-    }
-  }
-  ${STU_PROPS}
-`;
+// export const GET_STUDENT_BY_REG_NO = gql`
+//   query GET_STUDENT_BY_REG_NO($id: String!) {
+//     GetStudentByRegNo(id: $id) {
+//       message
+//       doc {
+//         ...STU_PROPS
+//       }
+//     }
+//   }
+//   ${STU_PROPS}
+// `;
 
-export const GET_STUDENTS_BY_LEVEL = gql`
-  query GET_STUDENTS_BY_LEVEL($level: ID!, $page: Int, $limit: Int) {
-    GetStudentsOfSameLevel(level: $level, page: $page, limit: $limit) {
+// export const GET_STUDENTS_BY_LEVEL = gql`
+//   query GET_STUDENTS_BY_LEVEL($level: ID!, $page: Int, $limit: Int) {
+//     GetStudentsOfSameLevel(level: $level, page: $page, limit: $limit) {
+//       message
+//       docs {
+//         ...STU_PROPS
+//       }
+//       totalDocs
+//       totalPages
+//       page
+//       limit
+//       nextPage
+//       prevPage
+//     }
+//   }
+//   ${STU_PROPS}
+// `;
+
+// export const GET_STUDENTS_BY_CLASS = gql`
+//   query GET_STUDENTS_BY_CLASS($classId: ID!) {
+//     GetStudentOfSameClass(classId: $classId) {
+//       message
+//       docs {
+//         ...STU_PROPS
+//       }
+//     }
+//   }
+//   ${STU_PROPS}
+// `;
+
+export const SEARCH_STUDENTS = gql`
+  query SEARCH_STUDENTS(
+    $regNo: String
+    $level: ID
+    $_class: ID
+    $page: Int
+    $limit: Int
+  ) {
+    SearchStudents(
+      regNo: $regNo
+      level: $level
+      _class: $_class
+      page: $page
+      limit: $limit
+    ) {
       message
       docs {
         ...STU_PROPS
@@ -93,18 +138,6 @@ export const GET_STUDENTS_BY_LEVEL = gql`
       limit
       nextPage
       prevPage
-    }
-  }
-  ${STU_PROPS}
-`;
-
-export const GET_STUDENTS_BY_CLASS = gql`
-  query GET_STUDENTS_BY_CLASS($classId: ID!) {
-    GetStudentOfSameClass(classId: $classId) {
-      message
-      docs {
-        ...STU_PROPS
-      }
     }
   }
   ${STU_PROPS}

@@ -322,7 +322,7 @@ const GuardianType: FC<IProps> = ({ history }) => {
                   <span aria-hidden="true"> &times;</span>
                 </button>
               </div>
-              <div className="modal-body pb-2">
+              <div className="modal-body element-box no-shadow pb-2">
                 <LoadingState loading={uLoading} />
                 <AlertMessage
                   message={uMessage?.message}

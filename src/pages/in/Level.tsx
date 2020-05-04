@@ -307,7 +307,7 @@ const Level: FC<IProps> = ({ history }) => {
                 <span aria-hidden="true"> &times;</span>
               </button>
             </div>
-            <div className="modal-body pb-5">
+            <div className="modal-body element-box no-shadow pb-5">
               <LoadingState loading={uLoading} />
               <AlertMessage
                 message={uMessage?.message}

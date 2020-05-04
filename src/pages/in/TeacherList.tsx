@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
+import { GetAppName, CLEAN_DATE } from "../../context/App";
 import { NavLink, Redirect } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 import TeacherTTAccordion from "../partials/TeacherTTAccordion";
@@ -29,6 +29,8 @@ const TeacherList: FC<IProps> = ({ history }) => {
   const [uMessage, SetUMessage] = useState<IMessage>();
 
   const [activeTeacherId, SetActiveTeacherId] = useState<string>();
+  const [activeTeacher, SetActiveTeacher] = useState<any>({});
+  const [editTeacher, SetEditTeacher] = useState<any>({});
   const [showProfile, SetShowProfile] = useState<boolean>(false);
   const [page, SetPage] = useState<number>(1);
   const [limit] = useState<number>(25);
@@ -36,10 +38,6 @@ const TeacherList: FC<IProps> = ({ history }) => {
     image: "/avatar.png",
     name: "Undefined",
   });
-
-  // For Teacher profile
-  const [editTeacher, SetEditTeacher] = useState<any>({});
-  const [activeTeacher, SetActiveTeacher] = useState<any>({});
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
@@ -382,21 +380,26 @@ const TeacherList: FC<IProps> = ({ history }) => {
                           ></i>
                         </NavLink>
                       </div>
-                      <div className="text-right">
-                        <NavLink to="#">
-                          <i className="icon-lg os-icon os-icon-edit"></i>
-                        </NavLink>
-                      </div>
                       <div className="text-center mb-5">
                         <img
-                          className="avatar pb-3"
+                          className="avatar mb-3"
                           alt="Passport"
-                          src="/3.jpeg"
+                          src={activeTeacher.image || "/avatar.png"}
+                          style={{
+                            width: "200px",
+                            height: "200px",
+                          }}
                         />
 
-                        <h2 className="up-header ">Douglas Elenu</h2>
+                        <h2 className="up-header ">
+                          {activeTeacher.first_name +
+                            " " +
+                            activeTeacher.middle_name +
+                            " " +
+                            activeTeacher.last_name}
+                        </h2>
                         <h6 className="up-sub-header">
-                          douglas@gmail.com
+                          {activeTeacher.email}
                           <i
                             className="os-icon os-icon-check-circle text-success ml-2"
                             title="Email verified"
@@ -436,29 +439,25 @@ const TeacherList: FC<IProps> = ({ history }) => {
                             <div className="text-center element-box no-bg no-shadow">
                               <ul className="pro-details">
                                 <li>
-                                  <span>Gender</span> | <b>Male</b>
+                                  <span>Gender</span> |{" "}
+                                  <b>{activeTeacher.gender}</b>
                                 </li>
                                 <li>
                                   <span>Date of Birth</span> |{" "}
-                                  <b>8th May 2001 </b>
-                                  <i>(20yrs)</i>
+                                  <b>{CLEAN_DATE(activeTeacher.dob)}</b>
+                                  <i> ( 20yrs )</i>
                                 </li>
                                 <li>
-                                  <span>Date of Admission</span> |{" "}
-                                  <b>12th April 2017</b>
-                                </li>
-                                <li>
-                                  <span>Phone number</span> | <b>09033422324</b>
+                                  <span>Phone number</span> |{" "}
+                                  <b>{activeTeacher.phone}</b>
                                 </li>
                                 <li>
                                   <span>Employment date</span> |{" "}
-                                  <b>12th May 2017</b>
+                                  <b>{CLEAN_DATE(activeTeacher.doj)}</b>
                                 </li>
                                 <li>
                                   <span>Address</span> |{" "}
-                                  <b>
-                                    12 Ugochuckwu st. New Haven, Enugu state
-                                  </b>
+                                  <b>{activeTeacher.address}</b>
                                 </li>
                               </ul>
                             </div>
@@ -507,7 +506,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                   <span aria-hidden="true"> &times;</span>
                 </button>
               </div>
-              <div className="modal-body pb-2">
+              <div className="modal-body element-box pb-2">
                 <LoadingState loading={uLoading} />
                 <AlertMessage
                   message={uMessage?.message}

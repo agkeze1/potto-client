@@ -9,6 +9,7 @@ interface props {
   onChange?: any;
   classStyle?: string;
   initVal?: string;
+  disabled?: boolean;
 }
 
 const IconInput: FC<props> = ({
@@ -20,6 +21,7 @@ const IconInput: FC<props> = ({
   onChange,
   classStyle,
   initVal,
+  disabled,
 }) => {
   return (
     <>
@@ -35,6 +37,7 @@ const IconInput: FC<props> = ({
           placeholder={placeholder}
           required={required}
           value={initVal}
+          disabled={disabled}
           onChange={({ target }) => {
             if (onChange) onChange(target.value);
           }}

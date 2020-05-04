@@ -1,9 +1,8 @@
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
+import { GetAppName, CLEAN_DATE } from "../../context/App";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
-import Dropdown from "../partials/Dropdown";
 import SwitchInput from "../partials/SwitchInput";
 import AttAccordion from "../partials/AttAccordion";
 import ImageUpload from "../partials/ImageUpload";
@@ -19,26 +18,31 @@ import { GET_CLASSES } from "../../queries/Class.query";
 import LoadingState from "../partials/loading";
 import AlertMessage from "../partials/AlertMessage";
 import state from "../../data/state.json";
+import title from "../../data/title.json";
 import Select from "react-select";
 import Pagination from "../partials/Pagination";
 import DatePicker from "react-datepicker";
+import { GET_GUARDIAN_TYPES } from "../../queries/Guardian.query";
 import {
-  GET_STUDENTS_BY_LEVEL,
-  GET_STUDENTS_BY_CLASS,
-  GET_STUDENT_BY_REG_NO,
+  SEARCH_STUDENTS,
   REMOVE_STUDENT,
   UPDATE_STUDENT,
 } from "../../queries/Student.query";
+import { NEW_GUARDIAN } from "../../queries/Guardian.query";
+import { GET_SUB_BY_LEVEL } from "../../queries/Subject.query";
+import { SubjectList } from "./partials/SubjectList";
 
 const StudentList: FC<IProps> = ({ history }) => {
-  const [active, SetActive] = useState<IImageProp>({
+  const [activeImg, SetActiveImg] = useState<IImageProp>({
     image: "/avatar.png",
     name: "Undefined",
   });
 
   const [showFilter, SetShowFilter] = useState<boolean>(true);
   const [showProfile, SetShowProfile] = useState<boolean>(false);
-  const [showNewGuardian, SetNewGuardian] = useState<boolean>(false);
+  const [showNewGuardian, SetShowNewGuardian] = useState<boolean>(false);
+
+  // For lga under a state
   const [locals, SetLocals] = useState<any>([]);
 
   const [message, SetMessage] = useState<IMessage>();
@@ -46,33 +50,31 @@ const StudentList: FC<IProps> = ({ history }) => {
   const [cMessage, SetCMessage] = useState<IMessage>();
   const [rMessage, SetRMessage] = useState<IMessage>();
   const [uMessage, SetUMessage] = useState<IMessage>();
+  const [nGMessage, SetNGMessage] = useState<IMessage>();
+  const [subMessage, SetSubMessage] = useState<IMessage>();
 
   const [activeStudentId, SetActiveStudentId] = useState<string>();
+  const [activeStudent, SetActiveStudent] = useState<any>({});
   const [editStudent, SetEditStudent] = useState<any>({});
+
+  // Guardian Type refresh
+  const [showGTRefresh, SetShowGTRefresh] = useState<boolean>(false);
+  const [newGuardian, SetNewGuardian] = useState<any>({});
 
   const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>(false);
   const [showClassesRefresh, SetShowClassesRefresh] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
+  const [activeLevel, SetActiveLevel] = useState<any>({});
   const [classes, SetClasses] = useState<any>([]);
 
-  //Fileters
-  const [searchByRegNo, SetSearchByRegNo] = useState<string>();
-  const [searchByLevel, SetSearchByLevel] = useState<any>();
-  const [searchByClass, SetSearchByClass] = useState<any>();
+  //Filters
+  const [searchInput, SetSearchInput] = useState<any>();
   const [searchMsg, SetSearchMsg] = useState<IMessage>();
 
-  const [searchedStu, SetSearchedStu] = useState<boolean>();
+  const [guardType, SetGuardType] = useState<any>([]);
+  const [gTMessage, SetGTMessage] = useState<IMessage>();
 
   // Pagination
-  const [pageResult, SetPageResult] = useState<any>({
-    docs: [],
-    totalDocs: 0,
-    totalPages: 0,
-    limit: 25,
-    page: 1,
-    nextPage: null,
-    prevPage: null,
-  });
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(25);
 
@@ -155,85 +157,51 @@ const StudentList: FC<IProps> = ({ history }) => {
     },
   });
 
-  // Get a single Students By Reg. number
-  const [GetStuByRegNo, { loading: regNoLoading }] = useLazyQuery(
-    GET_STUDENT_BY_REG_NO,
+  // Get Students
+  const [SearchStudents, { loading, data, fetchMore }] = useLazyQuery(
+    SEARCH_STUDENTS,
     {
       onError: (err) =>
         SetMessage({
           message: err.message,
           failed: true,
         }),
-      onCompleted: (regNoData: any) => {
-        SetSearchedStu(true);
-        if (regNoData.GetStudentByRegNo) {
-          let docs = [];
-          docs.push(regNoData.GetStudentByRegNo.doc);
-          let newStu = {
-            ...pageResult,
-            docs,
-            page: 1,
-            limit,
-            nextPage: null,
-            prevPage: null,
-            totalPages: 1,
-            totalDocs: 1,
-          };
-          SetPageResult(newStu);
-        }
-      },
     }
   );
 
-  // Get List of Students By Level
-  const [
-    GetStuByLevel,
-    { loading: levelLoading, fetchMore: levelFetchMore },
-  ] = useLazyQuery(GET_STUDENTS_BY_LEVEL, {
-    onError: (err) =>
-      SetMessage({
-        message: err.message,
-        failed: true,
-      }),
-    onCompleted: (levelData) => {
-      SetSearchedStu(true);
-      if (levelData.GetStudentsOfSameLevel) {
-        SetPageResult({
-          ...levelData.GetStudentsOfSameLevel,
+  // Get Guardian Types for input
+  const [GetGuardianTypes, { loading: gTLoading }] = useLazyQuery(
+    GET_GUARDIAN_TYPES,
+    {
+      onError: (err) => {
+        SetGTMessage({
+          message: err.message,
+          failed: true,
         });
-      }
-    },
-  });
-
-  // Get List of Students By Class
-  const [GetStuByClass, { loading: classLoading }] = useLazyQuery(
-    GET_STUDENTS_BY_CLASS,
-    {
-      onError: (err) =>
-        SetMessage({
-          message: err.message,
-          failed: true,
-        }),
-      onCompleted: (classData) => {
-        SetSearchedStu(true);
-        if (classData.GetStudentOfSameClass) {
-          SetPageResult({
-            ...classData.GetStudentOfSameClass,
-          });
+        SetShowGTRefresh(true);
+      },
+      onCompleted: (data) => {
+        if (data) {
+          SetGuardType(
+            data.GetGuardianTypes.docs.map((type: any) => ({
+              label: type.name,
+              value: type.id,
+            }))
+          );
         }
       },
     }
   );
 
-  // Fetch More students of same Level on Page change
+  // Fetch More students on Page change
   useEffect(() => {
-    if (levelFetchMore)
-      levelFetchMore({
+    if (fetchMore)
+      fetchMore({
         variables: { page },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
           return {
-            GetStudentsOfSameLevel: fetchMoreResult.GetStudentsOfSameLevel,
+            SearchStudents: fetchMoreResult.SearchStudents,
           };
         },
       });
@@ -241,33 +209,11 @@ const StudentList: FC<IProps> = ({ history }) => {
 
   // Fetch classes for Class input on Level change
   useEffect(() => {
-    if (searchByLevel) {
+    if (searchInput?.level?.id) {
       SetClasses(undefined);
-      GetClasses({ variables: { level: searchByLevel.id } });
+      GetClasses({ variables: { level: searchInput?.level?.id } });
     }
-  }, [searchByLevel]);
-
-  // Makes API call for records
-  const SerchRecord = () => {
-    SetMessage(undefined);
-    SetSearchMsg(undefined);
-    SetPageResult({
-      ...pageResult,
-      docs: [],
-    });
-    if (searchByRegNo) {
-      GetStuByRegNo({ variables: { id: searchByRegNo } });
-    } else if (searchByClass) {
-      GetStuByClass({ variables: { classId: searchByClass?.id, page, limit } });
-    } else if (searchByLevel) {
-      GetStuByLevel({ variables: { level: searchByLevel?.id, page, limit } });
-    } else {
-      SetSearchMsg({
-        message: "No Search field selected!",
-        failed: true,
-      });
-    }
-  };
+  }, [searchInput?.level?.id]);
 
   // Remove Student
   const [RemoveStudent, { loading: rLoading }] = useMutation(REMOVE_STUDENT, {
@@ -276,17 +222,38 @@ const StudentList: FC<IProps> = ({ history }) => {
         message: err.message,
         failed: true,
       }),
-    onCompleted: (data) => {
-      if (data) {
-        const result = { ...pageResult };
-        if (result?.docs) {
-          const index = result.docs.findIndex(
-            (i: any) => i.id === data.RemoveStudent.doc.id
-          );
-          result.docs.splice(index, 1);
-          SetPageResult(result);
-        }
-      }
+    update: (cache, { data }) => {
+      const q: any = cache.readQuery({
+        query: SEARCH_STUDENTS,
+        variables: {
+          variables: {
+            regNo: searchInput?.regNo,
+            level: searchInput?.level?.id,
+            _class: searchInput?._class?.id,
+            page,
+            limit,
+          },
+        },
+      });
+
+      const index = q.SearchStudents.docs.findIndex(
+        (i: any) => i.id === data.RemoveStudent.doc.id
+      );
+
+      q.SearchStudents.docs.splice(index, 1);
+
+      //update
+      cache.writeQuery({
+        query: SEARCH_STUDENTS,
+        variables: {
+          regNo: searchInput?.regNo,
+          level: searchInput?.level?.id,
+          _class: searchInput?._class?.id,
+          page,
+          limit,
+        },
+        data: { SearchStudents: q.SearchStudents },
+      });
     },
   });
 
@@ -298,23 +265,79 @@ const StudentList: FC<IProps> = ({ history }) => {
         failed: true,
       }),
     onCompleted: (data) => {
-      if (data) {
-        const result = { ...pageResult };
-        if (result?.docs) {
-          const index = result.docs.findIndex(
-            (i: any) => i.id === data.UpdateStudent.doc.id
-          );
-          result.docs.splice(index, 1);
-          result.docs.unshift(data.UpdateStudent.doc);
-          SetPageResult(result);
-        }
-        SetUMessage({
-          message: data.UpdateStudent.message,
-          failed: false,
+      SetUMessage({
+        message: data.UpdateStudent.message,
+        failed: false,
+      });
+    },
+    update: (cache, { data }) => {
+      const q: any = cache.readQuery({
+        query: SEARCH_STUDENTS,
+        variables: {
+          regNo: searchInput?.regNo,
+          level: searchInput?.level?.id,
+          _class: searchInput?._class?.id,
+          page,
+          limit,
+        },
+      });
+
+      const index = q.SearchStudents.docs.findIndex(
+        (i: any) => i.id === data.UpdateStudent.doc.id
+      );
+
+      q.SearchStudents.docs.splice(index, 1);
+      q.SearchStudents.docs.unshift(data.UpdateStudent.doc);
+
+      //update
+      cache.writeQuery({
+        query: SEARCH_STUDENTS,
+        variables: {
+          regNo: searchInput?.regNo,
+          level: searchInput?.level?.id,
+          _class: searchInput?._class?.id,
+          page,
+          limit,
+        },
+        data: { SearchStudents: q.SearchStudents },
+      });
+    },
+  });
+
+  // Create New Guardian
+  const [NewGuardian, { loading: nGLoading }] = useMutation(NEW_GUARDIAN, {
+    onError: (err) => {
+      SetNGMessage({
+        message: err.message,
+        failed: true,
+      });
+      SetShowClassesRefresh(true);
+    },
+    onCompleted: (data) => {
+      if (data && activeStudent) {
+        const guardians = activeStudent?.guardians;
+        guardians.unshift(data.NewGuardian.doc);
+        SetActiveStudent({
+          ...activeStudent,
+          guardians,
         });
+        SetShowNewGuardian(false);
       }
     },
   });
+
+  // Get List of subjects of Student level
+  const [GetSubByLevel, { loading: sLoading, data: sData }] = useLazyQuery(
+    GET_SUB_BY_LEVEL,
+    {
+      onError: (err) => {
+        SetSubMessage({
+          message: err.message,
+          failed: true,
+        });
+      },
+    }
+  );
 
   return (
     <>
@@ -337,164 +360,186 @@ const StudentList: FC<IProps> = ({ history }) => {
               </button>
             </span>
             <h5 className="element-header">Student List</h5>
-            {showFilter && (
-              <div className="element-box">
-                <div className="row justify-content-center">
-                  <div className="col-lg-12">
-                    <AlertMessage
-                      message={searchMsg?.message}
-                      failed={searchMsg?.failed}
-                    />
-                    <span
-                      className="element-actions"
-                      style={{ marginTop: "-1.5rem" }}
-                    >
-                      <SwitchInput
-                        isOn={showFilter}
-                        handleToggle={() => {
-                          SetShowFilter(false);
-                        }}
-                        label="Show Filter"
-                      />
-                    </span>
-                    <h5 className="element-header">Filter Student</h5>
-                  </div>
-                  <div className="col-lg-4">
-                    {/* Reg No input */}
-                    <IconInput
-                      placeholder="Enter student reg.no"
-                      label="Search by Reg. no"
-                      icon="os-icon-ui-09"
-                      required={true}
-                      type="text"
-                      initVal={searchByRegNo}
-                      onChange={(reg_no: string) => {
-                        SetSearchByClass(undefined);
-                        SetSearchByLevel(undefined);
-                        SetSearchByRegNo(reg_no);
-                      }}
-                    />
-                  </div>
-                  <div className="col-lg-4">
-                    {/* Level input */}
-                    <label>
-                      Level <br />
-                    </label>
-                    <Select
-                      options={levels}
-                      value={{
-                        label: searchByLevel?.name || (
-                          <span className="text-gray">Select...</span>
-                        ),
-                        value: searchByLevel?.id,
-                      }}
-                      onChange={(item: any) => {
-                        SetCMessage(undefined);
-                        SetSearchByClass(undefined);
-                        SetSearchByRegNo("");
-                        SetSearchByLevel({ name: item.label, id: item.value });
-                      }}
-                      disabled={searchByRegNo ? true : false}
-                    />
-                    {showLevelsRefresh && (
-                      <button
-                        onClick={() => {
-                          SetShowLevelsRefresh(false);
-                          SetLMessage(undefined);
-                          GetLevels({
-                            variables: {
-                              school: school.id,
-                            },
-                          });
-                        }}
-                        className="btn btn-primary btn-sm px-1 mb-2"
-                        type="submit"
-                      >
-                        Reload Level
-                      </button>
-                    )}
-                    <LoadingState loading={lLoading || llLoading} />
-                    <AlertMessage
-                      message={lMessage?.message}
-                      failed={lMessage?.failed}
-                    />
-                  </div>
-                  <div className="col-lg-4">
-                    {/* Current Class input */}
-                    <label>
-                      Class <br />
-                    </label>
-                    <Select
-                      options={classes}
-                      value={{
-                        label: searchByClass?.name || (
-                          <span className="text-gray">Select...</span>
-                        ),
-                        value: searchByClass?.id,
-                      }}
-                      onChange={(item: any) => {
-                        SetSearchByRegNo(undefined);
-                        SetSearchByClass({ name: item.label, id: item.value });
-                      }}
-                      disabled={searchByRegNo ? true : false}
-                    />
-                    {showClassesRefresh && (
-                      <button
-                        onClick={() => {
-                          SetShowClassesRefresh(false);
-                          SetCMessage(undefined);
-                          SetMessage(undefined);
-                          GetClasses({
-                            variables: { level: searchByLevel.id },
-                          });
-                        }}
-                        className="btn btn-primary btn-sm px-1 mb-2"
-                        type="submit"
-                      >
-                        Reload Classes
-                      </button>
-                    )}
-                    <LoadingState loading={cLoading} />
-                    <AlertMessage
-                      message={cMessage?.message}
-                      failed={cMessage?.failed}
-                    />
-                  </div>
-                  <div className="col-lg-12">
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => {
-                        SerchRecord();
-                      }}
-                    >
-                      Search record
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="row justify-content-center ">
-              <div className="col-lg-12 pt-5">
-                {!showFilter && (
+            <div className="element-box">
+              <div className="row justify-content-center">
+                <div className="col-lg-12">
+                  <AlertMessage
+                    message={searchMsg?.message}
+                    failed={searchMsg?.failed}
+                  />
                   <span
-                    className="element-actions mb-5"
-                    style={{ marginTop: "-3rem" }}
+                    className="element-actions"
+                    style={{ marginTop: "-1.5rem" }}
                   >
                     <SwitchInput
                       isOn={showFilter}
                       handleToggle={() => {
-                        SetShowFilter(true);
+                        SetShowFilter(!showFilter);
                       }}
                       label="Show Filter"
                     />
                   </span>
+                  <h5 className="element-header">Filter Student</h5>
+                </div>
+                {showFilter && (
+                  <>
+                    <div className="col-lg-4">
+                      {/* Reg No input */}
+                      <IconInput
+                        placeholder="Enter student reg.no"
+                        label="Search by Reg. no"
+                        icon="os-icon-ui-09"
+                        required={true}
+                        type="text"
+                        initVal={searchInput?.regNo}
+                        onChange={(regNo: string) => {
+                          SetActiveLevel(undefined);
+                          SetClasses(undefined);
+                          SetSearchInput({
+                            ...searchInput,
+                            level: undefined,
+                            _class: undefined,
+                            regNo,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="col-lg-4">
+                      {/* Level input */}
+                      <label>
+                        Level <br />
+                      </label>
+                      <Select
+                        options={levels}
+                        value={{
+                          label: activeLevel?.name || (
+                            <span className="text-gray">Select...</span>
+                          ),
+                          value: activeLevel?.id,
+                        }}
+                        onChange={(item: any) => {
+                          SetActiveLevel({
+                            name: item?.label,
+                            id: item?.value,
+                          });
+                          SetSearchInput({
+                            ...searchInput,
+                            regNo: "",
+                            _class: undefined,
+                            level: {
+                              name: item.label,
+                              id: item.value,
+                            },
+                          });
+                        }}
+                      />
+                      {showLevelsRefresh && (
+                        <button
+                          onClick={() => {
+                            SetShowLevelsRefresh(false);
+                            SetLMessage(undefined);
+                            GetLevels({
+                              variables: {
+                                school: school.id,
+                              },
+                            });
+                          }}
+                          className="btn btn-primary btn-sm px-1 my-2"
+                          type="submit"
+                        >
+                          Reload Level
+                        </button>
+                      )}
+                      <LoadingState loading={lLoading || llLoading} />
+                      <AlertMessage
+                        message={lMessage?.message}
+                        failed={lMessage?.failed}
+                      />
+                    </div>
+                    <div className="col-lg-4">
+                      {/* Current Class input */}
+                      <label>
+                        Class <br />
+                      </label>
+                      <Select
+                        options={classes}
+                        value={{
+                          label: searchInput?._class?.name || (
+                            <span className="text-gray">Select...</span>
+                          ),
+                          value: searchInput?._class?.id,
+                        }}
+                        onChange={(item: any) => {
+                          SetSearchInput({
+                            ...searchInput,
+                            regNo: "",
+                            level: undefined,
+                            _class: {
+                              name: item.label,
+                              id: item.value,
+                            },
+                          });
+                        }}
+                      />
+                      {showClassesRefresh && (
+                        <button
+                          onClick={() => {
+                            SetShowClassesRefresh(false);
+                            SetCMessage(undefined);
+                            SetMessage(undefined);
+                            GetClasses({
+                              variables: { level: searchInput?._class?.id },
+                            });
+                          }}
+                          className="btn btn-primary btn-sm px-1 my-2"
+                          type="submit"
+                        >
+                          Reload Classes
+                        </button>
+                      )}
+                      <LoadingState loading={cLoading} />
+                      <AlertMessage
+                        message={cMessage?.message}
+                        failed={cMessage?.failed}
+                      />
+                    </div>
+                    <div className="col-lg-12">
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                          if (searchInput) {
+                            SetSearchMsg(undefined);
+                            SetMessage(undefined);
+                            SetRMessage(undefined);
+                            SearchStudents({
+                              variables: {
+                                regNo: searchInput?.regNo,
+                                level: searchInput?.level?.id,
+                                _class: searchInput?._class?.id,
+                                page,
+                                limit,
+                              },
+                            });
+                          } else {
+                            SetSearchMsg({
+                              message: "No search field enetered!",
+                              failed: true,
+                            });
+                          }
+                        }}
+                      >
+                        Search record
+                      </button>
+                    </div>
+                  </>
                 )}
-                <LoadingState
-                  loading={
-                    levelLoading || classLoading || regNoLoading || rLoading
-                  }
-                />
+              </div>
+            </div>
+
+            {/* Students list */}
+            <div className="row justify-content-center ">
+              <div className="col-12">
+                <LoadingState loading={loading || rLoading} />
                 <AlertMessage
                   message={message?.message}
                   failed={message?.failed}
@@ -503,14 +548,21 @@ const StudentList: FC<IProps> = ({ history }) => {
                   message={rMessage?.message}
                   failed={rMessage?.failed}
                 />
-                {pageResult.docs.length > 0 && (
-                  <>
+              </div>
+
+              {data && data.SearchStudents.docs.length > 0 && (
+                <>
+                  <div className="col-lg-12 pt-5">
                     <div className="element-box-tp">
                       <div className="table-responsive">
                         <h6 className="element-header">
                           Returned Students of{" "}
                           <b className="text-primary">
-                            ( {pageResult?.docs[0]?.current_class?.level?.name}{" "}
+                            ({" "}
+                            {
+                              data?.SearchStudents?.docs[0]?.current_class
+                                ?.level?.name
+                            }{" "}
                             )
                           </b>
                         </h6>
@@ -527,93 +579,106 @@ const StudentList: FC<IProps> = ({ history }) => {
                             </tr>
                           </thead>
                           <tbody>
-                            {pageResult.docs.map((stu: any, index: number) => (
-                              <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>
-                                  <div
-                                    className="user-with-avatar clickable"
-                                    data-target="#imageModal"
-                                    data-toggle="modal"
-                                  >
-                                    <img src={stu.passport} alt="" />
-                                  </div>
-                                </td>
-                                <td>
-                                  {stu.first_name +
-                                    " " +
-                                    stu.middle_name +
-                                    " " +
-                                    stu.surname}
-                                </td>
-                                <td>{stu.reg_no}</td>
-                                <td>{stu.current_class?.name}</td>
-                                <td>{stu.gender}</td>
-                                <td className="row-actions text-center">
-                                  <a
-                                    href="#"
-                                    title="View more"
-                                    onClick={() => {
-                                      SetShowProfile(true);
-                                    }}
-                                  >
-                                    <i className="os-icon os-icon-eye"></i>
-                                  </a>
-                                  <a
-                                    href="#"
-                                    title="Edit"
-                                    onClick={() => {
-                                      SetActiveStudentId(stu.id);
-                                      SetEditStudent({
-                                        firstname: stu.first_name,
-                                        middlename: stu.middle_name,
-                                        surname: stu.surname,
-                                        regNo: stu.reg_no,
-                                        gender: stu.gender,
-                                        address: stu.address,
-                                        dob: stu.dob,
-                                        state: stu.state,
-                                        lga: stu.lga,
-                                      });
-                                      if (editStudent) {
-                                        setTimeout(() => {
-                                          document
-                                            .getElementById("btnModal")
-                                            ?.click();
-                                        }, 0);
-                                      }
-                                    }}
-                                  >
-                                    <i className="os-icon os-icon-edit"></i>
-                                  </a>
-                                  <a
-                                    className="danger"
-                                    href="#"
-                                    title="Delete"
-                                    onClick={async () => {
-                                      let del = window.confirm(
-                                        `Are you sure you want to delete "${
-                                          stu.firstname +
-                                          " " +
-                                          stu.middlename +
-                                          " " +
-                                          stu.surname
-                                        }"?`
-                                      );
-                                      if (del) {
-                                        await RemoveStudent({
+                            {data?.SearchStudents?.docs.map(
+                              (stu: any, index: number) => (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>
+                                    <div
+                                      onClick={() => {
+                                        SetActiveImg({
+                                          image: stu.passport,
+                                          name: stu.full_name,
+                                        });
+                                      }}
+                                      className="user-with-avatar clickable"
+                                      data-target="#imageModal"
+                                      data-toggle="modal"
+                                    >
+                                      <img
+                                        src={stu.passport || "/avatar.png"}
+                                        alt=""
+                                      />
+                                    </div>
+                                  </td>
+                                  <td>{stu.full_name}</td>
+                                  <td>{stu.reg_no}</td>
+                                  <td>{stu.current_class?.name}</td>
+                                  <td>{stu.gender}</td>
+                                  <td className="row-actions text-center">
+                                    <a
+                                      href="#"
+                                      title="View profile"
+                                      onClick={() => {
+                                        SetShowProfile(true);
+                                        SetActiveStudent(stu);
+                                        GetGuardianTypes();
+                                        GetSubByLevel({
                                           variables: {
-                                            id: stu.id,
+                                            level: stu.current_class?.level?.id,
                                           },
                                         });
-                                      }
-                                    }}
-                                  >
-                                    <i className="os-icon os-icon-ui-15"></i>
-                                  </a>
-                                </td>
-                              </tr>
-                            ))}
+                                      }}
+                                    >
+                                      <i className="os-icon os-icon-eye"></i>
+                                    </a>
+                                    <a
+                                      href="#"
+                                      title="Edit"
+                                      onClick={() => {
+                                        SetUMessage(undefined);
+                                        SetActiveStudentId(stu.id);
+                                        SetEditStudent({
+                                          firstname: stu.first_name,
+                                          middlename: stu.middle_name,
+                                          surname: stu.surname,
+                                          regNo: stu.reg_no,
+                                          gender: stu.gender,
+                                          address: stu.address,
+                                          dob: stu.dob,
+                                          state: stu.state,
+                                          lga: stu.lga,
+                                        });
+                                        if (editStudent) {
+                                          setTimeout(() => {
+                                            document
+                                              .getElementById("btnModal")
+                                              ?.click();
+                                          }, 0);
+                                        }
+                                      }}
+                                    >
+                                      <i className="os-icon os-icon-edit"></i>
+                                    </a>
+                                    <a
+                                      className="danger"
+                                      href="#"
+                                      title="Delete"
+                                      onClick={async () => {
+                                        let del = window.confirm(
+                                          `Are you sure you want to delete "${
+                                            stu.firstname +
+                                            " " +
+                                            stu.middlename +
+                                            " " +
+                                            stu.surname
+                                          }"?`
+                                        );
+                                        if (del) {
+                                          await RemoveStudent({
+                                            variables: {
+                                              id: stu.id,
+                                            },
+                                          });
+                                        }
+                                      }}
+                                    >
+                                      <i className="os-icon os-icon-ui-15"></i>
+                                    </a>
+                                  </td>
+                                </tr>
+                              )
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -625,27 +690,25 @@ const StudentList: FC<IProps> = ({ history }) => {
                         data-toggle="modal"
                         style={{ display: "none" }}
                       ></button>
-                      {/* <div className="text-center pt-5 fade-in">
-                    <h2 className="text-danger">No Student found!</h2>
-                  </div> */}
                     </div>
-                    {/* Pagination */}
-                    <div className="col-lg fade-in">
-                      <div className="element-box">
-                        <Pagination
-                          length={pageResult.totalDocs}
-                          {...pageResult}
-                          onPageClicked={(page: number) => {
-                            setPage(page);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
+                  </div>
 
-              {searchedStu && pageResult.docs.length === 0 && (
+                  {/* Pagination */}
+                  <div className="col-12 fade-in">
+                    <div className="element-box">
+                      <Pagination
+                        length={data?.SearchStudents?.totalDocs}
+                        {...data?.SearchStudents}
+                        onPageClicked={(page: number) => {
+                          setPage(page);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {data && data?.SearchStudents?.docs.length === 0 && (
                 <div className="text-center pt-5 fade-in">
                   <h3 className="text-danger"> No Student record found!</h3>
                 </div>
@@ -655,8 +718,8 @@ const StudentList: FC<IProps> = ({ history }) => {
         </div>
       )}
 
-      {showProfile && (
-        // profile
+      {showProfile && activeStudent && (
+        // Student profile
         <div>
           <div className="content-box">
             <div className="element-wrapper">
@@ -675,24 +738,27 @@ const StudentList: FC<IProps> = ({ history }) => {
                     ></i>
                   </NavLink>
                 </div>
-                <div className="text-right">
-                  <NavLink to="#">
-                    <i className="icon-lg os-icon os-icon-edit"></i>
-                  </NavLink>
-                </div>
-                <div className="text-center">
+                <div className="text-center mb-5">
                   <img
                     className="avatar mb-3"
                     alt="Passport"
-                    src="/3.jpeg"
+                    src={activeStudent.passport}
                     style={{
                       width: "150px",
                       height: "150px",
                     }}
                   />
 
-                  <h2 className="up-header ">Douglas Elenu</h2>
-                  <h6 className="up-sub-header text-uppercase">CIC20/1244</h6>
+                  <h2 className="up-header ">
+                    {activeStudent.first_name +
+                      " " +
+                      activeStudent.middle_name +
+                      " " +
+                      activeStudent.surname}
+                  </h2>
+                  <h6 className="up-sub-header text-uppercase">
+                    {activeStudent.reg_no}
+                  </h6>
                 </div>
 
                 <div className="os-tabs-w">
@@ -742,27 +808,35 @@ const StudentList: FC<IProps> = ({ history }) => {
                       <div className="text-center element-box no-bg no-shadow">
                         <ul className="pro-details">
                           <li>
-                            <span>Gender</span> | <b>Male</b>
+                            <span>Gender</span> | <b>{activeStudent.gender}</b>
                           </li>
                           <li>
-                            <span>Date of Birth</span> | <b>8th May 2001 </b>
-                            <i>(20yrs)</i>
+                            <span>Date of Birth</span> |{" "}
+                            <b>{CLEAN_DATE(activeStudent.dob)}</b>
+                            <i> ( 20yrs )</i>
                           </li>
                           <li>
-                            <span>Date of Admission</span> |{" "}
-                            <b>12th April 2017</b>
+                            <span>Date Created</span> |{" "}
+                            <b>{CLEAN_DATE(activeStudent.created_at)}</b>
                           </li>
                           <li>
-                            <span>Level</span> | <b>SS1</b>
+                            <span>Level</span> |{" "}
+                            <b>{activeStudent.current_class?.level?.name}</b>
                           </li>
                           <li>
-                            <span>Class</span> | <b>A</b>
+                            <span>Class</span> |{" "}
+                            <b>{activeStudent.current_class?.name}</b>
                           </li>
                           <li>
-                            <span>State of Origin</span> | <b>Abia</b>
+                            <span>State of Origin</span> |{" "}
+                            <b>{activeStudent.state}</b>
                           </li>
                           <li>
-                            <span>LGA</span> | <b>Isikwu-ato</b>
+                            <span>LGA</span> | <b>{activeStudent.lga}</b>
+                          </li>
+                          <li>
+                            <span>Address</span> |{" "}
+                            <b>{activeStudent.address}</b>
                           </li>
                         </ul>
                       </div>
@@ -772,46 +846,32 @@ const StudentList: FC<IProps> = ({ history }) => {
                     <div className="tab-pane" id="subjects">
                       <div className="text-center element-box no-bg no-shadow">
                         <div className="text-right">
-                          {/* General subjects */}
-                          {/* <label
-                              className="btn btn-sm btn-secondary"
-                              style={{ padding: "4px 5px" }}
-                            >
-                              General
-                            </label> */}
-                          {/* Selected subjects */}
-                          <label className="badge badge-success-inverted">
-                            Selected
+                          {/* Subjects */}
+                          <label
+                            className={
+                              activeStudent?.selected_subjects.length === 0
+                                ? "btn btn-sm btn-secondary"
+                                : "badge badge-success-inverted"
+                            }
+                            style={{ padding: "4px 5px" }}
+                          >
+                            {activeStudent?.selected_subjects.length === 0
+                              ? "General"
+                              : "Selected"}
                           </label>
                         </div>
-                        <div className="table-responsive">
-                          <table className="table table-striped">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-                                <th>Code</th>
-                                <th>Title</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>1</td>
-                                <td>INT</td>
-                                <td>Intro tech</td>
-                              </tr>
-                              <tr>
-                                <td>2</td>
-                                <td>ENG</td>
-                                <td>English language</td>
-                              </tr>
-                              <tr>
-                                <td>3</td>
-                                <td>MTH</td>
-                                <td>Mathematics</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                        <SubjectList
+                          subjects={
+                            activeStudent?.selected_subjects.length > 0
+                              ? activeStudent.selected_subjects
+                              : sData?.GetSubjectsForRegistration.docs
+                          }
+                        />
+                        <LoadingState loading={sLoading} />
+                        <AlertMessage
+                          message={subMessage?.message}
+                          failed={subMessage?.failed}
+                        />
                       </div>
                     </div>
 
@@ -819,57 +879,54 @@ const StudentList: FC<IProps> = ({ history }) => {
                     <div className="tab-pane" id="guardians">
                       {!showNewGuardian && (
                         <div>
-                          <div className="element-actions">
-                            <button
-                              className="btn btn-primary"
-                              onClick={() => {
-                                SetNewGuardian(true);
-                              }}
-                            >
-                              <i className="os-icon os-icon-plus-circle mr-2"></i>
-                              New
-                            </button>
-                          </div>
                           <div className="text-center ">
                             <div className="row">
-                              <div className="col-sm-3">
-                                <div className="element-box no-bg">
-                                  <img
-                                    className="avatar"
-                                    src="/3.jpeg"
-                                    alt=""
-                                    style={{ width: "80%" }}
-                                  />
-                                  <hr />
-                                  <a
-                                    href="#"
-                                    data-dismiss="modal"
-                                    data-target="#imageModal"
-                                    data-toggle="modal"
-                                  >
-                                    Douglas King
-                                  </a>
-                                </div>
+                              <div className="col-12">
+                                <button
+                                  className="btn btn-primary float-right"
+                                  onClick={() => {
+                                    SetShowNewGuardian(true);
+                                  }}
+                                >
+                                  <i className="os-icon os-icon-plus-circle mr-2"></i>
+                                  New
+                                </button>
                               </div>
-                              <div className="col-sm-3">
-                                <div className="element-box no-bg">
-                                  <img
-                                    className="avatar"
-                                    src="/avatar.png"
-                                    alt=""
-                                    style={{ width: "80%" }}
-                                  />
-                                  <hr />
-                                  <a
-                                    href="#"
-                                    data-dismiss="modal"
-                                    data-target="#imageModal"
-                                    data-toggle="modal"
-                                  >
-                                    Mrs Anita Loveth
-                                  </a>
+                              {activeStudent.guardians.length > 0 && (
+                                <>
+                                  {activeStudent.guardians.map((guard: any) => (
+                                    <div className="col-sm-3">
+                                      <div className="element-box no-bg">
+                                        <img
+                                          className="avatar"
+                                          src={guard?.image || "/avatar.png"}
+                                          alt=""
+                                          style={{
+                                            width: "100px",
+                                            height: "100px",
+                                          }}
+                                        />
+                                        <hr />
+                                        <a
+                                          href="#"
+                                          data-dismiss="modal"
+                                          data-target="#imageModal"
+                                          data-toggle="modal"
+                                        >
+                                          {guard?.full_name}
+                                        </a>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </>
+                              )}
+                              {activeStudent.guardians.length === 0 && (
+                                <div className="col-12 mb-5">
+                                  <label className="text-danger">
+                                    No guardian record found!
+                                  </label>
                                 </div>
-                              </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -887,32 +944,63 @@ const StudentList: FC<IProps> = ({ history }) => {
                                   <h5 className="element-header">
                                     Basic Information
                                   </h5>
-                                  <form onSubmit={(e) => {}}>
-                                    <div className="row">
+                                  <form
+                                    onSubmit={async (e) => {
+                                      e.preventDefault();
+                                      NewGuardian({
+                                        variables: {
+                                          student: activeStudent.id,
+                                          model: newGuardian,
+                                        },
+                                      });
+                                    }}
+                                  >
+                                    <div className="row mb-3">
                                       <div className="col-sm-6">
                                         {/* Title input */}
-                                        <Dropdown
-                                          items={[
-                                            { label: "Mr", value: "1" },
-                                            { label: "Mrs", value: "2" },
-                                            { label: "Sergeant", value: "2" },
-                                          ]}
-                                          onSelect={() => {}}
-                                          label="Title"
+                                        <label>Title</label>
+                                        <Select
+                                          options={title.titles}
+                                          onChange={(title: any) => {
+                                            SetNewGuardian({
+                                              ...newGuardian,
+                                              title: title.label,
+                                            });
+                                          }}
                                           icon="phone"
                                         />
                                       </div>
                                       <div className="col-sm-6">
                                         {/* Relationship input */}
-                                        <Dropdown
-                                          items={[
-                                            { label: "Father", value: "1" },
-                                            { label: "Mother", value: "2" },
-                                          ]}
-                                          onSelect={() => {}}
-                                          label="Relationship"
+                                        <label>Relationship</label>
+                                        <Select
+                                          options={guardType}
+                                          onChange={(type: any) => {
+                                            SetNewGuardian({
+                                              ...newGuardian,
+                                              type: type.value,
+                                            });
+                                          }}
                                           icon="phone"
                                         />
+                                        {showGTRefresh && (
+                                          <button
+                                            onClick={() => {
+                                              SetShowGTRefresh(false);
+                                              SetGTMessage(undefined);
+                                              GetGuardianTypes();
+                                            }}
+                                            className="btn btn-primary btn-sm px-2 my-2"
+                                            type="button"
+                                          >
+                                            Reload Relationships
+                                          </button>
+                                        )}
+                                        <AlertMessage
+                                          message={gTMessage?.message}
+                                          failed={gTMessage?.failed}
+                                        />
+                                        <LoadingState loading={gTLoading} />
                                       </div>
                                     </div>
                                     {/* Full name input */}
@@ -922,7 +1010,12 @@ const StudentList: FC<IProps> = ({ history }) => {
                                       icon="os-icon-ui-09"
                                       required={true}
                                       type="text"
-                                      onChange={(fullname: string) => {}}
+                                      onChange={(name: string) => {
+                                        SetNewGuardian({
+                                          ...newGuardian,
+                                          name,
+                                        });
+                                      }}
                                     />
                                     <div className="row">
                                       <div className="col-sm-6">
@@ -933,7 +1026,12 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           icon="os-icon-ui-09"
                                           required={true}
                                           type="text"
-                                          onChange={(phone: string) => {}}
+                                          onChange={(phone: string) => {
+                                            SetNewGuardian({
+                                              ...newGuardian,
+                                              phone,
+                                            });
+                                          }}
                                         />
                                       </div>
                                       <div className="col-sm-6">
@@ -944,39 +1042,56 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           icon="os-icon-ui-09"
                                           required={true}
                                           type="text"
-                                          onChange={(email: string) => {}}
+                                          onChange={(email: string) => {
+                                            SetNewGuardian({
+                                              ...newGuardian,
+                                              email,
+                                            });
+                                          }}
                                         />
                                       </div>
                                     </div>
-
-                                    <div className="row">
+                                    <div className="row mb-3">
                                       <div className="col-sm-6">
                                         {/* Gender input */}
-                                        <Dropdown
-                                          items={[
-                                            {
-                                              label: "Front Desker",
-                                              value: "1",
-                                            },
-                                            { label: "Oga", value: "2" },
-                                          ]}
-                                          onSelect={() => {}}
-                                          label="Gender"
+                                        <label>Gender</label>
+                                        <Select
+                                          options={gender.gender}
+                                          onChange={(gender: any) => {
+                                            SetNewGuardian({
+                                              ...newGuardian,
+                                              gender: gender.label,
+                                            });
+                                          }}
                                           icon="phone"
                                         />
                                       </div>
                                       <div className="col-sm-6">
                                         {/* State of Origin input */}
-                                        <Dropdown
-                                          items={[
-                                            {
-                                              label: "Front Desker",
-                                              value: "1",
-                                            },
-                                            { label: "Oga", value: "2" },
-                                          ]}
-                                          onSelect={() => {}}
-                                          label="State of Origin"
+                                        <label>State of Origin</label>
+                                        <Select
+                                          options={state.map(
+                                            (item: any, index: number) => ({
+                                              label: item.state.name,
+                                              value: index + "",
+                                            })
+                                          )}
+                                          onChange={(item: any) => {
+                                            SetNewGuardian({
+                                              ...newGuardian,
+                                              state: item.label,
+                                            });
+                                            SetLocals(
+                                              state[
+                                                item.value
+                                              ].state.locals.map(
+                                                (item: any) => ({
+                                                  value: item.name,
+                                                  label: item.name,
+                                                })
+                                              )
+                                            );
+                                          }}
                                           icon="phone"
                                         />
                                       </div>
@@ -984,16 +1099,15 @@ const StudentList: FC<IProps> = ({ history }) => {
                                     <div className="row">
                                       <div className="col-sm-6">
                                         {/* LGA */}
-                                        <Dropdown
-                                          items={[
-                                            {
-                                              label: "Front Desker",
-                                              value: "1",
-                                            },
-                                            { label: "Oga", value: "2" },
-                                          ]}
-                                          onSelect={() => {}}
-                                          label="LGA"
+                                        <label>LGA</label>
+                                        <Select
+                                          options={locals}
+                                          onChange={(item: any) =>
+                                            SetNewGuardian({
+                                              ...newGuardian,
+                                              lga: item.value,
+                                            })
+                                          }
                                           icon="phone"
                                         />
                                       </div>
@@ -1005,7 +1119,12 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           icon="os-icon-ui-09"
                                           required={true}
                                           type="text"
-                                          onChange={(hometown: string) => {}}
+                                          onChange={(hometown: string) => {
+                                            SetNewGuardian({
+                                              ...newGuardian,
+                                              hometown,
+                                            });
+                                          }}
                                         />
                                       </div>
                                     </div>
@@ -1016,22 +1135,32 @@ const StudentList: FC<IProps> = ({ history }) => {
                                       icon="os-icon-ui-09"
                                       required={true}
                                       type="text"
-                                      onChange={(address: string) => {}}
+                                      onChange={(address: string) => {
+                                        SetNewGuardian({
+                                          ...newGuardian,
+                                          address,
+                                        });
+                                      }}
                                     />
                                     <label>Passport</label>
                                     <ImageUpload
                                       title="Browse passport..."
-                                      onData={(path: string) => {
-                                        // SetImageRecord({
-                                        //   ...imageRecord,
-                                        //   image: path
-                                        // })
+                                      onData={(image: string) => {
+                                        SetNewGuardian({
+                                          ...newGuardian,
+                                          image,
+                                        });
                                       }}
+                                    />
+                                    <LoadingState loading={nGLoading} />
+                                    <AlertMessage
+                                      message={nGMessage?.message}
+                                      failed={nGMessage?.failed}
                                     />
                                     <div className="buttons-w mt-3 mb-5">
                                       <button
                                         onClick={() => {
-                                          SetNewGuardian(false);
+                                          SetShowNewGuardian(false);
                                         }}
                                         className="btn btn-secondary px-5 mt-3"
                                         type="submit"
@@ -1054,7 +1183,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                       )}
                     </div>
 
-                    {/* Accordion for student attendance */}
+                    {/* Student attendance */}
                     <div className="tab-pane" id="attendance">
                       <div className="os-tabs-w">
                         <div className="os-tabs-controls">
@@ -1226,9 +1355,9 @@ const StudentList: FC<IProps> = ({ history }) => {
         </div>
       )}
       {/* Modal for Image */}
-      <ImageModal image={active?.image} name={active?.name} />
+      <ImageModal image={activeImg?.image} name={activeImg?.name} />
 
-      {/* Edit Teacher Modal */}
+      {/* Edit Student Modal */}
       {editStudent.dob && (
         <div
           aria-hidden="true"
@@ -1247,7 +1376,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                   <span aria-hidden="true"> &times;</span>
                 </button>
               </div>
-              <div className="modal-body pb-2">
+              <div className="modal-body element-box pb-2">
                 <LoadingState loading={uLoading} />
                 <AlertMessage
                   message={uMessage?.message}

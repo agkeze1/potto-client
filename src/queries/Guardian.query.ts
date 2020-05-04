@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { STU_MIN_PROPS } from "./Student.query";
 
 export const GUARDIAN_PROPS = gql`
   fragment GUARDIAN_PROPS on Guardian {
@@ -7,6 +8,7 @@ export const GUARDIAN_PROPS = gql`
     name
     gender
     image
+    full_name
   }
 `;
 
@@ -14,6 +16,18 @@ export const GUARDIAN_PROPS = gql`
 export const GET_GUARDIAN = gql`
   query GET_GUARDIAN($id: ID!) {
     GetGuardian(id: $id) {
+      message
+      doc {
+        ...GUARDIAN_PROPS
+      }
+    }
+  }
+  ${GUARDIAN_PROPS}
+`;
+
+export const GET_GUARDIAN_BY_MOBILE = gql`
+  query GET_GUARDIAN_BY_MOBILE($mobile: String!) {
+    GetGuardianByMobile(mobile: $mobile) {
       message
       doc {
         ...GUARDIAN_PROPS
@@ -46,6 +60,18 @@ export const NEW_GUARDIAN = gql`
     }
   }
   ${GUARDIAN_PROPS}
+`;
+
+export const ADD_GUARDIAN = gql`
+  mutation ADD_GUARDIAN($id: ID!, $guardianId: ID!) {
+    AddStudentGuardian(id: $id, guardianId: $guardianId) {
+      message
+      doc {
+        ...STU_MIN_PROPS
+      }
+    }
+  }
+  ${STU_MIN_PROPS}
 `;
 
 export const NEW_GUARDIAN_TYPE = gql`

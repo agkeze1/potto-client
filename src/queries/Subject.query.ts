@@ -25,6 +25,18 @@ export const GET_SUBJECTS = gql`
   ${SUB_PROPS}
 `;
 
+export const GET_SUB_BY_LEVEL = gql`
+  query GET_SUB_BY_LEVEL($level: ID!) {
+    GetSubjectsForRegistration(level: $level) {
+      message
+      docs {
+        ...SUB_PROPS
+      }
+    }
+  }
+  ${SUB_PROPS}
+`;
+
 // Mutation Section
 export const NEW_SUBJECT = gql`
   mutation NEW_SUBJECT($model: SubjectInput!) {

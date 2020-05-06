@@ -5,12 +5,14 @@ interface IProps {
   type: string;
   SetActiveDevice: any;
   showAssignBtn: boolean;
+  UnassignDevice?: any;
 }
 export const Devices: FC<IProps> = ({
   devices,
   type,
   SetActiveDevice,
   showAssignBtn,
+  UnassignDevice,
 }) => (
   <div className="table-responsive">
     {devices?.length > 0 && (
@@ -66,9 +68,18 @@ export const Devices: FC<IProps> = ({
                     <a
                       href="#"
                       title="Un-assign Device"
-                      data-target="#AssignToClassModal"
-                      data-toggle="modal"
-                      onClick={SetActiveDevice(dev)}
+                      onClick={async () => {
+                        let del = window.confirm(
+                          `Are you sure you want to Unassign "${dev.name}"?`
+                        );
+                        if (del) {
+                          await UnassignDevice({
+                            variables: {
+                              id: dev.id,
+                            },
+                          });
+                        }
+                      }}
                     >
                       <i className="os-icon os-icon-delete text-danger"></i>
                     </a>

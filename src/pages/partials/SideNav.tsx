@@ -15,7 +15,6 @@ const SideNav: FC<SideProps> = ({ location }) => {
 
   // Logged in User
   const user = authService.GetUser();
-  console.log("Logged in user: ", user);
   return (
     <>
       <div className="menu-w color-scheme-light color-style-transparent menu-position-side menu-side-left menu-layout-compact sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link">

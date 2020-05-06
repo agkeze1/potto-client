@@ -9,6 +9,7 @@ import {
   GET_ASSIGNED_DEVICES,
   GET_UNASSIGNED_DEVICES,
   ASSIGN_DEVICE,
+  UNASSIGN_DEVICE,
 } from "../../queries/Device.query";
 import { IMessage } from "../../models/IMessage";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -140,7 +141,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
     }
   }, [activeLevel?.id]);
 
-  // Get classes for class input
+  // Assign Device to Class
   const [AssignDevice, { loading: aLoading }] = useMutation(ASSIGN_DEVICE, {
     onError: (err) => {
       SetAMessage({
@@ -194,6 +195,51 @@ const DeviceList: FC<IProps> = ({ history }) => {
     },
   });
 
+  // Unassign Device from Class
+  const [UnAssignDevice, { loading: uDLoading }] = useMutation(
+    UNASSIGN_DEVICE,
+    {
+      onError: (err) => {
+        SetMessage({
+          message: err.message,
+          failed: true,
+        });
+      },
+      update: (cache, { data }) => {
+        // Read Unassigned devices query
+        const q: any = cache.readQuery({
+          query: GET_UNASSIGNED_DEVICES,
+        });
+
+        // Read Assigned devices query
+        const d: any = cache.readQuery({
+          query: GET_ASSIGNED_DEVICES,
+        });
+
+        // Remove device from Assigned Devices list
+        const ind = d.GetAssignedDevices.docs.findIndex(
+          (i: any) => i.id === data.UnAssignDevice.doc.id
+        );
+        d.GetAssignedDevices.docs.splice(ind, 1);
+
+        // Add device to UnAssigned Devices list
+        q.GetUnassignedDevices.docs.unshift(data.UnAssignDevice.doc);
+
+        //update Unassigned Devices
+        cache.writeQuery({
+          query: GET_UNASSIGNED_DEVICES,
+          data: { GetUnassignedDevices: q.GetUnassignedDevices },
+        });
+
+        //update Assigned Devices
+        cache.writeQuery({
+          query: GET_ASSIGNED_DEVICES,
+          data: { GetAssignedDevices: d.GetAssignedDevices },
+        });
+      },
+    }
+  );
+
   return (
     <>
       <Helmet>
@@ -226,7 +272,9 @@ const DeviceList: FC<IProps> = ({ history }) => {
                         message={message?.message}
                         failed={message?.failed}
                       />
-                      <LoadingState loading={loading || uLoading} />
+                      <LoadingState
+                        loading={loading || uLoading || uDLoading}
+                      />
                       {/* List of Assigned devices */}
                       {!showUnassignedDevices && (
                         <Devices
@@ -234,6 +282,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
                           type="Assigned"
                           SetActiveDevice={SetActiveDevice}
                           showAssignBtn={false}
+                          UnassignDevice={UnAssignDevice}
                         />
                       )}
 
@@ -270,10 +319,10 @@ const DeviceList: FC<IProps> = ({ history }) => {
         id="PowerHistoryModal"
         role="dialog"
       >
-        <div className="modal-dialog modal-lg" role="document">
+        <div className="modal-dialog modal-md" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Device Power History</h5>
+              <h5 className="modal-title">Device Power-On History</h5>
               <button
                 aria-label="Close"
                 className="close"
@@ -305,7 +354,6 @@ const DeviceList: FC<IProps> = ({ history }) => {
                     <tr>
                       <th>#</th>
                       <th>Date</th>
-                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -315,11 +363,6 @@ const DeviceList: FC<IProps> = ({ history }) => {
                         21st Jan. 2020 -
                         <span className="text-primary"> (3:45pm)</span>
                       </td>
-                      <td>
-                        <label className="badge badge-success-inverted">
-                          On
-                        </label>
-                      </td>
                     </tr>
                     <tr>
                       <td>2</td>
@@ -327,22 +370,12 @@ const DeviceList: FC<IProps> = ({ history }) => {
                         29st Jan. 2020 -
                         <span className="text-primary"> (5:14pm)</span>
                       </td>
-                      <td>
-                        <label className="badge badge-danger-inverted">
-                          Off
-                        </label>
-                      </td>
                     </tr>
                     <tr>
                       <td>3</td>
                       <td>
                         6th Feb. 2020 -
                         <span className="text-primary"> (1:02pm)</span>
-                      </td>
-                      <td>
-                        <label className="badge badge-danger-inverted">
-                          Off
-                        </label>
                       </td>
                     </tr>
                   </tbody>
@@ -382,6 +415,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
+                  SetAMessage(undefined);
                   if (activeClass) {
                     AssignDevice({
                       variables: {

@@ -54,3 +54,15 @@ export const ASSIGN_DEVICE = gql`
   }
   ${DEVICE_PROPS}
 `;
+
+export const UNASSIGN_DEVICE = gql`
+  mutation UNASSIGN_DEVICE($id: ID) {
+    UnAssignDevice(id: $id) {
+      message
+      doc {
+        ...DEVICE_PROPS
+      }
+    }
+  }
+  ${DEVICE_PROPS}
+`;

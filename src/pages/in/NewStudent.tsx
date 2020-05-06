@@ -413,7 +413,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                           placeholder="Enter email"
                           label="Email"
                           icon="os-icon-ui-09"
-                          required={true}
+                          required={false}
                           type="text"
                           onChange={(email: string) =>
                             SetNewGuardian({

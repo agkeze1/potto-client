@@ -11,12 +11,12 @@ import ApolloClient from "apollo-boost";
 
 const client = new ApolloClient({
   uri: GET_API_URL(),
-  request: operation => {
+  request: (operation) => {
     const token = authService.GetToken();
     operation.setContext({
       headers: {
-        authorization: token ? `Bearer ${token}` : ""
-      }
+        authorization: token ? `Bearer ${token}` : "",
+      },
     });
   },
   onError: ({ networkError }) => {
@@ -24,7 +24,7 @@ const client = new ApolloClient({
       networkError.message =
         "An error occurred! Check your internet connection and try again.";
     }
-  }
+  },
 });
 
 ReactDOM.render(

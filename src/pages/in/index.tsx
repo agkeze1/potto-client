@@ -31,10 +31,10 @@ import Role from "./Role";
 import NewTimetable from "./NewTimetable";
 import ViewTimetable from "./ViewTimetable";
 import Dashboard from "./Dashboard";
+import Period from "./Period";
 import { authService } from "../../services/Auth.Service";
 
 const Home: FC<IProps> = ({ location, history }) => {
-  const [expand, SetExpand] = useState<boolean>(false);
   document.body.className =
     "full-screen with-content-panel menu-position-side menu-side-left";
 
@@ -49,19 +49,15 @@ const Home: FC<IProps> = ({ location, history }) => {
       <div className="all-wrapper with-side-panel solid-bg-all">
         <div className="layout-w">
           {/* Main sidebar */}
-          {!expand && <SideNav location={location} />}
+          <SideNav location={location} />
 
           <div className="content-w">
             {/* Header */}
-            {!expand && (
-              <>
-                <Header location={location} />
-                <div className="content-panel-toggler">
-                  <i className="os-icon os-icon-grid-squares-22"></i>
-                  <span>Sidebar</span>
-                </div>
-              </>
-            )}
+            <Header location={location} />
+            <div className="content-panel-toggler">
+              <i className="os-icon os-icon-grid-squares-22"></i>
+              <span>Sidebar</span>
+            </div>
 
             {/* Content */}
             <div className="main-container">
@@ -93,10 +89,8 @@ const Home: FC<IProps> = ({ location, history }) => {
                 <Route path="/in/feedback-type" component={FeedbackType} />
                 <Route path="/in/role" component={Role} />
                 <Route path="/in/new-timetable" component={NewTimetable} />
-                <Route
-                  path="/in/view-timetable"
-                  render={() => <ViewTimetable expand={SetExpand} />}
-                />
+                <Route path="/in/view-timetable" component={ViewTimetable} />}
+                <Route path="/in/period" component={Period} />} />
               </Switch>
             </div>
           </div>

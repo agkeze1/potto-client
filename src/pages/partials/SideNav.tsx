@@ -17,7 +17,10 @@ const SideNav: FC<SideProps> = ({ location }) => {
   const user = authService.GetUser();
   return (
     <>
-      <div className="menu-w color-scheme-light color-style-transparent menu-position-side menu-side-left menu-layout-compact sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link">
+      <div
+        id="sideNav"
+        className="menu-w color-scheme-light menu-position-side menu-side-left menu-layout-compact sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link nav-bg-color"
+      >
         <div className="logo-w">
           <NavLink className="logo" to="/in/dashboard">
             <div style={{ display: "inline" }}>
@@ -122,6 +125,11 @@ const SideNav: FC<SideProps> = ({ location }) => {
                   </li>
                 </ul>
                 <ul className="sub-menu">
+                  <li>
+                    <NavLink to="/in/period" onClick={() => scrollTop()}>
+                      <span>Period</span>
+                    </NavLink>
+                  </li>
                   <li>
                     <NavLink to="/in/new-timetable" onClick={() => scrollTop()}>
                       <span>New Timetable</span>

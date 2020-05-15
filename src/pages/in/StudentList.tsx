@@ -22,11 +22,15 @@ import title from "../../data/title.json";
 import Select from "react-select";
 import Pagination from "../partials/Pagination";
 import DatePicker from "react-datepicker";
-import { GET_GUARDIAN_TYPES } from "../../queries/Guardian.query";
+import {
+  GET_GUARDIAN_TYPES,
+  GET_GUARDIAN_BY_MOBILE,
+} from "../../queries/Guardian.query";
 import {
   SEARCH_STUDENTS,
   REMOVE_STUDENT,
   UPDATE_STUDENT,
+  ADD_GUARDIAN,
 } from "../../queries/Student.query";
 import { NEW_GUARDIAN } from "../../queries/Guardian.query";
 import { GET_SUB_BY_LEVEL } from "../../queries/Subject.query";
@@ -66,6 +70,13 @@ const StudentList: FC<IProps> = ({ history }) => {
   const [levels, SetLevel] = useState<any>([]);
   const [activeLevel, SetActiveLevel] = useState<any>({});
   const [classes, SetClasses] = useState<any>([]);
+
+  // For New Guardian of Student
+  const [guardByPhoneMsg, SetGuardByPhoneMsg] = useState<IMessage>();
+  const [newGuardMsg, SetNewGuardMsg] = useState<IMessage>();
+  const [guardianExists, SetGuardianExists] = useState<boolean>(false);
+  const [guardianPhone, SetGuardianPhone] = useState<string>();
+  const [returnedGuard, SetReturnedGuard] = useState<any>({});
 
   //Filters
   const [searchInput, SetSearchInput] = useState<any>();
@@ -326,6 +337,55 @@ const StudentList: FC<IProps> = ({ history }) => {
     },
   });
 
+  // Get Guardian by Phone number
+  const [GetGuardByPhone, { loading: gLoading }] = useLazyQuery(
+    GET_GUARDIAN_BY_MOBILE,
+    {
+      onError: (err) => {
+        if (err.message.includes("Guardian not found.")) {
+          document.getElementById("btnGuardModal")?.click();
+          SetGuardianExists(false);
+          SetShowNewGuardian(true);
+        } else {
+          SetGuardByPhoneMsg({
+            message: err.message,
+            failed: true,
+          });
+        }
+      },
+      onCompleted: (data) => {
+        if (data && data.GetGuardianByMobile.doc) {
+          SetGuardianExists(true);
+          SetReturnedGuard(data.GetGuardianByMobile.doc);
+        }
+      },
+    }
+  );
+
+  // Add Existing Guardian to Student
+  const [AddNewGuardian, { loading: aGLoading }] = useMutation(ADD_GUARDIAN, {
+    onError: (err) =>
+      SetNewGuardMsg({
+        message: err.message,
+        failed: true,
+      }),
+    onCompleted: (data) => {
+      if (data && activeStudent) {
+        SetActiveStudent({
+          ...activeStudent,
+          guardians: data.AddStudentGuardian.doc.guardians,
+        });
+        SetNewGuardMsg({
+          message: data.AddStudentGuardian.message,
+          failed: false,
+        });
+        setTimeout(() => {
+          document.getElementById("btnGuardModal")?.click();
+        }, 1000);
+      }
+    },
+  });
+
   // Get List of subjects of Student level
   const [GetSubByLevel, { loading: sLoading, data: sData }] = useLazyQuery(
     GET_SUB_BY_LEVEL,
@@ -552,8 +612,8 @@ const StudentList: FC<IProps> = ({ history }) => {
 
               {data && data.SearchStudents.docs.length > 0 && (
                 <>
-                  <div className="col-lg-12 pt-5">
-                    <div className="element-box-tp">
+                  <div className="col-lg-12">
+                    <div className="element-box">
                       <div className="table-responsive">
                         <h6 className="element-header">
                           Returned Students of{" "}
@@ -566,7 +626,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                             )
                           </b>
                         </h6>
-                        <table className="table table-padded">
+                        <table className="table table-striped">
                           <thead>
                             <tr>
                               <th>#</th>
@@ -718,8 +778,8 @@ const StudentList: FC<IProps> = ({ history }) => {
         </div>
       )}
 
+      {/* Student profile */}
       {showProfile && activeStudent && (
-        // Student profile
         <div>
           <div className="content-box">
             <div className="element-wrapper">
@@ -729,6 +789,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                   <NavLink
                     to="#"
                     onClick={() => {
+                      SetShowNewGuardian(false);
                       SetShowProfile(false);
                     }}
                   >
@@ -884,8 +945,12 @@ const StudentList: FC<IProps> = ({ history }) => {
                               <div className="col-12">
                                 <button
                                   className="btn btn-primary float-right"
+                                  id="btnGuardModal"
+                                  data-target="#guardianPhoneModal"
+                                  data-toggle="modal"
                                   onClick={() => {
-                                    SetShowNewGuardian(true);
+                                    SetNewGuardMsg(undefined);
+                                    SetGuardianExists(false);
                                   }}
                                 >
                                   <i className="os-icon os-icon-plus-circle mr-2"></i>
@@ -950,7 +1015,10 @@ const StudentList: FC<IProps> = ({ history }) => {
                                       NewGuardian({
                                         variables: {
                                           student: activeStudent.id,
-                                          model: newGuardian,
+                                          model: {
+                                            ...newGuardian,
+                                            phone: guardianPhone,
+                                          },
                                         },
                                       });
                                     }}
@@ -1026,6 +1094,8 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           icon="os-icon-ui-09"
                                           required={true}
                                           type="text"
+                                          initVal={guardianPhone}
+                                          disabled={true}
                                           onChange={(phone: string) => {
                                             SetNewGuardian({
                                               ...newGuardian,
@@ -1040,7 +1110,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           placeholder="Enter email"
                                           label="Email"
                                           icon="os-icon-ui-09"
-                                          required={true}
+                                          required={false}
                                           type="text"
                                           onChange={(email: string) => {
                                             SetNewGuardian({
@@ -1354,6 +1424,7 @@ const StudentList: FC<IProps> = ({ history }) => {
           </div>
         </div>
       )}
+
       {/* Modal for Image */}
       <ImageModal image={activeImg?.image} name={activeImg?.name} />
 
@@ -1371,7 +1442,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Edit Student's Info <hr />
                 </h5>
-
                 <button className="close" data-dismiss="modal" type="button">
                   <span aria-hidden="true"> &times;</span>
                 </button>
@@ -1580,6 +1650,154 @@ const StudentList: FC<IProps> = ({ history }) => {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Guardian Phone Modal */}
+      {showProfile && activeStudent && (
+        <div
+          aria-hidden="true"
+          className="modal fade"
+          id="guardianPhoneModal"
+          role="dialog"
+        >
+          <div className="modal-dialog modal-md" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Student's Guardian <hr />
+                </h5>
+                <button className="close" data-dismiss="modal" type="button">
+                  <span aria-hidden="true"> &times;</span>
+                </button>
+              </div>
+              <div className="modal-body pb-2">
+                {!guardianExists && (
+                  <div className="element-box no-shadow">
+                    <div className="row pb-4">
+                      <div className="col-12 text-center">
+                        <img
+                          src={activeStudent.passport || "/avatar.png"}
+                          alt=""
+                          className="mb-2"
+                          style={{
+                            borderRadius: "50%",
+                            width: "150px",
+                            height: "150px",
+                          }}
+                        />
+                        <h5>{activeStudent.full_name}</h5>
+                        <label>{activeStudent.reg_no}</label>
+                        <hr />
+                      </div>
+                    </div>
+                    <LoadingState loading={gLoading} />
+                    <AlertMessage
+                      message={guardByPhoneMsg?.message}
+                      failed={guardByPhoneMsg?.failed}
+                    />
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        SetGuardByPhoneMsg(undefined);
+                        GetGuardByPhone({
+                          variables: {
+                            mobile: guardianPhone,
+                          },
+                        });
+                      }}
+                    >
+                      <div className="row">
+                        {/* Phone number input */}
+                        <div className="col-12">
+                          <IconInput
+                            placeholder="Enter Guardian Phone number"
+                            label="Guardian Phone"
+                            icon="os-icon-phone"
+                            required={true}
+                            type="text"
+                            onChange={(mobile: string) => {
+                              SetGuardianPhone(mobile);
+                            }}
+                          />
+                        </div>
+                        <div className="col-12 buttons-w mb-5">
+                          <button
+                            className="btn btn-primary px-5"
+                            type="submit"
+                          >
+                            Continue
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                )}
+                {guardianExists && (
+                  <div className="element-box no-shadow">
+                    <div className="row pb-4">
+                      <div className="col-12 text-center">
+                        <img
+                          src={returnedGuard.image || "/avatar.png"}
+                          alt=""
+                          className="mb-2"
+                          style={{
+                            borderRadius: "50%",
+                            width: "150px",
+                            height: "150px",
+                          }}
+                        />
+                        <h5>{returnedGuard.name}</h5>
+                        <label htmlFor="">{returnedGuard.phone}</label>
+                        <hr />
+                        <AlertMessage
+                          message={newGuardMsg?.message}
+                          failed={newGuardMsg?.failed}
+                        />
+                        <LoadingState loading={aGLoading} />
+                        <b>
+                          Guardian with entered phone number already exists.
+                        </b>
+                        <label htmlFor="">
+                          Do you want to use this Guardian?
+                        </label>
+
+                        <div className="text-center mt-3">
+                          <button
+                            className="btn btn-secondary mr-2"
+                            onClick={() => {
+                              SetReturnedGuard(undefined);
+                              SetGuardianExists(false);
+                            }}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="btn btn-success ml-2"
+                            onClick={() => {
+                              // console.log(
+                              //   `Active Student: ${JSON.stringify(
+                              //     activeStudent
+                              //   )}\n Guardian: ${JSON.stringify(returnedGuard)}`
+                              // );
+                              AddNewGuardian({
+                                variables: {
+                                  id: activeStudent.id,
+                                  guardianId: returnedGuard.id,
+                                },
+                              });
+                            }}
+                          >
+                            Use Guardian
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

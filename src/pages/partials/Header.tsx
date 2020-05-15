@@ -6,7 +6,7 @@ import { authService } from "../../services/Auth.Service";
 
 const Header: FC<IProps> = ({ location }) => {
   return (
-    <div className="top-bar color-scheme-transparent">
+    <div id="header" className="top-bar color-scheme-transparent">
       <div className="top-menu-controls">
         <div className="logged-user-w">
           <div className="logged-user-i">

@@ -170,7 +170,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                       <label htmlFor="">Employment Date </label>
                       <br />
                       <DatePicker
-                        placeholderText="Select employment date"
+                        placeholderText="day, month year"
                         selected={record?.employmentDate}
                         onChange={(date) =>
                           SetRecord({
@@ -202,7 +202,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                       <label htmlFor="">Date of Birth </label>
                       <br />
                       <DatePicker
-                        placeholderText="Select date of birth"
+                        placeholderText="Sday, month year"
                         selected={record?.dob}
                         onChange={(date) =>
                           SetRecord({

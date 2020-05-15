@@ -401,7 +401,7 @@ const Class: FC<IProps> = ({ history }) => {
             )}
             {data && data.GetClasses.docs.length === 0 && (
               <div className="text-center pt-5 fade-in">
-                <h3 className="text-danger"> No Class record found!</h3>
+                <h5 className="text-danger"> No Class record found!</h5>
               </div>
             )}
           </div>

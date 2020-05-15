@@ -178,3 +178,15 @@ export const UPDATE_STUDENT = gql`
   }
   ${STU_PROPS}
 `;
+
+export const ADD_GUARDIAN = gql`
+  mutation ADD_GUARDIAN($id: ID!, $guardianId: ID!) {
+    AddStudentGuardian(id: $id, guardianId: $guardianId) {
+      message
+      doc {
+        ...STU_PROPS
+      }
+    }
+  }
+  ${STU_PROPS}
+`;

@@ -9,7 +9,10 @@ interface SwitchProps {
 const SwitchInput: FC<SwitchProps> = ({ isOn, handleToggle, label }) => {
   return (
     <>
-      <div className="row element-box" style={{ padding: "0 0 10px 50px" }}>
+      <div
+        className="row element-box"
+        style={{ padding: "0 0 10px 50px", border: "1px solid lightgray" }}
+      >
         <div className="col-3" style={{ marginTop: "-10px" }}>
           <div className=" float-right">
             <input

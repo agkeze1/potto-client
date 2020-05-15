@@ -7,11 +7,10 @@ import ImageUpload from "../partials/ImageUpload";
 import Dropdown from "../partials/Dropdown";
 import { authService } from "../../services/Auth.Service";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { NEW_STUDENT } from "../../queries/Student.query";
+import { NEW_STUDENT, ADD_GUARDIAN } from "../../queries/Student.query";
 import {
   GET_GUARDIAN_TYPES,
   GET_GUARDIAN_BY_MOBILE,
-  ADD_GUARDIAN,
 } from "../../queries/Guardian.query";
 import { IMessage } from "../../models/IMessage";
 import AlertMessage from "../partials/AlertMessage";

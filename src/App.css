@@ -347,3 +347,48 @@ body.full-screen .all-wrapper,
 .text-gray {
   color: #777;
 }
+.bg-light-green {
+  background-color: rgb(232, 255, 234);
+}
+.nav-bg-color {
+  background-color: white;
+}
+.period {
+  border: 1px solid lightgray;
+}
+.period:hover {
+  background-color: rgb(243, 243, 243);
+}
+.std-period {
+  background-color: rgb(179, 218, 182);
+  border: 2px dashed #16a820 !important;
+}
+.brk-period {
+  background-color: rgb(233, 233, 233);
+  border: 1px solid lightgray;
+}
+.tkn-period {
+  background-color: rgb(233, 233, 233);
+}
+.tkn-period:hover > a.icon-hdn {
+  display: block;
+  float: right;
+}
+.icon-hdn {
+  display: none;
+  transition: display ease-in 1s;
+}
+.round-icon {
+  border: 1px solid lightgray;
+  line-height: 2;
+  border-radius: 50%;
+  padding: 5px 8px;
+  margin: 4px;
+}
+.hide-icon {
+  display: none;
+}
+.show-icon {
+  display: none;
+  float: right;
+}

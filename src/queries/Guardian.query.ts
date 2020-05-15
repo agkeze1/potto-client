@@ -62,18 +62,6 @@ export const NEW_GUARDIAN = gql`
   ${GUARDIAN_PROPS}
 `;
 
-export const ADD_GUARDIAN = gql`
-  mutation ADD_GUARDIAN($id: ID!, $guardianId: ID!) {
-    AddStudentGuardian(id: $id, guardianId: $guardianId) {
-      message
-      doc {
-        ...STU_MIN_PROPS
-      }
-    }
-  }
-  ${STU_MIN_PROPS}
-`;
-
 export const NEW_GUARDIAN_TYPE = gql`
   mutation NEW_GUARDIAN_TYPE($name: String!) {
     NewGuardianType(name: $name) {

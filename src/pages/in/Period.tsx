@@ -36,7 +36,7 @@ const Period: FC<IProps> = ({ history }) => {
   }
 
   // Fetch List of Periods
-  const { loading, data } = useQuery(GET_PERIODS, {
+  const { loading, data, refetch: refetchPeriodList } = useQuery(GET_PERIODS, {
     onError: (err) =>
       SetLMessage({
         message: err.message,
@@ -51,23 +51,12 @@ const Period: FC<IProps> = ({ history }) => {
         message: err.message,
         failed: true,
       }),
-    onCompleted: (data) =>
+    onCompleted: (data) => {
       SetNewMessage({
         message: data.NewPeriod.message,
         failed: false,
-      }),
-    update: (cache, { data }) => {
-      const q: any = cache.readQuery({
-        query: GET_PERIODS,
       });
-
-      q.GetSchoolPeriodList.docs.unshift(data.NewPeriod.doc);
-
-      // update
-      cache.writeQuery({
-        query: GET_PERIODS,
-        data: { GetSchoolPeriodList: q.GetSchoolPeriodList },
-      });
+      refetchPeriodList();
     },
   });
 
@@ -136,7 +125,7 @@ const Period: FC<IProps> = ({ history }) => {
         <title>Period | {GetAppName()}</title>
       </Helmet>
       <div className="row justify-content-center">
-        <div className="col-md-10">
+        <div className="col-md-12">
           <div className="content-i">
             <div className="content-box">
               <div className="element-wrapper">
@@ -268,7 +257,7 @@ const Period: FC<IProps> = ({ history }) => {
                 />
 
                 {/* Period List */}
-                {data && data.GetSchoolPeriodList.docs && (
+                {data?.GetSchoolPeriodList.docs.length > 0 && (
                   <div className="element-box">
                     <h6 className="">Period List</h6>
                     <hr />
@@ -329,7 +318,7 @@ const Period: FC<IProps> = ({ history }) => {
                     </div>
                   </div>
                 )}
-                {data && !data.GetSchoolPeriodList.docs && (
+                {data?.GetSchoolPeriodList.docs.length === 0 && (
                   <div className="text-center pt-5 fade-in">
                     <h5 className="text-danger"> No Period found!</h5>
                   </div>

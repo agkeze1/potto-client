@@ -19,7 +19,10 @@ const SideNav: FC<SideProps> = ({ location }) => {
     <>
       <div
         id="sideNav"
-        className="menu-w color-scheme-light menu-position-side menu-side-left menu-layout-compact sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link nav-bg-color"
+        className="menu-w color-scheme-light menu-position-side menu-side-left
+         menu-layout-compact sub-menu-style-over sub-menu-color-bright 
+         selected-menu-color-light menu-activated-on-hover menu-has-selected-link 
+         nav-bg-color"
       >
         <div className="logo-w">
           <NavLink className="logo" to="/in/dashboard">
@@ -41,7 +44,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="selected">
             <NavLink to="/in/dashboard" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-pie-chart-3"></div>
               </div>
               <span>Dashboard</span>
             </NavLink>
@@ -54,7 +57,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-home"></div>
               </div>
               <span>School</span>
             </NavLink>
@@ -86,7 +89,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-settings"></div>
               </div>
               <span>Setup</span>
             </NavLink>
@@ -165,7 +168,10 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div
+                  className="os-icon os-icon-crown"
+                  style={{ fontSize: "medium" }}
+                ></div>
               </div>
               <span>Super Admin</span>
             </NavLink>
@@ -199,7 +205,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-user"></div>
               </div>
               <span>User</span>
             </NavLink>
@@ -227,7 +233,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-ui-90"></div>
               </div>
               <span>Teacher</span>
             </NavLink>
@@ -260,7 +266,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-user-male-circle2"></div>
               </div>
               <span>Student</span>
             </NavLink>
@@ -293,7 +299,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-calendar-time"></div>
               </div>
               <span>Attendance</span>
             </NavLink>
@@ -340,7 +346,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-list"></div>
               </div>
               <span>Navigation</span>
             </NavLink>
@@ -376,7 +382,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
-                <div className="os-icon os-icon-layout"></div>
+                <div className="os-icon os-icon-common-07"></div>
               </div>
               <span>Feedback</span>
             </NavLink>

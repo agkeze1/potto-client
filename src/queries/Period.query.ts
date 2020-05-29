@@ -23,17 +23,25 @@ export const GET_PERIODS = gql`
   ${PERIOD_PROPS}
 `;
 
-// Mutation Secton
-export const NEW_PERIOD = gql`
-  mutation NEW_PERIOD($model: PeriodInput!) {
-    NewPeriod(model: $model) {
+export const GET_DAY_PERIODS = gql`
+  query GET_DAY_PERIODS($_class: ID!, $day: String!) {
+    GetPeriodList(_class: $_class, day: $day) {
       message
-      doc {
+      docs {
         ...PERIOD_PROPS
       }
     }
   }
   ${PERIOD_PROPS}
+`;
+
+// Mutation Secton
+export const NEW_PERIOD = gql`
+  mutation NEW_PERIOD($model: PeriodInput!) {
+    NewPeriod(model: $model) {
+      message
+    }
+  }
 `;
 
 export const REMOVE_PERIOD = gql`

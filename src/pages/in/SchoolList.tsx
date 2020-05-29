@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
+import { GetAppName, CLEAN_DATE } from "../../context/App";
 import { IProps } from "../../models/IProps";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
@@ -21,7 +21,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
   const [activeSchId, SetActiveSchId] = useState<string>();
   const [activeImg, SetActiveImg] = useState<IImageProp>({
     image: "/avatar.png",
-    name: "Undefined"
+    name: "Undefined",
   });
 
   // Check if user is authenticated
@@ -35,12 +35,12 @@ const SchoolList: FC<IProps> = ({ history }) => {
   // Get List of schools
   const { data, loading, fetchMore } = useQuery(GET_SCHOOL_LIST, {
     variables: { page, limit },
-    onError: err => {
+    onError: (err) => {
       SetMessage({
         message: err.message,
-        failed: true
+        failed: true,
       });
-    }
+    },
   });
 
   useEffect(() => {
@@ -49,21 +49,21 @@ const SchoolList: FC<IProps> = ({ history }) => {
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev;
         return {
-          GetSchools: fetchMoreResult.GetSchools
+          GetSchools: fetchMoreResult.GetSchools,
         };
-      }
+      },
     });
   }, [page, limit]);
 
   // Change logged in user's primary school
   const [ChangePriSchool, { loading: pLoading }] = useMutation(MAKE_PRIMARY, {
-    onCompleted: data => {
+    onCompleted: (data) => {
       if (data) {
         const { doc, token } = data.MakePrimarySchool;
         authService.Login(doc, token);
         document.location.reload(true);
       }
-    }
+    },
   });
 
   return (
@@ -145,7 +145,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
                                     onClick={() => {
                                       SetActiveImg({
                                         image: rec.logo,
-                                        name: rec.alias
+                                        name: rec.alias,
                                       });
                                     }}
                                     className="user-with-avatar clickable"
@@ -167,7 +167,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
                                   )}
                                 </td>
                                 <td>{rec.alias}</td>
-                                <td>{rec.created_at}</td>
+                                <td>{CLEAN_DATE(rec.created_at)}</td>
                                 <td className="row-actions text-center">
                                   {rec.id !== school.id && (
                                     <a
@@ -177,8 +177,8 @@ const SchoolList: FC<IProps> = ({ history }) => {
                                         SetActiveSchId(rec.id);
                                         ChangePriSchool({
                                           variables: {
-                                            school: rec.id
-                                          }
+                                            school: rec.id,
+                                          },
                                         });
                                       }}
                                     >

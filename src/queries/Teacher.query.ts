@@ -6,6 +6,7 @@ export const TEACHER_PROPS = gql`
     first_name
     last_name
     middle_name
+    name
     email
     phone
     gender
@@ -41,6 +42,17 @@ export const TEACHER_LIST = gql`
       limit
       nextPage
       prevPage
+    }
+  }
+  ${TEACHER_PROPS}
+`;
+
+export const GET_ALL_TEACHER = gql`
+  query GET_ALL_TEACHER {
+    GetAllTeachers {
+      docs {
+        ...TEACHER_PROPS
+      }
     }
   }
   ${TEACHER_PROPS}

@@ -2,31 +2,31 @@
   "days": [
     {
       "label": "Monday",
-      "value": "1"
+      "value": "MON"
     },
     {
       "label": "Tuesday",
-      "value": "2"
+      "value": "TUE"
     },
     {
       "label": "Wednesday",
-      "value": "3"
+      "value": "WED"
     },
     {
       "label": "Thursday",
-      "value": "4"
+      "value": "THUR"
     },
     {
       "label": "Friday",
-      "value": "5"
+      "value": "FRI"
     },
     {
       "label": "Saturday",
-      "value": "6"
+      "value": "SAT"
     },
     {
       "label": "Sunday",
-      "value": "7"
+      "value": "SUN"
     }
   ]
 }

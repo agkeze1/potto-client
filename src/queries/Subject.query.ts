@@ -25,6 +25,18 @@ export const GET_SUBJECTS = gql`
   ${SUB_PROPS}
 `;
 
+export const GET_LEVEL_SUBJECTS = gql`
+  query GET_LEVEL_SUBJECTS($level: ID!) {
+    GetSubjectsForRegistration(level: $level) {
+      message
+      docs {
+        ...SUB_PROPS
+      }
+    }
+  }
+  ${SUB_PROPS}
+`;
+
 export const GET_SUB_BY_LEVEL = gql`
   query GET_SUB_BY_LEVEL($level: ID!) {
     GetSubjectsForRegistration(level: $level) {

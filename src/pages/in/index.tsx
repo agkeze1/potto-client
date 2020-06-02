@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect } from "react";
 import { GetAppName } from "../../context/App";
 import Helmet from "react-helmet";
 import { Switch, Route } from "react-router-dom";
@@ -35,74 +35,70 @@ import Period from "./Period";
 import { authService } from "../../services/Auth.Service";
 
 const Home: FC<IProps> = ({ location, history }) => {
-  document.body.className =
-    "full-screen with-content-panel menu-position-side menu-side-left";
+    document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
+    // document.body.style.background
 
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) history.push("/login");
+    // Check if user is authenticated
+    if (!authService.IsAuthenticated()) history.push("/login");
+    return (
+        <>
+            <Helmet>
+                <title>Home | {GetAppName()}</title>
+            </Helmet>
+            <div className="all-wrapper with-side-panel solid-bg-all">
+                <div className="layout-w">
+                    {/* Main sidebar */}
+                    <SideNav location={location} />
 
-  return (
-    <>
-      <Helmet>
-        <title>Home | {GetAppName()}</title>
-      </Helmet>
-      <div className="all-wrapper with-side-panel solid-bg-all">
-        <div className="layout-w">
-          {/* Main sidebar */}
-          <SideNav location={location} />
+                    <div className="content-w">
+                        {/* Header */}
+                        <Header location={location} />
+                        <div className="content-panel-toggler">
+                            <i className="os-icon os-icon-grid-squares-22"></i>
+                            <span>Sidebar</span>
+                        </div>
 
-          <div className="content-w">
-            {/* Header */}
-            <Header location={location} />
-            <div className="content-panel-toggler">
-              <i className="os-icon os-icon-grid-squares-22"></i>
-              <span>Sidebar</span>
+                        {/* Content */}
+                        <div className="main-container">
+                            <Switch>
+                                <Route exact path="/in" component={Dashboard} />
+                                <Route exact path="/in/dashboard" component={Dashboard} />
+                                <Route path="/in/new-school" component={NewSchool} />
+                                <Route path="/in/school-list" component={SchoolList} />
+                                <Route path="/in/new-user" component={NewUser} />
+                                <Route path="/in/user-list" component={UserList} />
+                                <Route path="/in/new-super-admin" component={NewSuperAdmin} />
+                                <Route path="/in/super-admin-list" component={SuperAdminList} />
+                                <Route path="/in/level" component={Level} />
+                                <Route path="/in/class" component={Class} />
+                                <Route path="/in/term" component={Term} />
+                                <Route path="/in/subjects" component={Subjects} />
+                                <Route path="/in/new-student" component={NewStudent} />
+                                <Route path="/in/student-list" component={StudentList} />
+                                <Route path="/in/new-teacher" component={NewTeacher} />
+                                <Route path="/in/teacher-list" component={TeacherList} />
+                                <Route path="/in/guardian-type" component={GuardianType} />
+                                <Route path="/in/device-list" component={DeviceList} />
+                                <Route path="/in/navigation" component={Navigation} />
+                                <Route path="/in/navigation-group" component={NavigationGroup} />
+                                <Route path="/in/feedback" component={Feedback} />
+                                <Route path="/in/feedback-type" component={FeedbackType} />
+                                <Route path="/in/role" component={Role} />
+                                <Route path="/in/new-timetable" component={NewTimetable} />
+                                <Route path="/in/view-timetable" component={ViewTimetable} />
+                                <Route path="/in/period" component={Period} />
+                            </Switch>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <a className="font-sm text-center footer mb-2" href="http://afari.com">
+                    <img src="/img/lloydant.png" className="logo-footer mr-2" />
+                    Powered by Afari
+                </a>
             </div>
-
-            {/* Content */}
-            <div className="main-container">
-              <Switch>
-                <Route exact path="/in" component={Dashboard} />
-                <Route exact path="/in/dashboard" component={Dashboard} />
-                <Route path="/in/new-school" component={NewSchool} />
-                <Route path="/in/school-list" component={SchoolList} />
-                <Route path="/in/new-user" component={NewUser} />
-                <Route path="/in/user-list" component={UserList} />
-                <Route path="/in/new-super-admin" component={NewSuperAdmin} />
-                <Route path="/in/super-admin-list" component={SuperAdminList} />
-                <Route path="/in/level" component={Level} />
-                <Route path="/in/class" component={Class} />
-                <Route path="/in/term" component={Term} />
-                <Route path="/in/subjects" component={Subjects} />
-                <Route path="/in/new-student" component={NewStudent} />
-                <Route path="/in/student-list" component={StudentList} />
-                <Route path="/in/new-teacher" component={NewTeacher} />
-                <Route path="/in/teacher-list" component={TeacherList} />
-                <Route path="/in/guardian-type" component={GuardianType} />
-                <Route path="/in/device-list" component={DeviceList} />
-                <Route path="/in/navigation" component={Navigation} />
-                <Route
-                  path="/in/navigation-group"
-                  component={NavigationGroup}
-                />
-                <Route path="/in/feedback" component={Feedback} />
-                <Route path="/in/feedback-type" component={FeedbackType} />
-                <Route path="/in/role" component={Role} />
-                <Route path="/in/new-timetable" component={NewTimetable} />
-                <Route path="/in/view-timetable" component={ViewTimetable} />}
-                <Route path="/in/period" component={Period} />} />
-              </Switch>
-            </div>
-          </div>
-        </div>
-        <hr />
-        <a className="font-sm text-center footer mb-2" href="http://afari.com">
-          <img src="/img/lloydant.png" className="logo-footer mr-2" />
-          Powered by Afari
-        </a>
-      </div>
-    </>
-  );
+        </>
+    );
 };
 
 export default Home;

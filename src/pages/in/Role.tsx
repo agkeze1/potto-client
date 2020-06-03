@@ -2,7 +2,7 @@
 import React, { FC, useState } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
-import Select from "react-select";
+// import Select from "react-select";
 import IconInput from "../partials/IconInput";
 import { authService } from "../../services/Auth.Service";
 import { NEW_ROLE, GET_ROLES, REMOVE_ROLE, UPDATE_ROLE } from "../../queries/Role.query";

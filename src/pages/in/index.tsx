@@ -93,7 +93,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                 </div>
                 <hr />
                 <a className="font-sm text-center footer mb-2" href="http://afari.com">
-                    <img src="/img/lloydant.png" className="logo-footer mr-2" />
+                    <img src="/img/lloydant.png" alt="app logo" className="logo-footer mr-2" />
                     Powered by Afari
                 </a>
             </div>

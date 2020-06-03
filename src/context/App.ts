@@ -18,3 +18,5 @@ export const CLEAN_DATE = (date: string): string => {
         }).format(new Date(date));
     return "";
 };
+
+export const CleanMessage = (message: string) => message.replace("GraphQL error:", "").replace("Network error:", "");

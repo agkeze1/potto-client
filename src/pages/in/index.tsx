@@ -11,8 +11,7 @@ import NewSchool from "./NewSchool";
 import SchoolList from "./SchoolList";
 import NewUser from "./NewUser";
 import UserList from "./UserList";
-import NewSuperAdmin from "./NewSuperAdmin";
-import SuperAdminList from "./SuperAdminList";
+import SuperAdmin from "./SuperAdmin";
 import Level from "./Level";
 import Class from "./Class";
 import Term from "./Term";
@@ -68,8 +67,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                                 <Route path="/in/school-list" component={SchoolList} />
                                 <Route path="/in/new-user" component={NewUser} />
                                 <Route path="/in/user-list" component={UserList} />
-                                <Route path="/in/new-super-admin" component={NewSuperAdmin} />
-                                <Route path="/in/super-admin-list" component={SuperAdminList} />
+                                <Route path="/in/super-admin-list" component={SuperAdmin} />
                                 <Route path="/in/level" component={Level} />
                                 <Route path="/in/class" component={Class} />
                                 <Route path="/in/term" component={Term} />

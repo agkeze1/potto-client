@@ -383,3 +383,15 @@ body.full-screen .all-wrapper,
     color: #c8d6e7 !important;
     font-weight: 400;
 }
+
+img:not(.no-scale),
+a > i.os-icon {
+    transition-property: all;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-out;
+}
+
+img:not(.no-scale):hover,
+a > i.os-icon:hover {
+    transform: scale(1.3);
+}

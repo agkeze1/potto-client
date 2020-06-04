@@ -99,3 +99,21 @@ export const UPDATE_USER = gql`
     }
     ${USER_PROPS}
 `;
+export const GET_SUPER_ADMINS = gql`
+    query GetSuperAdmins {
+        GetSuperAdmins {
+            docs {
+                ...USER_PROPS
+            }
+        }
+    }
+    ${USER_PROPS}
+`;
+
+export const NEW_SUPER_ADMIN = gql`
+    mutation NewSuperAdmin($model: UserInput!) {
+        NewSuperAdmin(model: $model) {
+            message
+        }
+    }
+`;

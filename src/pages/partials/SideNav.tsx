@@ -381,6 +381,14 @@ const SideNav: FC<SideProps> = ({ location }) => {
                         </div>
                     </li>
                     <li className="menu-link">
+                        <NavLink to="/in/send-feedback" onClick={() => scrollTop()}>
+                            <div className="icon-w">
+                                <div className="os-icon os-icon-send"></div>
+                            </div>{" "}
+                            Send Feedback
+                        </NavLink>
+                    </li>
+                    <li className="menu-link">
                         <a
                             onClick={() => {
                                 authService.Logout();

@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { GetAppName } from "../../context/App";
 import Helmet from "react-helmet";
 import { Switch, Route } from "react-router-dom";
@@ -33,6 +33,7 @@ import ViewTimetable from "./ViewTimetable";
 import Dashboard from "./Dashboard";
 import Period from "./Period";
 import { authService } from "../../services/Auth.Service";
+import SendFeedback from "./SendFeedback";
 
 const Home: FC<IProps> = ({ location, history }) => {
     document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
@@ -87,6 +88,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                                 <Route path="/in/new-timetable" component={NewTimetable} />
                                 <Route path="/in/view-timetable" component={ViewTimetable} />
                                 <Route path="/in/period" component={Period} />
+                                <Route path="/in/send-feedback" component={SendFeedback} />
                             </Switch>
                         </div>
                     </div>

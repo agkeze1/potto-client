@@ -159,18 +159,24 @@ const SideNav: FC<SideProps> = ({ location }) => {
                     <li className="sub-header">
                         <span>User Mgt</span>
                     </li>
-                    <li className="has-sub-menu">
-                        <NavLink to="#" onClick={() => scrollTop()}>
+                    <li className="menu-link">
+                        <NavLink to="/in/super-admin-list" onClick={() => scrollTop()}>
                             <div className="icon-w">
-                                <div className="os-icon os-icon-crown" style={{ fontSize: "medium" }}></div>
+                                <i className="os-icon os-icon-layout"></i>
+                            </div>{" "}
+                            Super Admin
+                        </NavLink>
+                    </li>
+                    {/* <li className="has-sub-menu">
+                        <NavLink to="/in/super-admin-list" onClick={() => scrollTop()}>
+                            <div className="icon-w">
+                                <i className="os-icon os-icon-layout"></i>
                             </div>
                             <span>Super Admin</span>
                         </NavLink>
                         <div className="sub-menu-w">
                             <div className="sub-menu-header">Super Admin</div>
-                            <div className="sub-menu-icon">
-                                <i className="os-icon os-icon-layout"></i>
-                            </div>
+                            <div className="sub-menu-icon"></div>
                             <div className="sub-menu-i">
                                 <ul className="sub-menu">
                                     <li>
@@ -186,7 +192,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
                                 </ul>
                             </div>
                         </div>
-                    </li>
+                    </li> */}
                     <li className="has-sub-menu">
                         <NavLink to="#" onClick={() => scrollTop()}>
                             <div className="icon-w">

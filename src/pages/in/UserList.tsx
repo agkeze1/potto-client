@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState, useEffect } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, CLEAN_DATE } from "../../context/App";

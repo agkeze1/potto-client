@@ -278,6 +278,11 @@ const SideNav: FC<SideProps> = ({ location }) => {
                                             List
                                         </NavLink>
                                     </li>
+                                    <li>
+                                        <NavLink to="/in/graduate-student" onClick={() => scrollTop()}>
+                                            Graduate Student
+                                        </NavLink>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

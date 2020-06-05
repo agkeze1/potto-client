@@ -1,11 +1,8 @@
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
-import Dropdown from "../partials/Dropdown";
-import IconInput from "../partials/IconInput";
 import SwitchInput from "../partials/SwitchInput";
 import { IProps } from "../../models/IProps";
-import DatePicker from "react-datepicker";
 import { authService } from "../../services/Auth.Service";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { GET_LEVELS } from "../../queries/Level.query";
@@ -20,13 +17,13 @@ import { GET_LEVEL_SUBJECTS } from "../../queries/Subject.query";
 import { GET_ALL_TEACHER } from "../../queries/Teacher.query";
 import {
   NEW_TIMETABLE,
-  GET_CLASS_TIMETABLE,
+  GET_TIMETABLE_OF_CLASS,
 } from "../../queries/Timetable.query";
+import { NavLink } from "react-router-dom";
 
 const NewTimetable: FC<IProps> = ({ history }) => {
   const [classSet, SetClassSet] = useState<boolean>(false);
   const [daySet, SetDaySet] = useState<boolean>(false);
-  const [timetable, SetTimetable] = useState<boolean>(false);
   const [hideFilter, SetHideFilter] = useState<boolean>(false);
   const [showDay, SetShowDay] = useState<boolean>(true);
   const [showPeriod, SetShowPeriod] = useState<boolean>(true);
@@ -142,8 +139,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
     },
     fetchPolicy: "network-only",
     onCompleted: (data) => {
-      console.log("Returned Periods: ", data.GetPeriodList.docs);
-
       // Clear selected Periods
       SetSelectedPeriods([]);
 
@@ -230,7 +225,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
 
   // Gets list of timetable
   const [GetTimetable, { loading: tTLoading, data: tTData }] = useLazyQuery(
-    GET_CLASS_TIMETABLE,
+    GET_TIMETABLE_OF_CLASS,
     {
       variables: {
         _class: timetableInput?.current_class?.id,
@@ -392,7 +387,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                               onClick={() => {
                                 SetClassSet(false);
                                 SetDaySet(false);
-                                SetTimetable(false);
                                 SetTimetableInput(undefined);
                               }}
                             >
@@ -604,6 +598,21 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                               </div>
                             </>
                           )}
+                          {showPeriod && periods?.length === 0 && (
+                            <div className="text-center mt-3">
+                              <NavLink to="/in/period" title="Add New period">
+                                <i
+                                  className="os-icon os-icon-file-plus"
+                                  style={{
+                                    fontSize: "30px",
+                                  }}
+                                ></i>
+                              </NavLink>
+                              <h6 className="text-danger">
+                                No Periods set yet!
+                              </h6>
+                            </div>
+                          )}
                         </div>
 
                         {/* Subject and Teacher  */}
@@ -636,7 +645,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                     },
                                   },
                                 });
-                                SetTimetable(true);
                               }}
                             >
                               <div className="row">
@@ -698,7 +706,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
             )}
 
             {/* Inputed Timetable */}
-            {tTData && tTData.GetClassTimetable.docs.lenght > 0 && (
+            {tTData && tTData.GetTimetableForClass.docs.lenght > 0 && (
               <div className="row justify-content-center ">
                 <div className="col-lg-12">
                   <div className="element-box">
@@ -720,7 +728,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {tTData.GetClassTimetable.docs.map(
+                          {tTData.GetTimetableForClass.docs.map(
                             (tTable: any, index: number) => (
                               <tr>
                                 <td>{index + 1}</td>

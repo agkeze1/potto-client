@@ -32,6 +32,7 @@ import NewTimetable from "./NewTimetable";
 import ViewTimetable from "./ViewTimetable";
 import Dashboard from "./Dashboard";
 import Period from "./Period";
+import ClassAttendance from "./ClassAttendance";
 import { authService } from "../../services/Auth.Service";
 
 const Home: FC<IProps> = ({ location, history }) => {
@@ -91,6 +92,11 @@ const Home: FC<IProps> = ({ location, history }) => {
                 <Route path="/in/new-timetable" component={NewTimetable} />
                 <Route path="/in/view-timetable" component={ViewTimetable} />}
                 <Route path="/in/period" component={Period} />} />
+                <Route
+                  path="/in/class-attendance"
+                  component={ClassAttendance}
+                />
+                } />
               </Switch>
             </div>
           </div>

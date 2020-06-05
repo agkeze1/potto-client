@@ -397,3 +397,55 @@ body.full-screen .all-wrapper,
   display: none;
   float: right;
 }
+.att-time-crd {
+  border-bottom: 1px solid lightgray;
+  padding: 10px 20px;
+  margin: 10px 0;
+  background-color: white;
+}
+.att-stu {
+  border: 1px solid lightgray;
+  border-right: 5px solid #16a820;
+  border-radius: 5px;
+}
+.att-stu > span {
+  display: block;
+  margin-top: 6px;
+}
+.no-padding {
+  padding: 0 !important;
+}
+.bg-white {
+  background: white;
+}
+
+.bdr {
+  border: 0.5px solid lightgray;
+}
+.profile-tile > ul {
+  list-style: none;
+}
+.el-tablo .label {
+  color: black !important;
+}
+.el-tablo .value {
+  font-size: 1.43rem;
+}
+.bg-darkseagreen {
+  background-color: darkseagreen !important;
+}
+.bg-lightcoral {
+  background-color: lightcoral !important;
+}
+.bg-bisque {
+  background-color: bisque !important;
+}
+.bg-gainsboro {
+  background-color: gainsboro !important;
+}
+.bg-ivory {
+  background-color: ivory !important;
+}
+.bg-azure {
+  background-color: azure !important;
+}

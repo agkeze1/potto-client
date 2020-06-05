@@ -3,7 +3,6 @@ import { IProps } from "../../models/IProps";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
 import DatePicker from "react-datepicker";
-import days from "../../data/days.json";
 import SwitchInput from "../partials/SwitchInput";
 import { IMessage } from "../../models/IMessage";
 import {
@@ -18,7 +17,6 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { authService } from "../../services/Auth.Service";
 
 const Period: FC<IProps> = ({ history }) => {
-  const [timeRange, SetTimeRange] = useState<any>();
   const [showNewPeriod, SetShowNewPeriod] = useState<boolean>(true);
   const [newPeriod, SetNewPeriod] = useState<any>({
     isBreak: false,
@@ -182,7 +180,7 @@ const Period: FC<IProps> = ({ history }) => {
                             selected={newPeriod?.from}
                             showTimeSelect
                             showTimeSelectOnly
-                            timeIntervals={15}
+                            timeIntervals={10}
                             timeCaption="Time"
                             dateFormat="h:mm aa"
                             placeholderText="12:00 AM"
@@ -204,7 +202,7 @@ const Period: FC<IProps> = ({ history }) => {
                             selected={newPeriod?.to}
                             showTimeSelect
                             showTimeSelectOnly
-                            timeIntervals={15}
+                            timeIntervals={10}
                             timeCaption="Time"
                             dateFormat="h:mm aa"
                             placeholderText="12:00 AM"

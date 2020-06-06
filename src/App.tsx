@@ -10,9 +10,6 @@ import "react-datepicker/dist/react-datepicker.css";
 // import toast
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { GET_APP_ID } from "./context/App";
-
-require(`./custom-css/${GET_APP_ID()}.css`);
 
 function App() {
     return (

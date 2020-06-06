@@ -41,6 +41,9 @@ const SideNav: FC<SideProps> = ({ location }) => {
                         </div>
                     </div>
                 </div>
+                <div className="element-search autosuggest-search-activator">
+                    <input placeholder="Start typing to search..." />
+                </div>
                 <ul className="main-menu">
                     <li className="selected">
                         <NavLink to="/in/dashboard" onClick={() => scrollTop()}>
@@ -243,6 +246,11 @@ const SideNav: FC<SideProps> = ({ location }) => {
                                     <li>
                                         <NavLink to="/in/teacher-list" onClick={() => scrollTop()}>
                                             List
+                                        </NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink to="/in/teacher-attendance" onClick={() => scrollTop()}>
+                                            Attendance Report
                                         </NavLink>
                                     </li>
                                 </ul>

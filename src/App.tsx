@@ -6,10 +6,11 @@ import UserSignup from "./pages/UserSignup";
 import FirstSchool from "./pages/FirstSchool";
 import In from "./pages/in";
 import "react-datepicker/dist/react-datepicker.css";
-import { GET_APP_ID } from "./context/App";
+
 // import toast
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import { GET_APP_ID } from "./context/App";
 
 require(`./custom-css/${GET_APP_ID()}.css`);
 

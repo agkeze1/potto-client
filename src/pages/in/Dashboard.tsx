@@ -1,125 +1,214 @@
-import React, { FC } from "react";
+import React, { FC, useState, Fragment } from "react";
 import { IProps } from "../../models/IProps";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
-import { PieChart } from "react-minimal-pie-chart";
+import { GetAppName, DayString } from "../../context/App";
 import { Doughnut, Polar, Bar } from "react-chartjs-2";
+import { DASHBOARD } from "../../queries/Dashboard.query";
+import { useQuery } from "@apollo/react-hooks";
+import LoadingState from "../partials/loading";
+import { CountCard } from "./partials/CountCard";
+import months from "../../data/month.json";
 
 const Dashboard: FC<IProps> = ({ history }) => {
-  const stuGenderRatio = {
-    datasets: [
-      {
-        data: [800, 345],
-        backgroundColor: ["#FF6384", "#36A2EB"],
-        hoverBackgroundColor: ["#3e4b5b", "#36A2EB"],
-      },
-    ],
-    labels: ["Male", "Female"],
-  };
+  const [stuGenderRatio, SetStuGenderRatio] = useState<any>();
+  const [tchrGenderRatio, SetTchrGenderRatio] = useState<any>();
+  const [userGenderRatio, SetUserGenderRatio] = useState<any>();
+  const [stuLevelRatio, SetStuLevelRatio] = useState<any>();
+  const [stuClassRatio, SetStuClassRatio] = useState<any>();
+  const [stuStateRatio, SetStuStateRatio] = useState<any>();
 
-  const data = {
-    labels: ["JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"],
-    datasets: [
-      {
-        label: "Number of Students",
-        backgroundColor: "rgba(255,99,132,0.2)",
-        borderColor: "rgba(255,99,132,1)",
-        borderWidth: 1,
-        hoverBackgroundColor: "rgba(255,99,132,0.4)",
-        hoverBorderColor: "rgba(255,99,132,1)",
-        data: [65, 59, 80, 81, 56, 55],
-      },
-    ],
-  };
+  const { loading: activeTermLoading, data: activeTermData } = useQuery(
+    DASHBOARD.ACTIVE_TERM
+  );
+  const { loading: totalSchoolLoading, data: totalSchoolData } = useQuery(
+    DASHBOARD.TOTAL_SCHOOL
+  );
+  const { loading: totalStudentsLoading, data: totalStudentsData } = useQuery(
+    DASHBOARD.TOTAL_STUDENTS
+  );
+  const { loading: totalTeachersLoading, data: totalTeachersData } = useQuery(
+    DASHBOARD.TOTAL_TEACHERS
+  );
+  const { loading: totalUserLoading, data: totalUserData } = useQuery(
+    DASHBOARD.TOTAL_USERS
+  );
+  const { loading: totalSubjectLoading, data: totalSubjectData } = useQuery(
+    DASHBOARD.TOTAL_SUBJECTS
+  );
+  const { loading: totalPeriodLoading, data: totalPeriodData } = useQuery(
+    DASHBOARD.TOTAL_PERIODS
+  );
+  const { loading: totalDevicesLoading, data: totalDevicesData } = useQuery(
+    DASHBOARD.TOTAL_DEVICES
+  );
+  const {
+    loading: assignedDevicesLoading,
+    data: assignedDevicesData,
+  } = useQuery(DASHBOARD.TOTAL_ASSIGNED_DEVICES);
+  const {
+    loading: unassignedDevicesLoading,
+    data: unassignedDevicesData,
+  } = useQuery(DASHBOARD.TOTAL_UNASSIGNED_DEVICES);
+  const {
+    loading: graduatedStudentsLoading,
+    data: graduatedStudentsData,
+  } = useQuery(DASHBOARD.GRADUATED_STUDENTS);
+  const { loading: stuBirthdayLoading, data: stuBirthdayData } = useQuery(
+    DASHBOARD.STU_BIRTHDAY
+  );
 
-  const stuStateRatio = {
-    labels: [
-      "ABIA",
-      "UMUAHIA",
-      "ADAMAWA",
-      "YOLA",
-      "AKWA IBOM",
-      "UYO",
-      "ANAMBRA",
-      "AWKA",
-      "BAUCHI",
-      "BENUE",
-      "TARABA",
-      "LAGOS",
-      "ENUG",
-      "ABIA",
-      "UMUAHIA",
-      "ADAMAWA",
-      "YOLA",
-      "AKWA IBOM",
-      "UYO",
-      "ANAMBRA",
-      "AWKA",
-      "BAUCHI",
-      "BENUE",
-      "TARABA",
-      "LAGOS",
-      "ENUG",
-      "YOLA",
-      "AKWA IBOM",
-      "UYO",
-      "ANAMBRA",
-      "AWKA",
-      "BAUCHI",
-      "BENUE",
-      "TARABA",
-      "LAGOS",
-      "ENUG",
-    ],
-    datasets: [
-      {
-        label: "Number of Students",
-        backgroundColor: "rgba(0,99,132,0.2)",
-        borderColor: "rgba(0,99,132,1)",
-        borderWidth: 1,
-        hoverBackgroundColor: "rgba(0,99,132,0.4)",
-        hoverBorderColor: "rgba(0,99,132,1)",
-        data: [
-          65,
-          59,
-          80,
-          81,
-          56,
-          55,
-          85,
-          25,
-          50,
-          66,
-          95,
-          33,
-          48,
-          65,
-          59,
-          80,
-          81,
-          56,
-          55,
-          85,
-          25,
-          50,
-          66,
-          95,
-          33,
-          48,
-          81,
-          56,
-          55,
-          85,
-          25,
-          50,
-          66,
-          95,
-          33,
-          48,
-        ],
+  const { loading: tchrBirthdayLoading, data: tchrBirthdayData } = useQuery(
+    DASHBOARD.TCHR_BIRTHDAY
+  );
+  const { loading: stuClassRatioLoading } = useQuery(
+    DASHBOARD.STU_CLASS_RATIO,
+    {
+      onCompleted: (data) => {
+        if (data?.GetStudentClassRatio) {
+          SetStuClassRatio({
+            labels: data.GetStudentClassRatio?.map(
+              (ratio: any) => ratio.class_name
+            ),
+            datasets: [
+              {
+                label: "Number of Students",
+                backgroundColor: "rgba(104, 156, 107,0.2)",
+                borderColor: "rgba(104, 156, 107,1)",
+                borderWidth: 1,
+                hoverBackgroundColor: "rgba(104, 156, 107,0.5)",
+                hoverBorderColor: "rgba(104, 156, 107,1)",
+                data: data.GetStudentClassRatio?.map(
+                  (ratio: any) => ratio.total
+                ),
+              },
+            ],
+          });
+        }
       },
-    ],
-  };
+    }
+  );
+  const { loading: stuLevelRatioLoading } = useQuery(
+    DASHBOARD.STU_LEVEL_RATIO,
+    {
+      onCompleted: (data) => {
+        if (data?.GetStudentLevelRatio) {
+          SetStuLevelRatio({
+            labels: data.GetStudentLevelRatio.map(
+              (ratio: any) => ratio.level_name
+            ),
+            datasets: [
+              {
+                label: "Number of Students",
+                backgroundColor: "rgba(255,99,132,0.2)",
+                borderColor: "rgba(255,99,132,1)",
+                borderWidth: 1,
+                hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                hoverBorderColor: "rgba(255,99,132,1)",
+                data: data.GetStudentLevelRatio.map(
+                  (ratio: any) => ratio.total
+                ),
+              },
+            ],
+          });
+        }
+      },
+    }
+  );
+  const { loading: stuGenderRatioLoading } = useQuery(
+    DASHBOARD.STU_GENDER_RATIO,
+    {
+      onCompleted: (data) => {
+        if (data?.CountStudentByGender) {
+          SetStuGenderRatio({
+            datasets: [
+              {
+                data: data.CountStudentByGender?.map(
+                  (ratio: any) => ratio.total
+                ),
+                backgroundColor: ["#6cafbd", "#aed1be"],
+                hoverBackgroundColor: ["#4ca0d9", "#80a691"],
+              },
+            ],
+            labels: data?.CountStudentByGender?.map(
+              (ratio: any) => ratio.gender
+            ),
+          });
+        }
+      },
+    }
+  );
+  const { loading: stuStateRatioLoading } = useQuery(
+    DASHBOARD.STU_STATE_RATIO,
+    {
+      onCompleted: (data) => {
+        if (data?.GetStudentStateRatio) {
+          SetStuStateRatio({
+            labels: data.GetStudentStateRatio?.map((ratio: any) => ratio.state),
+            datasets: [
+              {
+                label: "Number of Students",
+                backgroundColor: "rgba(0,99,132,0.2)",
+                borderColor: "rgba(0,99,132,1)",
+                borderWidth: 1,
+                hoverBackgroundColor: "rgba(0,99,132,0.4)",
+                hoverBorderColor: "rgba(0,99,132,1)",
+                data: data.GetStudentStateRatio?.map(
+                  (ratio: any) => ratio.total
+                ),
+              },
+            ],
+          });
+        }
+      },
+    }
+  );
+  const { loading: tchrGenderRatioLoading } = useQuery(
+    DASHBOARD.TCHR_GENDER_RATIO,
+    {
+      onCompleted: (data) => {
+        if (data?.GetTeacherGenderRatio) {
+          SetTchrGenderRatio({
+            datasets: [
+              {
+                data: data.GetTeacherGenderRatio?.map(
+                  (ratio: any) => ratio.total
+                ),
+                backgroundColor: ["lightcoral", "#3e4b5b"],
+                hoverBackgroundColor: ["#d94e2b", "#19191a"],
+              },
+            ],
+            labels: data?.GetTeacherGenderRatio?.map(
+              (ratio: any) => ratio.gender
+            ),
+          });
+        }
+      },
+    }
+  );
+
+  const { loading: userGenderRatioLoading } = useQuery(
+    DASHBOARD.USER_GENDER_RATIO,
+    {
+      onCompleted: (data) => {
+        if (data?.GetUsersGenderRatio) {
+          SetUserGenderRatio({
+            datasets: [
+              {
+                data: data.GetUsersGenderRatio?.map(
+                  (ratio: any) => ratio.total
+                ),
+                backgroundColor: ["#dbcd88", "#3e4b5b"],
+                hoverBackgroundColor: ["#968638", "#19191a"],
+              },
+            ],
+            labels: data?.GetUsersGenderRatio?.map(
+              (ratio: any) => ratio.gender
+            ),
+          });
+        }
+      },
+    }
+  );
 
   return (
     <>
@@ -135,59 +224,63 @@ const Dashboard: FC<IProps> = ({ history }) => {
             <div className="row">
               {/* Students */}
               <div className="col-md-3">
-                <a
-                  className="element-box el-tablo no-bg bg-darkseagreen total_std mt-0"
-                  href="#"
-                >
-                  <div className="label">Total Students</div>
-                  <div className="value">1,043</div>
-                </a>
+                <CountCard
+                  title="Total Students"
+                  loading={totalStudentsLoading}
+                  value={totalStudentsData?.TotalStudents}
+                  cssClass="bg-darkseagreen"
+                />
                 <div className=" element-box bg-white mt-0">
-                  <h6 className="element-header">STUDENTS GENDER RATIO</h6>
-                  <Doughnut
-                    data={stuGenderRatio}
-                    height={100}
-                    width={100}
-                    options={{
-                      cutoutPercentage: 80,
-                    }}
-                  />
+                  <h6 className="element-header mb-2">STUDENTS GENDER RATIO</h6>
+                  <LoadingState loading={stuGenderRatioLoading} />
+                  {stuGenderRatio && (
+                    <Doughnut
+                      data={stuGenderRatio}
+                      height={100}
+                      width={100}
+                      options={{
+                        cutoutPercentage: 80,
+                      }}
+                    />
+                  )}
                 </div>
               </div>
               {/* Teachers */}
               <div className="col-md-3">
-                <a
-                  className="element-box el-tablo bg-white bg-lightcoral mt-0"
-                  href="#"
-                >
-                  <div className="label">Total Teachers</div>
-                  <div className="value">43</div>
-                </a>
+                <CountCard
+                  title="Total Teachers"
+                  loading={totalTeachersLoading}
+                  value={totalTeachersData?.TotalTeachers}
+                  cssClass="bg-lightcoral"
+                />
                 <div className=" element-box bg-white mt-0">
-                  <h6 className="element-header">TEACHERS GENDER RATIO</h6>
-                  <Doughnut
-                    data={stuGenderRatio}
-                    height={100}
-                    width={100}
-                    options={{
-                      cutoutPercentage: 80,
-                    }}
-                  />
+                  <h6 className="element-header mb-2">TEACHERS GENDER RATIO</h6>
+                  <LoadingState loading={tchrGenderRatioLoading} />
+                  {tchrGenderRatio && (
+                    <Doughnut
+                      data={tchrGenderRatio}
+                      height={100}
+                      width={100}
+                      options={{
+                        cutoutPercentage: 80,
+                      }}
+                    />
+                  )}
                 </div>
               </div>
               {/* User */}
               <div className="col-md-3">
-                <a
-                  className="element-box el-tablo bg-white bg-bisque mt-0"
-                  href="#"
-                >
-                  <div className="label">Total Users</div>
-                  <div className="value">51</div>
-                </a>
+                <CountCard
+                  title="Total Users"
+                  loading={totalUserLoading}
+                  value={totalUserData?.TotalUsers}
+                  cssClass="bg-white bg-gold"
+                />
                 <div className=" element-box bg-white mt-0">
-                  <h6 className="element-header">USERS GENDER RATIO</h6>
+                  <h6 className="element-header mb-2">USERS GENDER RATIO</h6>
+                  <LoadingState loading={userGenderRatioLoading} />
                   <Doughnut
-                    data={stuGenderRatio}
+                    data={userGenderRatio}
                     height={100}
                     width={100}
                     options={{
@@ -198,117 +291,136 @@ const Dashboard: FC<IProps> = ({ history }) => {
               </div>
               {/* Other Counts */}
               <div className="col-md-3">
-                <a
-                  className="element-box el-tablo bg-white bg-azure mt-0"
-                  href="#"
-                >
-                  <div className="label">Active Term </div>
-                  <div className="value">First Term</div>
-                </a>
-                <a className="element-box el-tablo bg-white mt-0" href="#">
-                  <div className="label">Total Classes</div>
-                  <div className="value">24</div>
-                </a>
-                <a className="element-box el-tablo bg-white mt-0" href="#">
-                  <div className="label">Total Subjects</div>
-                  <div className="value">38</div>
-                </a>
-                <a className="element-box el-tablo bg-white mt-0" href="#">
-                  <div className="label">Total Periods</div>
-                  <div className="value">9</div>
-                </a>
+                <CountCard
+                  title="Total Schools"
+                  loading={totalSchoolLoading}
+                  value={totalSchoolData?.TotalSchools}
+                  cssClass="bg-white bg-gainsboro"
+                />
+                <CountCard
+                  title="Active Term"
+                  loading={activeTermLoading}
+                  value={activeTermData?.GetActiveTerm?.doc?.term?.name}
+                  cssClass="bg-white bg-azure"
+                />
+
+                <CountCard
+                  title="Total Period"
+                  loading={totalPeriodLoading}
+                  value={totalPeriodData?.TotalPeriod}
+                />
+
+                <CountCard
+                  title="Total Subjects"
+                  loading={totalSubjectLoading}
+                  value={totalSubjectData?.TotalSubjects}
+                />
               </div>
             </div>
 
             {/* Upcoming Birthdays Section */}
             <div className="row mt-5">
+              {/* Students Birthday */}
               <div className="col-md-6">
                 <h6 className="element-header">Upcoming Students Birthdays</h6>
                 <div className="text-center element-box-tp">
                   <div className="table-responsive">
-                    <table className="table table-padded">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th className="text-left">Student</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td className="text-left">Janeth C. Ogbodo</td>
-                          <td>
-                            <label className="badge badge-success-inverted">
-                              Present
-                            </label>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td className="text-left">James Ikechukwu Agbo</td>
-                          <td>
-                            <label className="badge badge-danger-inverted">
-                              Absent
-                            </label>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>3</td>
-                          <td className="text-left">Loveth Nkem Grace</td>
-                          <td>
-                            <label className="badge badge-success-inverted">
-                              Present
-                            </label>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <LoadingState loading={stuBirthdayLoading} />
+                    {stuBirthdayData?.UpcomingStudentsBirthday && (
+                      <table className="table table-padded">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th className="text-left">Student</th>
+                            <th className="text-left">Date</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {stuBirthdayData?.UpcomingStudentsBirthday?.map(
+                            (item: any, index: number) => (
+                              <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td className="text-left">
+                                  {item.student?.full_name}
+                                </td>
+                                <td className="text-left">
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: DayString(item.day),
+                                    }}
+                                  ></span>
+                                  <strong>
+                                    {" " + months[item.month + 1].abbreviation}
+                                  </strong>
+                                </td>
+                                <td>Msg</td>
+                              </tr>
+                            )
+                          )}
+                          {stuBirthdayData?.UpcomingStudentsBirthday?.length ===
+                            0 && (
+                            <tr>
+                              <td className="text-danger" colSpan={4}>
+                                No Upcoming Students birthday
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
                 </div>
               </div>
+              {/* Teachers Birthday */}
               <div className="col-md-6">
                 <h6 className="element-header">Upcoming Teachers Birthdays</h6>
                 <div className="text-center element-box-tp">
                   <div className="table-responsive">
-                    <table className="table table-padded">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th className="text-left">Teacher</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td className="text-left">Janeth C. Ogbodo</td>
-                          <td>
-                            <label className="badge badge-success-inverted">
-                              Present
-                            </label>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td className="text-left">James Ikechukwu Agbo</td>
-                          <td>
-                            <label className="badge badge-danger-inverted">
-                              Absent
-                            </label>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>3</td>
-                          <td className="text-left">Loveth Nkem Grace</td>
-                          <td>
-                            <label className="badge badge-success-inverted">
-                              Present
-                            </label>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <LoadingState loading={tchrBirthdayLoading} />
+                    {tchrBirthdayData?.UpcomingTeachersBirthday && (
+                      <table className="table table-padded">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th className="text-left">Teacher</th>
+                            <th className="text-left">Date</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {tchrBirthdayData?.UpcomingTeachersBirthday?.map(
+                            (item: any, index: number) => (
+                              <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td className="text-left">
+                                  {item.teacher?.name}
+                                </td>
+                                <td className="text-left">
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: DayString(item.day),
+                                    }}
+                                  ></span>
+                                  <strong>
+                                    {" " + months[item.month + 1].abbreviation}
+                                  </strong>
+                                </td>
+                                <td>Msg</td>
+                              </tr>
+                            )
+                          )}
+                          {tchrBirthdayData?.UpcomingTeachersBirthday
+                            ?.length === 0 && (
+                            <tr>
+                              <td className="text-danger" colSpan={4}>
+                                No Upcoming Teachers birthday
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
                 </div>
               </div>
@@ -322,64 +434,68 @@ const Dashboard: FC<IProps> = ({ history }) => {
               <div className="col-md-6">
                 <div className="row">
                   <div className="col-md-6">
-                    <a
-                      className="element-box el-tablo no-bg bg-ivory mt-0"
-                      href="#"
-                    >
-                      <div className="label">Avr Students per class</div>
-                      <div className="value">43</div>
-                    </a>
+                    <CountCard
+                      title="Total Devices"
+                      loading={totalDevicesLoading}
+                      value={totalDevicesData?.TotalDevices}
+                      cssClass="bg-gainsboro"
+                    />
                   </div>
                   <div className="col-md-6">
-                    <a
-                      className="element-box el-tablo no-bg bg-gainsboro mt-0"
-                      href="#"
-                    >
-                      <div className="label">Total Devices</div>
-                      <div className="value">35</div>
-                    </a>
+                    <CountCard
+                      title="Total Assigned Devices"
+                      loading={assignedDevicesLoading}
+                      value={assignedDevicesData?.TotalAssignedDevices}
+                      cssClass="bg-darkseagreen"
+                    />
                   </div>
                   <div className="col-md-6">
-                    <a
-                      className="element-box el-tablo no-bg bg-darkseagreen mt-0"
-                      href="#"
-                    >
-                      <div className="label">Total Assigned Devices</div>
-                      <div className="value">32</div>
-                    </a>
+                    <CountCard
+                      title="Total Unassigned Devices"
+                      loading={unassignedDevicesLoading}
+                      value={unassignedDevicesData?.TotalUnassignedDevices}
+                      cssClass="bg-lightcoral"
+                    />
                   </div>
                   <div className="col-md-6">
-                    <a
-                      className="element-box el-tablo no-bg bg-lightcoral total_std mt-0"
-                      href="#"
-                    >
-                      <div className="label">Total Unassigned Devices</div>
-                      <div className="value">3</div>
-                    </a>
-                  </div>
-                  <div className="col-md-6">
-                    <a
-                      className="element-box el-tablo no-bg bg-azure total_std mt-0"
-                      href="#"
-                    >
-                      <div className="label">Total Graduated Students</div>
-                      <div className="value">2,390</div>
-                    </a>
+                    <CountCard
+                      title="Total Graduated Students"
+                      loading={graduatedStudentsLoading}
+                      value={graduatedStudentsData?.GraduatedStudentCount}
+                      cssClass="bg-azure"
+                    />
                   </div>
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="element-box bg-white mt-0">
                   <h6 className="element-header">STUDENTS TO LEVEL RATIO</h6>
-                  <Bar data={data} width={100} height={50} />
+                  <LoadingState loading={stuLevelRatioLoading} />
+                  {stuLevelRatio && (
+                    <Bar data={stuLevelRatio} width={100} height={50} />
+                  )}
                 </div>
               </div>
 
-              {/* Attendance Section */}
+              {/* Students to Class ratio */}
+              <div className="col-12 mt-3">
+                <div className="element-box">
+                  <h6 className="element-header">STUDENTS TO CLASS RATIO</h6>
+                  <LoadingState loading={stuClassRatioLoading} />
+                  {stuClassRatio && (
+                    <Bar data={stuClassRatio} width={100} height={30} />
+                  )}
+                </div>
+              </div>
+
+              {/* Students to state ratio */}
               <div className="col-12 mt-3">
                 <div className="element-box">
                   <h6 className="element-header">STUDENTS TO STATE RATIO</h6>
-                  <Bar data={stuStateRatio} width={100} height={20} />
+                  <LoadingState loading={stuStateRatioLoading} />
+                  {stuStateRatio && (
+                    <Bar data={stuStateRatio} width={100} height={30} />
+                  )}
                 </div>
               </div>
             </div>

@@ -13,6 +13,7 @@ import AlertMessage from "../partials/AlertMessage";
 import DatePicker from "react-datepicker";
 import { PieChart } from "react-minimal-pie-chart";
 import { Doughnut } from "react-chartjs-2";
+import SwitchInput from "../partials/SwitchInput";
 
 const ClassAttendance: FC<IProps> = ({ history }) => {
   const [showAttendance, SetShowAttendance] = useState<boolean>(false);
@@ -169,6 +170,18 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
       <div className="content-i">
         <div className="content-box">
           <div className="element-wrapper">
+            {showAttendance && (
+              <div className="element-actions" style={{ marginTop: "-20px" }}>
+                {/* New Class and Level Filter switch */}
+                <SwitchInput
+                  isOn={showClassInfo}
+                  handleToggle={() => {
+                    SetShowClassInfo(!showClassInfo);
+                  }}
+                  label="Class Info"
+                />
+              </div>
+            )}
             <h5 className="element-header">Class Attendance Report</h5>
             {/* Filter */}
             {!showAttendance && (
@@ -274,79 +287,59 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
                 </div>
               </div>
             )}
+
             {/* Attendance Result */}
             {showAttendance && (
               <div className="row">
-                {/* Class Info and Date Section */}
-                <div className="col-md-4">
-                  {/* Class Info */}
-                  <div className="element-box bg-azure">
-                    <span className="element-actions">
-                      <a
-                        href="#"
-                        title="Change Class"
-                        className="m-3"
-                        onClick={() => SetShowAttendance(false)}
-                      >
-                        <i className="os-icon os-icon-edit"></i>
-                      </a>
-                      <a
-                        href="#"
-                        title="toggle collapse"
-                        onClick={() => {
-                          SetShowClassInfo(!showClassInfo);
-                        }}
-                      >
-                        <i
-                          className={`os-icon os-icon-chevron-${
-                            showClassInfo ? "down" : "up"
-                          } icon-lg`}
-                        ></i>
-                      </a>
-                    </span>
-                    <h6
-                      className="element-header"
-                      style={{ marginBottom: showClassInfo ? "30px" : "0" }}
-                    >
-                      Class Info
-                    </h6>
-
-                    {showClassInfo && (
-                      <div className="text-center" title="Form teacher">
-                        <img
-                          src="/avatar.png"
-                          alt=""
-                          className="mb-2"
-                          style={{
-                            borderRadius: "50%",
-                            width: "100px",
-                            height: "100px",
-                          }}
-                        />
-                        <h5>John Mayers</h5>
-                        <label
-                          style={{
-                            display: "block",
-                            marginTop: "-5px",
-                            color: "#16a820",
-                            fontSize: "12px",
-                          }}
-                        >
-                          Form teacher
-                        </label>
-                        <hr />
-                        <label htmlFor="">
-                          Level | <b>JSS1</b>
-                        </label>
-                        <br />
-                        <label htmlFor="">
-                          Class | <b>Gold</b>
-                        </label>
+                {showClassInfo && (
+                  <div className="col-12">
+                    <div className="element-box bg-azure p-0 pl-3">
+                      <div className="row">
+                        <div className="col-sm-4">
+                          <div className="users-list-w bdr-r">
+                            <div className="user-w">
+                              <div className="user-avatar-w">
+                                <div className="user-avatar">
+                                  <img alt="" src="/avatar.png" />
+                                </div>
+                              </div>
+                              <div className="user-name">
+                                <h6 className="user-title">
+                                  John Kelvin Mayers
+                                </h6>
+                                <div className="user-role text-primary">
+                                  Form Teacher
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-sm-7 mt-3">
+                          <label htmlFor="">
+                            Level | <b>JSS1</b>
+                          </label>
+                          <br />
+                          <label htmlFor="">
+                            Class | <b>Gold</b>
+                          </label>
+                        </div>
+                        <div className="col-sm-1 mt-3">
+                          <a
+                            href="#"
+                            title="Change Class"
+                            className="m-3"
+                            onClick={() => SetShowAttendance(false)}
+                          >
+                            <i className="os-icon os-icon-edit"></i>
+                          </a>
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
+                )}
 
-                  {/* Date Section */}
+                {/* Date Section */}
+                <div className="col-md-4">
                   <div className="element-box bg-white mt-0">
                     <h6 className="element-header">Date</h6>
                     {/* Date input for filter */}
@@ -499,7 +492,7 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
                               height={100}
                               width={100}
                               options={{
-                                cutoutPercentage: 10,
+                                cutoutPercentage: 80,
                               }}
                             />
                           </div>

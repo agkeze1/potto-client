@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState } from "react";
 import { IProps } from "../../models/IProps";
 import Helmet from "react-helmet";
@@ -17,6 +18,7 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { authService } from "../../services/Auth.Service";
 
 const Period: FC<IProps> = ({ history }) => {
+  const [timeRange, SetTimeRange] = useState<any>();
   const [showNewPeriod, SetShowNewPeriod] = useState<boolean>(true);
   const [newPeriod, SetNewPeriod] = useState<any>({
     isBreak: false,
@@ -180,7 +182,7 @@ const Period: FC<IProps> = ({ history }) => {
                             selected={newPeriod?.from}
                             showTimeSelect
                             showTimeSelectOnly
-                            timeIntervals={10}
+                            timeIntervals={15}
                             timeCaption="Time"
                             dateFormat="h:mm aa"
                             placeholderText="12:00 AM"
@@ -202,7 +204,7 @@ const Period: FC<IProps> = ({ history }) => {
                             selected={newPeriod?.to}
                             showTimeSelect
                             showTimeSelectOnly
-                            timeIntervals={10}
+                            timeIntervals={15}
                             timeCaption="Time"
                             dateFormat="h:mm aa"
                             placeholderText="12:00 AM"
@@ -269,7 +271,7 @@ const Period: FC<IProps> = ({ history }) => {
                             } period`}
                           >
                             <label className="mb-2">
-                              {prd.from + " - " + prd.to}
+                              <strong>{prd.from + " - " + prd.to}</strong>
                             </label>
                             {prd.break && (
                               <h5 className="text-primary">Break</h5>

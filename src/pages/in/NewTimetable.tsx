@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
@@ -17,13 +18,13 @@ import { GET_LEVEL_SUBJECTS } from "../../queries/Subject.query";
 import { GET_ALL_TEACHER } from "../../queries/Teacher.query";
 import {
   NEW_TIMETABLE,
-  GET_TIMETABLE_OF_CLASS,
+  GET_CLASS_TIMETABLE,
 } from "../../queries/Timetable.query";
-import { NavLink } from "react-router-dom";
 
 const NewTimetable: FC<IProps> = ({ history }) => {
   const [classSet, SetClassSet] = useState<boolean>(false);
   const [daySet, SetDaySet] = useState<boolean>(false);
+  const [timetable, SetTimetable] = useState<boolean>(false);
   const [hideFilter, SetHideFilter] = useState<boolean>(false);
   const [showDay, SetShowDay] = useState<boolean>(true);
   const [showPeriod, SetShowPeriod] = useState<boolean>(true);
@@ -225,7 +226,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
 
   // Gets list of timetable
   const [GetTimetable, { loading: tTLoading, data: tTData }] = useLazyQuery(
-    GET_TIMETABLE_OF_CLASS,
+    GET_CLASS_TIMETABLE,
     {
       variables: {
         _class: timetableInput?.current_class?.id,
@@ -387,6 +388,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                               onClick={() => {
                                 SetClassSet(false);
                                 SetDaySet(false);
+                                SetTimetable(false);
                                 SetTimetableInput(undefined);
                               }}
                             >
@@ -598,21 +600,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                               </div>
                             </>
                           )}
-                          {showPeriod && periods?.length === 0 && (
-                            <div className="text-center mt-3">
-                              <NavLink to="/in/period" title="Add New period">
-                                <i
-                                  className="os-icon os-icon-file-plus"
-                                  style={{
-                                    fontSize: "30px",
-                                  }}
-                                ></i>
-                              </NavLink>
-                              <h6 className="text-danger">
-                                No Periods set yet!
-                              </h6>
-                            </div>
-                          )}
                         </div>
 
                         {/* Subject and Teacher  */}
@@ -645,6 +632,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                     },
                                   },
                                 });
+                                SetTimetable(true);
                               }}
                             >
                               <div className="row">
@@ -706,7 +694,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
             )}
 
             {/* Inputed Timetable */}
-            {tTData && tTData.GetTimetableForClass.docs.lenght > 0 && (
+            {tTData && tTData.GetClassTimetable.docs.lenght > 0 && (
               <div className="row justify-content-center ">
                 <div className="col-lg-12">
                   <div className="element-box">
@@ -728,7 +716,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {tTData.GetTimetableForClass.docs.map(
+                          {tTData.GetClassTimetable.docs.map(
                             (tTable: any, index: number) => (
                               <tr>
                                 <td>{index + 1}</td>

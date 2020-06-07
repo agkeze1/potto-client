@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { GetAppName } from "../../context/App";
 import Helmet from "react-helmet";
 import { Switch, Route } from "react-router-dom";
@@ -11,8 +11,7 @@ import NewSchool from "./NewSchool";
 import SchoolList from "./SchoolList";
 import NewUser from "./NewUser";
 import UserList from "./UserList";
-import NewSuperAdmin from "./NewSuperAdmin";
-import SuperAdminList from "./SuperAdminList";
+import SuperAdmin from "./SuperAdmin";
 import Level from "./Level";
 import Class from "./Class";
 import Term from "./Term";
@@ -34,14 +33,15 @@ import Dashboard from "./Dashboard";
 import Period from "./Period";
 import ClassAttendance from "./ClassAttendance";
 import { authService } from "../../services/Auth.Service";
+import SendFeedback from "./SendFeedback";
 
 const Home: FC<IProps> = ({ location, history }) => {
   document.body.className =
-    "full-screen with-content-panel menu-position-side menu-side-left";
+    "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
+  // document.body.style.background
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) history.push("/login");
-
   return (
     <>
       <Helmet>
@@ -69,8 +69,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                 <Route path="/in/school-list" component={SchoolList} />
                 <Route path="/in/new-user" component={NewUser} />
                 <Route path="/in/user-list" component={UserList} />
-                <Route path="/in/new-super-admin" component={NewSuperAdmin} />
-                <Route path="/in/super-admin-list" component={SuperAdminList} />
+                <Route path="/in/super-admin-list" component={SuperAdmin} />
                 <Route path="/in/level" component={Level} />
                 <Route path="/in/class" component={Class} />
                 <Route path="/in/term" component={Term} />
@@ -90,20 +89,24 @@ const Home: FC<IProps> = ({ location, history }) => {
                 <Route path="/in/feedback-type" component={FeedbackType} />
                 <Route path="/in/role" component={Role} />
                 <Route path="/in/new-timetable" component={NewTimetable} />
-                <Route path="/in/view-timetable" component={ViewTimetable} />}
-                <Route path="/in/period" component={Period} />} />
+                <Route path="/in/view-timetable" component={ViewTimetable} />
+                <Route path="/in/period" component={Period} />
                 <Route
                   path="/in/class-attendance"
                   component={ClassAttendance}
                 />
-                } />
+                <Route path="/in/send-feedback" component={SendFeedback} />
               </Switch>
             </div>
           </div>
         </div>
         <hr />
         <a className="font-sm text-center footer mb-2" href="http://afari.com">
-          <img src="/img/lloydant.png" className="logo-footer mr-2" />
+          <img
+            src="/img/lloydant.png"
+            alt="app logo"
+            className="logo-footer mr-2"
+          />
           Powered by Afari
         </a>
       </div>

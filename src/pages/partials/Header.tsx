@@ -9,6 +9,9 @@ const Header: FC<IProps> = ({ location }) => {
     return (
         <div id="header" className="top-bar color-scheme-transparent">
             <div className="top-menu-controls">
+                <div className="element-search autosuggest-search-activator">
+                    <input placeholder="Start typing to search for students..." />
+                </div>
                 <div className="logged-user-w">
                     <div className="logged-user-i">
                         <div className="avatar-w">

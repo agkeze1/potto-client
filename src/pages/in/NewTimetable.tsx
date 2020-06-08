@@ -228,9 +228,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   const [GetTimetable, { loading: tTLoading, data: tTData }] = useLazyQuery(
     GET_CLASS_TIMETABLE,
     {
-      variables: {
-        _class: timetableInput?.current_class?.id,
-      },
+      fetchPolicy: "network-only",
       onError: (err) =>
         SetTTMessage({
           message: err.message,
@@ -468,7 +466,11 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                   });
                                   GetPeriods();
                                   SetDaySet(true);
-                                  GetTimetable();
+                                  GetTimetable({
+                                    variables: {
+                                      _class: timetableInput?.current_class?.id,
+                                    },
+                                  });
                                 }
                               }}
                             />

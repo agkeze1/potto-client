@@ -12,7 +12,6 @@ export const LEVEL_PROPS = gql`
 export const GET_LEVELS = gql`
     query GET_LEVELS {
         GetLevels {
-            message
             docs {
                 ...LEVEL_PROPS
             }

@@ -8,7 +8,7 @@ const {
 export const GetAppName = (): string => REACT_APP_NAME || "";
 
 export const GET_API_URL = () => process.env.REACT_APP_BASEURL;
-export const GET_APP_ID = () => key || "potto";
+export const GET_APP_ID = key || "potto";
 
 export const GET_LOGO = REACT_APP_LOGO;
 export const GET_FULL_NAME = REACT_APP_FULL_NAME;

@@ -470,3 +470,41 @@ a > i.os-icon:hover {
 .bdr-r {
   border-right: 0.5px solid gray;
 }
+img:not(.no-scale) {
+  transition-property: all !important;
+  transition-duration: 0.1s !important;
+  transition-timing-function: ease-in-out !important;
+}
+
+img:not(.no-scale):hover {
+  transform: scale(1.3) !important;
+}
+
+.pb-2 {
+  padding-bottom: 2em !important;
+}
+
+.pb-4 {
+  padding-bottom: 4em !important;
+}
+
+a.btn-icon > i {
+  color: #f11919;
+  padding: 8px;
+}
+
+a.btn-icon > i:hover {
+  color: #a81313;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+}
+.avatar {
+  border: solid #ffffff 3px;
+  -moz-box-shadow: 0 0 4px #27a7e5;
+  -webkit-box-shadow: 0 0 4px #27a7e5;
+  box-shadow: 0 0 4px #27a7e5;
+}
+
+.element-wrapper .element-header {
+  z-index: 0 !important;
+}

@@ -34,6 +34,7 @@ import Period from "./Period";
 import ClassAttendance from "./ClassAttendance";
 import { authService } from "../../services/Auth.Service";
 import SendFeedback from "./SendFeedback";
+import GraduateStudent from "./GraduateStudent";
 
 const Home: FC<IProps> = ({ location, history }) => {
   document.body.className =
@@ -96,18 +97,18 @@ const Home: FC<IProps> = ({ location, history }) => {
                   component={ClassAttendance}
                 />
                 <Route path="/in/send-feedback" component={SendFeedback} />
+                <Route
+                  path="/in/graduate-student"
+                  component={GraduateStudent}
+                />
               </Switch>
             </div>
           </div>
         </div>
         <hr />
-        <a className="font-sm text-center footer mb-2" href="http://afari.com">
-          <img
-            src="/img/lloydant.png"
-            alt="app logo"
-            className="logo-footer mr-2"
-          />
-          Powered by Afari
+        <a className="font-sm text-center footer mb-2" href="http://potto.com">
+          <img src="/avatar.png" alt="app logo" className="logo-footer mr-2" />
+          Powered by Potto
         </a>
       </div>
     </>

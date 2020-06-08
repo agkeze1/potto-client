@@ -173,8 +173,8 @@ const Dashboard: FC<IProps> = ({ history }) => {
                 data: data.GetTeacherGenderRatio?.map(
                   (ratio: any) => ratio.total
                 ),
-                backgroundColor: ["lightcoral", "#3e4b5b"],
-                hoverBackgroundColor: ["#d94e2b", "#19191a"],
+                backgroundColor: ["#3e4b5b", "lightcoral"],
+                hoverBackgroundColor: ["#19191a", "#d94e2b"],
               },
             ],
             labels: data?.GetTeacherGenderRatio?.map(
@@ -331,6 +331,19 @@ const Dashboard: FC<IProps> = ({ history }) => {
                         <thead>
                           <tr>
                             <th>#</th>
+                            <th>
+                              <div className="custom-control custom-checkbox text-center">
+                                <input
+                                  type="checkbox"
+                                  className="custom-control-input"
+                                  id="select-all-chk"
+                                />
+                                <label
+                                  className="custom-control-label"
+                                  htmlFor="select-all-chk"
+                                ></label>
+                              </div>
+                            </th>
                             <th className="text-left">Student</th>
                             <th className="text-left">Date</th>
                             <th>Action</th>
@@ -341,6 +354,19 @@ const Dashboard: FC<IProps> = ({ history }) => {
                             (item: any, index: number) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>
+                                <td>
+                                  <div className="custom-control custom-checkbox text-center">
+                                    <input
+                                      type="checkbox"
+                                      className="custom-control-input"
+                                      id={`chk-${index}`}
+                                    />
+                                    <label
+                                      className="custom-control-label"
+                                      htmlFor={`chk-${index}`}
+                                    ></label>
+                                  </div>
+                                </td>
                                 <td className="text-left">
                                   {item.student?.full_name}
                                 </td>
@@ -354,7 +380,11 @@ const Dashboard: FC<IProps> = ({ history }) => {
                                     {" " + months[item.month + 1].abbreviation}
                                   </strong>
                                 </td>
-                                <td>Msg</td>
+                                <td>
+                                  <a href="javascript:void(0)">
+                                    <i className="os-icon os-icon-mail-01"></i>
+                                  </a>
+                                </td>
                               </tr>
                             )
                           )}

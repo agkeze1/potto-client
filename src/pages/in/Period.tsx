@@ -285,7 +285,11 @@ const Period: FC<IProps> = ({ history }) => {
                                 data-target="#editModal"
                                 data-toggle="modal"
                                 onClick={() => {
-                                  SetEditPeriod(prd);
+                                  SetEditPeriod({
+                                    ...prd,
+                                    from_date: new Date(prd.from_date),
+                                    to_date: new Date(prd.to_date),
+                                  });
                                 }}
                               >
                                 <i className="os-icon os-icon-ui-49"></i>
@@ -360,8 +364,8 @@ const Period: FC<IProps> = ({ history }) => {
                     variables: {
                       id: editPeriod.id,
                       model: {
-                        from: editPeriod.from,
-                        to: editPeriod.to,
+                        from: editPeriod.from_date,
+                        to: editPeriod.to_date,
                         isBreak: editPeriod.break,
                       },
                     },
@@ -376,7 +380,7 @@ const Period: FC<IProps> = ({ history }) => {
                     <DatePicker
                       className="form-control"
                       required
-                      selected={null}
+                      selected={editPeriod?.from_date}
                       showTimeSelect
                       showTimeSelectOnly
                       timeIntervals={15}
@@ -386,7 +390,7 @@ const Period: FC<IProps> = ({ history }) => {
                       onChange={(time) => {
                         SetEditPeriod({
                           ...editPeriod,
-                          from: time,
+                          from_date: time,
                         });
                       }}
                     />
@@ -398,7 +402,7 @@ const Period: FC<IProps> = ({ history }) => {
                     <DatePicker
                       className="form-control"
                       required
-                      selected={null}
+                      selected={editPeriod?.to_date}
                       showTimeSelect
                       showTimeSelectOnly
                       timeIntervals={15}
@@ -408,7 +412,7 @@ const Period: FC<IProps> = ({ history }) => {
                       onChange={(time) => {
                         SetEditPeriod({
                           ...editPeriod,
-                          to: time,
+                          to_date: time,
                         });
                       }}
                     />
@@ -419,11 +423,11 @@ const Period: FC<IProps> = ({ history }) => {
                   >
                     {/* Is Break switch */}
                     <SwitchInput
-                      isOn={newPeriod?.isBreak}
+                      isOn={editPeriod?.break}
                       handleToggle={() => {
                         SetNewPeriod({
-                          ...newPeriod,
-                          isBreak: !newPeriod?.isBreak,
+                          ...editPeriod,
+                          break: !editPeriod?.break,
                         });
                       }}
                       label="Is Break?"

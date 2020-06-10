@@ -533,7 +533,42 @@ const Dashboard: FC<IProps> = ({ history }) => {
             {/* Attendance Section */}
             <div className="row mt-5">
               <div className="col-12">
-                <h6 className="element-header">Attendance</h6>
+                <div className="element-box no-bg bg-white">
+                  <h6 className="element-header">
+                    DAILY ROLL CALL ATTENDANCE (IN ONE WEEK)
+                  </h6>
+                  <div className="table-responsive">
+                    <table className="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th className="text-left">Date</th>
+                          <th className="text-left">Total</th>
+                          <th className="text-left">Present</th>
+                          <th className="text-left">Absent</th>
+                          <th className="text-left">Exempted</th>
+                          <th className="text-left">Manual</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td className="text-left">15th May</td>
+                          <td className="text-left">430</td>
+                          <td className="text-left">410</td>
+                          <td className="text-left">20</td>
+                          <td className="text-left">45</td>
+                          <td className="text-left">45</td>
+                        </tr>
+                        <tr>
+                          <td className="text-danger text-center" colSpan={7}>
+                            No Roll call Attendance in the last week
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

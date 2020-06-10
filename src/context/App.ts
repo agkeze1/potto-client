@@ -34,3 +34,36 @@ export const DayString = (day: number): string => {
   else if (day > 3) return `<label>${day}<sup>th</sup></label>`;
   else return "";
 };
+
+export const GetAge = (date: string): number => {
+  const now = new Date();
+  const birthDate = new Date(date);
+  return now.getFullYear() - birthDate.getFullYear();
+};
+
+/**
+ * Get timetable of a given period and day
+ * @param day day
+ * @param period period
+ * @param timetables timetables
+ * @param callback callback
+ */
+export const getTimetable = (
+  day: string,
+  period: any,
+  timetables: [],
+  callback: any
+): any => {
+  const { from_date, to_date } = period;
+  if (timetables.length && day && period) {
+    const item: any = timetables.find((a: any) => a.day === day);
+    if (item) {
+      const inner = item.timetable_list.find(
+        (_inner: any) =>
+          _inner.period.from === from_date && _inner.period.to === to_date
+      );
+      if (inner) return callback(inner);
+    }
+  }
+  return callback(null);
+};

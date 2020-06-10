@@ -7,6 +7,8 @@ export const PERIOD_PROPS = gql`
     to
     break
     taken
+    from_date
+    to_date
   }
 `;
 

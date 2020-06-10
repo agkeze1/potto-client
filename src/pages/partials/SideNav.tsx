@@ -24,10 +24,6 @@ const SideNav: FC<SideProps> = ({ location }) => {
          menu-layout-compact sub-menu-style-over sub-menu-color-bright 
          selected-menu-color-light menu-activated-on-hover menu-has-selected-link 
          nav-bg-color"
-        style={{
-          backgroundImage: "url('/5.png')",
-          backgroundRepeat: "no-repeat",
-        }}
       >
         <div className="logo-w">
           <NavLink className="logo" to="/in/dashboard">

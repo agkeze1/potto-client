@@ -11,6 +11,8 @@ import { IMessage } from "../../models/IMessage";
 import LoadingState from "../partials/loading";
 import AlertMessage from "../partials/AlertMessage";
 import Select from "react-select";
+import { GET_CLASS_TIMETABLE } from "../../queries/Timetable.query";
+import TimetableList from "./partials/TimetableList";
 
 const ViewTimetable: FC<IProps> = ({ history }) => {
   const [ShowTimetable, SetShowTimetable] = useState<boolean>(false);
@@ -18,6 +20,7 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
 
   const [lMessage, SetLMessage] = useState<IMessage>();
   const [cMessage, SetCMessage] = useState<IMessage>();
+  const [tTMessage, SetTTMessage] = useState<IMessage>();
   const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
   const [classes, SetClasses] = useState<any>([]);
@@ -108,10 +111,19 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
     }
   }, [activeLevel?.id]);
 
+  const [GetTimetable, { loading: tTLoading, data: tTData }] = useLazyQuery(
+    GET_CLASS_TIMETABLE,
+    {
+      onError: (err) =>
+        SetTTMessage({
+          message: err.message,
+          failed: true,
+        }),
+    }
+  );
+
   // Toggle Timetable Expansion
   const ExpandTimetable = () => {
-    SetShowFilter(!showFilter);
-
     const sideNav = document.getElementById("sideNav");
     const header = document.getElementById("header");
 
@@ -152,6 +164,15 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
+                          if (timetableInput?.current_class) {
+                            SetShowTimetable(true);
+                            SetShowFilter(false);
+                            GetTimetable({
+                              variables: {
+                                _class: timetableInput.current_class?.id,
+                              },
+                            });
+                          }
                         }}
                       >
                         <div className="row">
@@ -161,6 +182,7 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
                               Level <br />
                             </label>
                             <Select
+                              isLoading={llLoading}
                               options={levels}
                               value={{
                                 label: activeLevel?.name || (
@@ -236,9 +258,6 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
                               <button
                                 className="btn btn-primary px-3"
                                 type="submit"
-                                onClick={() => {
-                                  SetShowTimetable(true);
-                                }}
                               >
                                 View Timetable
                               </button>
@@ -251,16 +270,24 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
                 </div>
               </>
             )}
+            <AlertMessage
+              message={tTMessage?.message}
+              failed={tTMessage?.failed}
+            />
+            <LoadingState loading={tTLoading} />
 
             {/* Selected Level and class timetable */}
-            {ShowTimetable && (
+            {ShowTimetable && tTData?.GetClassTimetable && (
               <div className="element-box">
                 <span className="element-actions">
                   <a
                     href="#"
                     title="Change Class"
                     className="m-3"
-                    onClick={() => {}}
+                    onClick={() => {
+                      SetShowFilter(true);
+                      SetShowTimetable(false);
+                    }}
                   >
                     <i className="os-icon os-icon-edit"></i>
                   </a>
@@ -274,254 +301,15 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
                     <i className="os-icon os-icon-maximize"></i>
                   </a>
                 </span>
-                <h6 className="element-header">JSS2 - A Timetable</h6>
+                <h6 className="element-header">
+                  <b className="text-primary mr-2">
+                    {" "}
+                    {activeLevel?.name} - {timetableInput?.current_class?.name}
+                  </b>
+                  Timetable
+                </h6>
                 <div className="table-responsive">
-                  <table className="table table-bordered table-lg table-v2 table-striped">
-                    <thead>
-                      <tr>
-                        <th className="text-center"></th>
-                        <th>8:00AM - 8:40AM</th>
-                        <th>8:40AM - 9:20AM</th>
-                        <th>9:20AM - 10:00AM</th>
-                        <th>10:00AM - 11:40AM</th>
-                        <th>11:40AM - 12Noon</th>
-                        <th>12Noon - 12:40PM</th>
-                        <th>12:40PM - 1:20PM</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="text-center">
-                          <b>MON</b>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mrs. Jane Agbo</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>mth</b>
-                          </span>
-                          <div className="smaller">Stanley Eze</div>
-                        </td>
-                        <td className="text-right">
-                          <span className="text-uppercase text-primary">
-                            <b>bio</b>
-                          </span>
-                          <div className="smaller">Mrs. Anthonia Aka</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mr. Lazarus Ani</div>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-uppercase text-primary">
-                            <b>Break</b>
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>chem</b>
-                          </span>
-                          <div className="smaller">Douglas Elenu</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Int. Sc.</b>
-                          </span>
-                          <div className="smaller">Mr. Obieze Anthony</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="text-center">
-                          <b>TUE</b>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mrs. Jane Agbo</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>mth</b>
-                          </span>
-                          <div className="smaller">Stanley Eze</div>
-                        </td>
-                        <td className="text-right">
-                          <span className="text-uppercase text-primary">
-                            <b>bio</b>
-                          </span>
-                          <div className="smaller">Mrs. Anthonia Aka</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mr. Lazarus Ani</div>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-uppercase text-primary">
-                            <b>Break</b>
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>chem</b>
-                          </span>
-                          <div className="smaller">Douglas Elenu</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Int. Sc.</b>
-                          </span>
-                          <div className="smaller">Mr. Obieze Anthony</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="text-center">
-                          <b>WED</b>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mrs. Jane Agbo</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>mth</b>
-                          </span>
-                          <div className="smaller">Stanley Eze</div>
-                        </td>
-                        <td className="text-right">
-                          <span className="text-uppercase text-primary">
-                            <b>bio</b>
-                          </span>
-                          <div className="smaller">Mrs. Anthonia Aka</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mr. Lazarus Ani</div>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-uppercase text-primary">
-                            <b>Break</b>
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>chem</b>
-                          </span>
-                          <div className="smaller">Douglas Elenu</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Int. Sc.</b>
-                          </span>
-                          <div className="smaller">Mr. Obieze Anthony</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="text-center">
-                          <b>THU</b>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mrs. Jane Agbo</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>mth</b>
-                          </span>
-                          <div className="smaller">Stanley Eze</div>
-                        </td>
-                        <td className="text-right">
-                          <span className="text-uppercase text-primary">
-                            <b>bio</b>
-                          </span>
-                          <div className="smaller">Mrs. Anthonia Aka</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mr. Lazarus Ani</div>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-uppercase text-primary">
-                            <b>Break</b>
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>chem</b>
-                          </span>
-                          <div className="smaller">Douglas Elenu</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Int. Sc.</b>
-                          </span>
-                          <div className="smaller">Mr. Obieze Anthony</div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="text-center">
-                          <b>FRI</b>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mrs. Jane Agbo</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>mth</b>
-                          </span>
-                          <div className="smaller">Stanley Eze</div>
-                        </td>
-                        <td className="text-right">
-                          <span className="text-uppercase text-primary">
-                            <b>bio</b>
-                          </span>
-                          <div className="smaller">Mrs. Anthonia Aka</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Eng</b>
-                          </span>
-                          <div className="smaller">Mr. Lazarus Ani</div>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-uppercase text-primary">
-                            <b>Break</b>
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>chem</b>
-                          </span>
-                          <div className="smaller">Douglas Elenu</div>
-                        </td>
-                        <td>
-                          <span className="text-uppercase text-primary">
-                            <b>Int. Sc.</b>
-                          </span>
-                          <div className="smaller">Mr. Obieze Anthony</div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <TimetableList classId={timetableInput.current_class?.id} />
                 </div>
               </div>
             )}

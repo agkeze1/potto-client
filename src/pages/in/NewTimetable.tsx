@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
+import { GetAppName, getTimetable } from "../../context/App";
 import SwitchInput from "../partials/SwitchInput";
 import { IProps } from "../../models/IProps";
 import { authService } from "../../services/Auth.Service";
@@ -19,12 +19,12 @@ import { GET_ALL_TEACHER } from "../../queries/Teacher.query";
 import {
   NEW_TIMETABLE,
   GET_CLASS_TIMETABLE,
+  REMOVE_TIMETABLE,
 } from "../../queries/Timetable.query";
 
 const NewTimetable: FC<IProps> = ({ history }) => {
   const [classSet, SetClassSet] = useState<boolean>(false);
   const [daySet, SetDaySet] = useState<boolean>(false);
-  const [timetable, SetTimetable] = useState<boolean>(false);
   const [hideFilter, SetHideFilter] = useState<boolean>(false);
   const [showDay, SetShowDay] = useState<boolean>(true);
   const [showPeriod, SetShowPeriod] = useState<boolean>(true);
@@ -133,7 +133,10 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   }, [activeLevel?.id]);
 
   // Fetch List of Periods under a class
-  const [GetPeriods, { loading: pLoading }] = useLazyQuery(GET_DAY_PERIODS, {
+  const [
+    GetPeriods,
+    { loading: pLoading, refetch: refetchPeriods },
+  ] = useLazyQuery(GET_DAY_PERIODS, {
     variables: {
       _class: timetableInput?.current_class?.id,
       day: timetableInput?.day?.value,
@@ -219,21 +222,40 @@ const NewTimetable: FC<IProps> = ({ history }) => {
           failed: false,
         });
         GetPeriods();
-        GetTimetable();
+        GetTimetable({
+          variables: {
+            _class: timetableInput?.current_class?.id,
+          },
+        });
       }
     },
   });
 
   // Gets list of timetable
-  const [GetTimetable, { loading: tTLoading, data: tTData }] = useLazyQuery(
-    GET_CLASS_TIMETABLE,
+  const [
+    GetTimetable,
+    { loading: tTLoading, data: tTData, refetch: refetchTimetable },
+  ] = useLazyQuery(GET_CLASS_TIMETABLE, {
+    fetchPolicy: "network-only",
+    onError: (err) =>
+      SetTTMessage({
+        message: err.message,
+        failed: true,
+      }),
+  });
+
+  // Delete a particular timetable
+  const [RemoveTimetable, { loading: rTLoading }] = useMutation(
+    REMOVE_TIMETABLE,
     {
-      fetchPolicy: "network-only",
-      onError: (err) =>
-        SetTTMessage({
-          message: err.message,
-          failed: true,
-        }),
+      onCompleted: () => {
+        refetchPeriods();
+        refetchTimetable({
+          variables: {
+            _class: timetableInput?.current_class?.id,
+          },
+        });
+      },
     }
   );
 
@@ -386,7 +408,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                               onClick={() => {
                                 SetClassSet(false);
                                 SetDaySet(false);
-                                SetTimetable(false);
                                 SetTimetableInput(undefined);
                               }}
                             >
@@ -582,17 +603,25 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                               <br />
                                               Taken{" "}
                                               <b className="text-primary">
-                                                ( ENG )
+                                                {getTimetable(
+                                                  timetableInput.day.value,
+                                                  prd,
+                                                  tTData
+                                                    ? tTData.GetClassTimetable
+                                                        .docs
+                                                    : [],
+                                                  function (item: any) {
+                                                    return item ? (
+                                                      <span>
+                                                        ({item.subject.code})
+                                                      </span>
+                                                    ) : (
+                                                      "No Subject"
+                                                    );
+                                                  }
+                                                )}
                                               </b>
                                             </span>
-                                            <a
-                                              href="#"
-                                              className="icon-hdn"
-                                              title="Remove"
-                                              onClick={() => {}}
-                                            >
-                                              <i className="os-icon os-icon-trash-2 text-danger"></i>
-                                            </a>
                                           </>
                                         )}
                                       </div>
@@ -634,7 +663,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                     },
                                   },
                                 });
-                                SetTimetable(true);
                               }}
                             >
                               <div className="row">
@@ -696,54 +724,84 @@ const NewTimetable: FC<IProps> = ({ history }) => {
             )}
 
             {/* Inputed Timetable */}
-            {tTData && tTData.GetClassTimetable.docs.lenght > 0 && (
-              <div className="row justify-content-center ">
-                <div className="col-lg-12">
-                  <div className="element-box">
-                    <h5 className="element-header">Inputed Timetable</h5>
-                    <div className="table-responsive">
-                      <AlertMessage
-                        message={tTMessage?.message}
-                        failed={tTMessage?.failed}
-                      />
-                      <LoadingState loading={tTLoading} />
-                      <table className="table table-striped">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Time</th>
-                            <th>Subject</th>
-                            <th>Teacher</th>
-                            <th className="text-center">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tTData.GetClassTimetable.docs.map(
-                            (tTable: any, index: number) => (
-                              <tr>
-                                <td>{index + 1}</td>
-                                <td>
-                                  {tTable.timetable_list?.period?.from +
-                                    " - " +
-                                    tTable.timetable_list?.period?.to}
-                                </td>
-                                <td>English Language (ENG)</td>
-                                <td>Teacher Component</td>
-                                <td className="row-actions text-center">
-                                  <a href="#" title="Remove">
-                                    <i className="os-icon os-icon-x text-danger"></i>
-                                  </a>
-                                </td>
-                              </tr>
-                            )
-                          )}
-                        </tbody>
-                      </table>
+            {tTData?.GetClassTimetable.docs &&
+              tTData.GetClassTimetable.docs.find(
+                (item: any) => item.day === timetableInput?.day?.value
+              ) && (
+                <div className="row justify-content-center ">
+                  <div className="col-lg-12">
+                    <div className="element-box">
+                      <h5 className="element-header">Inputed Timetable</h5>
+                      <div className="table-responsive">
+                        <AlertMessage
+                          message={tTMessage?.message}
+                          failed={tTMessage?.failed}
+                        />
+                        <LoadingState loading={tTLoading || rTLoading} />
+                        <table className="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Period</th>
+                              <th>Subject</th>
+                              <th>Teacher</th>
+                              <th className="text-center">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {tTData.GetClassTimetable.docs
+                              .find(
+                                (item: any) =>
+                                  item.day === timetableInput?.day?.value
+                              )
+                              .timetable_list.map(
+                                (tTable: any, idx: number) => (
+                                  <tr key={idx}>
+                                    <td>{idx + 1}</td>
+                                    <td>
+                                      <strong>
+                                        {new Date(
+                                          tTable.period?.from
+                                        ).toLocaleTimeString() +
+                                          " - " +
+                                          new Date(
+                                            tTable.period?.to
+                                          ).toLocaleTimeString()}
+                                      </strong>
+                                      <span className="badge badge-primary ml-2">
+                                        {tTable.period?.total}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      {tTable.subject?.title + " "} (
+                                      {tTable.subject?.code})
+                                    </td>
+                                    <td>{tTable.teacher?.name}</td>
+                                    <td className="row-actions text-center">
+                                      <a
+                                        href="javascript:void(0)"
+                                        title="Remove"
+                                        onClick={() => {
+                                          RemoveTimetable({
+                                            variables: {
+                                              id: tTable.id,
+                                            },
+                                          });
+                                        }}
+                                      >
+                                        <i className="os-icon os-icon-x text-danger"></i>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                )
+                              )}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
       </div>

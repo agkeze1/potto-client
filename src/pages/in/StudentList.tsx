@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, CLEAN_DATE } from "../../context/App";
+import { GetAppName, CLEAN_DATE, GetAge } from "../../context/App";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 import SwitchInput from "../partials/SwitchInput";
@@ -875,7 +875,9 @@ const StudentList: FC<IProps> = ({ history }) => {
                           <li>
                             <span>Date of Birth</span> |{" "}
                             <b>{CLEAN_DATE(activeStudent.dob)}</b>
-                            <i> ( 20yrs )</i>
+                            <span className="badge badge-primary ml-2 p-1">
+                              {GetAge(activeStudent.dob)}Yrs
+                            </span>
                           </li>
                           <li>
                             <span>Date Created</span> |{" "}
@@ -961,26 +963,19 @@ const StudentList: FC<IProps> = ({ history }) => {
                               {activeStudent.guardians.length > 0 && (
                                 <>
                                   {activeStudent.guardians.map((guard: any) => (
-                                    <div className="col-sm-3">
+                                    <div className="col-sm-6 col-md-4 col-lg-3">
                                       <div className="element-box no-bg">
                                         <img
                                           className="avatar"
                                           src={guard?.image || "/avatar.png"}
                                           alt=""
                                           style={{
-                                            width: "100px",
-                                            height: "100px",
+                                            width: "150px",
+                                            height: "150px",
                                           }}
                                         />
                                         <hr />
-                                        <a
-                                          href="#"
-                                          data-dismiss="modal"
-                                          data-target="#imageModal"
-                                          data-toggle="modal"
-                                        >
-                                          {guard?.full_name}
-                                        </a>
+                                        <label>{guard?.full_name}</label>
                                       </div>
                                     </div>
                                   ))}
@@ -1409,11 +1404,74 @@ const StudentList: FC<IProps> = ({ history }) => {
 
                           {/* Subject Attendance */}
                           <div className="tab-pane" id="subjectAtt">
-                            <h5 className="element-header">Monday</h5>
-                            <AttAccordion />
-
-                            <h5 className="element-header">Tuesday</h5>
-                            <AttAccordion />
+                            <div className="row">
+                              <div className="col-md-4">
+                                <a
+                                  className="element-box el-tablo no-bg bg-beige mt-0 active-bdr-primary"
+                                  href="javascript:void(0)"
+                                >
+                                  <div className="label">
+                                    8:30AM - 9:20AM - (Monday)
+                                  </div>
+                                  <div className="value">English Language</div>
+                                </a>
+                                <a
+                                  className="element-box el-tablo no-bg bg-beige mt-0"
+                                  href="javascript:void(0)"
+                                >
+                                  <div className="label">
+                                    8:30AM - 9:20AM - (Monday)
+                                  </div>
+                                  <div className="value">Mathematics</div>
+                                </a>
+                              </div>
+                              <div className="col-md-8">
+                                <div className="table-responsive element-box no-bg no-shadow bdr">
+                                  <table className="table table-striped">
+                                    <thead>
+                                      <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Device</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>1</td>
+                                        <td>21st Jan. 2020</td>
+                                        <td>
+                                          <label className="badge badge-success-inverted">
+                                            Attended
+                                          </label>
+                                        </td>
+                                        <td>Device Component</td>
+                                      </tr>
+                                      <tr>
+                                        <td>2</td>
+                                        <td>29st Jan. 2020</td>
+                                        <td>
+                                          <label className="badge badge-danger-inverted">
+                                            Absent
+                                          </label>
+                                        </td>
+                                        <td>Device Component</td>
+                                      </tr>
+                                      <tr>
+                                        <td>3</td>
+                                        <td>6th Feb. 2020</td>
+                                        <td>
+                                          <label className="badge badge-warning-inverted">
+                                            Exempted
+                                          </label>
+                                        </td>
+                                        <td>Device Component</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>

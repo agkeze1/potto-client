@@ -467,8 +467,14 @@ a > i.os-icon:hover {
 .bg-gold {
   background-color: #dbcd88 !important;
 }
+.bg-beige {
+  background-color: beige !important;
+}
 .bdr-r {
   border-right: 0.5px solid gray;
+}
+.active-bdr-primary {
+  border-right: 0.5px solid #16a820;
 }
 img:not(.no-scale) {
   transition-property: all !important;
@@ -507,4 +513,8 @@ a.btn-icon > i:hover {
 
 .element-wrapper .element-header {
   z-index: 0 !important;
+}
+.menu-w {
+  background-image: url("/5.png");
+  background-repeat: no-repeat;
 }

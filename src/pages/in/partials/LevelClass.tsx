@@ -1,8 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { CleanMessage, getTimetable } from "../../../context/App";
+import { CleanMessage } from "../../../context/App";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { authService } from "../../../services/Auth.Service";
 import { GET_LEVELS } from "../../../queries/Level.query";
 import { GET_CLASSES } from "../../../queries/Class.query";
 import Select from "react-select";
@@ -121,6 +120,7 @@ const LevelClass: FC<IProps> = ({
                 name: item?.label,
                 id: item?.value,
               });
+              SetActiveClass(undefined);
               onLevelChange(item);
             }}
           />

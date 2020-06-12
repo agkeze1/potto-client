@@ -4,29 +4,16 @@ import { authService } from "../../services/Auth.Service";
 import { GetAppName } from "../../context/App";
 import Helmet from "react-helmet";
 import Select from "react-select";
-import { IMessage } from "../../models/IMessage";
-import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { GET_LEVELS } from "../../queries/Level.query";
-import { GET_CLASSES } from "../../queries/Class.query";
-import LoadingState from "../partials/loading";
-import AlertMessage from "../partials/AlertMessage";
-import DatePicker from "react-datepicker";
-import { PieChart } from "react-minimal-pie-chart";
 import { Doughnut } from "react-chartjs-2";
 import SwitchInput from "../partials/SwitchInput";
 import LevelClass from "./partials/LevelClass";
+import FromToDate from "./partials/FromToDate";
 
 const ClassAttendance: FC<IProps> = ({ history }) => {
   const [showAttendance, SetShowAttendance] = useState<boolean>();
   const [showDateRange, SetShowDateRange] = useState<boolean>(true);
-  const [dateRange, SetDateRange] = useState<any>();
   const [showAttendanceResult, SetShowAttendanceResult] = useState<boolean>();
   const [showSummary, SetShowSummary] = useState<boolean>(true);
-  const [levels, SetLevel] = useState<any>([]);
-  const [classes, SetClasses] = useState<any>([]);
-  const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>();
-  const [lMessage, SetLMessage] = useState<IMessage>();
-  const [cMessage, SetCMessage] = useState<IMessage>();
   const [activeLevel, SetActiveLevel] = useState<any>({});
   const [attendanceInput, SetAttendanceInput] = useState<any>();
   const [activeAttSort, SetActiveAttSort] = useState<number>();
@@ -137,7 +124,8 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
                         });
                       }}
                       onSubmit={() => {
-                        SetShowAttendance(true);
+                        if (attendanceInput?.current_class)
+                          SetShowAttendance(true);
                       }}
                     />
                   </div>
@@ -151,66 +139,23 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
                 {/* Date Range selection */}
                 {showDateRange && (
                   <div className="col-lg-12">
-                    <div className="element-box">
-                      <h6 className="element-header">Select Date Range</h6>
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          SetShowAttendance(true);
-                        }}
-                      >
-                        {/* Date Section */}
-                        <div className="row">
-                          <div className="col-md-6">
-                            {/* From Date*/}
-                            <label htmlFor="">From </label>
-                            <br />
-                            <DatePicker
-                              placeholderText="day, month year"
-                              selected={dateRange?.fromDate}
-                              onChange={(date) =>
-                                SetDateRange({
-                                  ...dateRange,
-                                  fromDate: date,
-                                })
-                              }
-                              className="form-control"
-                              dateFormat="d, MMMM yyyy"
-                            />
-                          </div>
-                          <div className="col-md-6">
-                            {/* To Date */}
-                            <label htmlFor="">To </label>
-                            <br />
-                            <DatePicker
-                              placeholderText="day, month year"
-                              selected={dateRange?.toDate}
-                              onChange={(date) =>
-                                SetDateRange({
-                                  ...dateRange,
-                                  toDate: date,
-                                })
-                              }
-                              className="form-control"
-                              dateFormat="d, MMMM yyyy"
-                            />
-                          </div>
-                          <div className="col-12 mt-3">
-                            <div className="buttons-w">
-                              <button
-                                className="btn btn-primary px-3"
-                                type="submit"
-                                onClick={() => {
-                                  SetShowAttendanceResult(true);
-                                }}
-                              >
-                                View Attendance
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
+                    <FromToDate
+                      onFromChange={(date: any) => {
+                        SetAttendanceInput({
+                          ...attendanceInput,
+                          fromDate: date,
+                        });
+                      }}
+                      onToChange={(date: any) => {
+                        SetAttendanceInput({
+                          ...attendanceInput,
+                          toDate: date,
+                        });
+                      }}
+                      onSubmit={() => {
+                        SetShowAttendanceResult(true);
+                      }}
+                    />
                   </div>
                 )}
                 {showAttendanceResult && (

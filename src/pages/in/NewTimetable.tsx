@@ -112,6 +112,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
 
   // Get list of Teacher for Teacher dropdown input
   const { loading: tLoading } = useQuery(GET_ALL_TEACHER, {
+    fetchPolicy: "network-only",
     onError: (err) => {
       SetTMessage({
         message: err.message,
@@ -146,7 +147,12 @@ const NewTimetable: FC<IProps> = ({ history }) => {
           message: data.NewTimetable.message,
           failed: false,
         });
-        GetPeriods();
+        GetPeriods({
+          variables: {
+            _class: timetableInput?.current_class?.id,
+            day: timetableInput?.day?.value,
+          },
+        });
         GetTimetable({
           variables: {
             _class: timetableInput?.current_class?.id,

@@ -62,10 +62,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
     GetPeriods,
     { loading: pLoading, refetch: refetchPeriods },
   ] = useLazyQuery(GET_DAY_PERIODS, {
-    variables: {
-      _class: timetableInput?.current_class?.id,
-      day: timetableInput?.day?.value,
-    },
     fetchPolicy: "network-only",
     onCompleted: (data) => {
       // Clear selected Periods
@@ -163,25 +159,30 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   });
 
   // Gets list of timetable
-  const [
-    GetTimetable,
-    { loading: tTLoading, data: tTData, refetch: refetchTimetable },
-  ] = useLazyQuery(GET_CLASS_TIMETABLE, {
-    fetchPolicy: "network-only",
-    onError: (err) =>
-      SetTTMessage({
-        message: err.message,
-        failed: true,
-      }),
-  });
+  const [GetTimetable, { loading: tTLoading, data: tTData }] = useLazyQuery(
+    GET_CLASS_TIMETABLE,
+    {
+      fetchPolicy: "network-only",
+      onError: (err) =>
+        SetTTMessage({
+          message: err.message,
+          failed: true,
+        }),
+    }
+  );
 
   // Delete a particular timetable
   const [RemoveTimetable, { loading: rTLoading }] = useMutation(
     REMOVE_TIMETABLE,
     {
       onCompleted: () => {
-        refetchPeriods();
-        refetchTimetable({
+        GetPeriods({
+          variables: {
+            _class: timetableInput?.current_class?.id,
+            day: timetableInput?.day?.value,
+          },
+        });
+        GetTimetable({
           variables: {
             _class: timetableInput?.current_class?.id,
           },
@@ -345,7 +346,12 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                     ...timetableInput,
                                     day: day,
                                   });
-                                  GetPeriods();
+                                  GetPeriods({
+                                    variables: {
+                                      _class: timetableInput?.current_class?.id,
+                                      day: timetableInput?.day?.value,
+                                    },
+                                  });
                                   SetDaySet(true);
                                   GetTimetable({
                                     variables: {

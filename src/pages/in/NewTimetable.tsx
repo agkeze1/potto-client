@@ -1,16 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, getTimetable } from "../../context/App";
+import { GetAppName, getTimetable, CleanMessage } from "../../context/App";
 import SwitchInput from "../partials/SwitchInput";
 import { IProps } from "../../models/IProps";
 import { authService } from "../../services/Auth.Service";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { GET_LEVELS } from "../../queries/Level.query";
-import { IMessage } from "../../models/IMessage";
 import { GET_CLASSES } from "../../queries/Class.query";
 import LoadingState from "../partials/loading";
-import AlertMessage from "../partials/AlertMessage";
 import Select from "react-select";
 import days from "../../data/days.json";
 import { GET_DAY_PERIODS } from "../../queries/Period.query";
@@ -22,6 +20,7 @@ import {
   REMOVE_TIMETABLE,
 } from "../../queries/Timetable.query";
 import LevelClass from "./partials/LevelClass";
+import { toast } from "react-toastify";
 
 const NewTimetable: FC<IProps> = ({ history }) => {
   const [classSet, SetClassSet] = useState<boolean>(false);
@@ -30,15 +29,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   const [showDay, SetShowDay] = useState<boolean>(true);
   const [showPeriod, SetShowPeriod] = useState<boolean>(true);
 
-  const [lMessage, SetLMessage] = useState<IMessage>();
-  const [cMessage, SetCMessage] = useState<IMessage>();
-  const [sMessage, SetSMessage] = useState<IMessage>();
-  const [tMessage, SetTMessage] = useState<IMessage>();
-  const [nTTMessage, SetNTTMessage] = useState<IMessage>();
-  const [tTMessage, SetTTMessage] = useState<IMessage>();
   const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>(false);
-  const [levels, SetLevel] = useState<any>([]);
-  const [classes, SetClasses] = useState<any>([]);
   const [subjects, SetSubjects] = useState<any>([]);
   const [teachers, SetTeachers] = useState<any>([]);
   const [activeLevel, SetActiveLevel] = useState<any>({});
@@ -47,7 +38,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   // Period
   const [periods, SetPeriods] = useState<any>([]);
   const [selectedPeriods, SetSelectedPeriods] = useState<any>([]);
-  const [pMessage, SetPMessage] = useState<IMessage>();
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
@@ -58,10 +48,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   const { school } = authService.GetUser();
 
   // Fetch List of Periods under a class
-  const [
-    GetPeriods,
-    { loading: pLoading, refetch: refetchPeriods },
-  ] = useLazyQuery(GET_DAY_PERIODS, {
+  const [GetPeriods, { loading: pLoading }] = useLazyQuery(GET_DAY_PERIODS, {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
       // Clear selected Periods
@@ -70,11 +57,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
       SetPeriods(data.GetPeriodList.docs);
       SetShowPeriod(true);
     },
-    onError: (err) =>
-      SetPMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
   });
 
   // Get list of Subjects for Subject dropdown input
@@ -86,10 +69,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
       },
       fetchPolicy: "network-only",
       onError: (err) => {
-        SetSMessage({
-          message: err.message,
-          failed: true,
-        });
+        toast.error(CleanMessage(err.message));
       },
       onCompleted: (data) => {
         if (data.GetSubjectsForRegistration.docs) {
@@ -110,10 +90,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   const { loading: tLoading } = useQuery(GET_ALL_TEACHER, {
     fetchPolicy: "network-only",
     onError: (err) => {
-      SetTMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
     },
     onCompleted: (data) => {
       if (data.GetAllTeachers.docs) {
@@ -132,17 +109,11 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   // Create New Timetable
   const [NewTimetable, { loading: nTTLoading }] = useMutation(NEW_TIMETABLE, {
     onError: (err) => {
-      SetNTTMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
     },
     onCompleted: (data) => {
       if (data && data.NewTimetable.status === 200) {
-        SetNTTMessage({
-          message: data.NewTimetable.message,
-          failed: false,
-        });
+        toast.success(data.NewTimetable.message);
         GetPeriods({
           variables: {
             _class: timetableInput?.current_class?.id,
@@ -163,11 +134,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
     GET_CLASS_TIMETABLE,
     {
       fetchPolicy: "network-only",
-      onError: (err) =>
-        SetTTMessage({
-          message: err.message,
-          failed: true,
-        }),
+      onError: (err) => toast.error(CleanMessage(err.message)),
     }
   );
 
@@ -341,7 +308,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                 if (timetableInput?.day?.value !== day?.value) {
                                   SetPeriods(undefined);
 
-                                  SetPMessage(undefined);
                                   SetTimetableInput({
                                     ...timetableInput,
                                     day: day,
@@ -349,7 +315,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                   GetPeriods({
                                     variables: {
                                       _class: timetableInput?.current_class?.id,
-                                      day: timetableInput?.day?.value,
+                                      day: day?.value,
                                     },
                                   });
                                   SetDaySet(true);
@@ -389,10 +355,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                             Period Selection
                             <hr className={` ${!showPeriod ? "mb-0" : ""}`} />
                           </h6>
-                          <AlertMessage
-                            message={pMessage?.message}
-                            failed={pMessage?.failed}
-                          />
+
                           <LoadingState loading={pLoading} />
 
                           {showPeriod && periods && (
@@ -503,10 +466,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                         {showPeriod && (
                           <div className="element-box mt-0">
                             <LoadingState loading={nTTLoading} />
-                            <AlertMessage
-                              message={nTTMessage?.message}
-                              failed={nTTMessage?.failed}
-                            />
+
                             <form
                               onSubmit={async (e) => {
                                 e.preventDefault();
@@ -545,10 +505,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                     }}
                                   />
                                   <LoadingState loading={sLoading} />
-                                  <AlertMessage
-                                    message={sMessage?.message}
-                                    failed={sMessage?.failed}
-                                  />
                                 </div>
                                 <div className="col-md-6">
                                   {/* Teacher input */}
@@ -563,10 +519,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                     }}
                                   />
                                   <LoadingState loading={tLoading} />
-                                  <AlertMessage
-                                    message={tMessage?.message}
-                                    failed={tMessage?.failed}
-                                  />
                                 </div>
                                 <div className="col-12 mt-3">
                                   {selectedPeriods?.length > 0 && (
@@ -599,10 +551,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                     <div className="element-box">
                       <h5 className="element-header">Inputed Timetable</h5>
                       <div className="table-responsive">
-                        <AlertMessage
-                          message={tTMessage?.message}
-                          failed={tTMessage?.failed}
-                        />
                         <LoadingState loading={tTLoading || rTLoading} />
                         <table className="table table-striped">
                           <thead>

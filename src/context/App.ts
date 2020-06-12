@@ -60,7 +60,8 @@ export const getTimetable = (
     if (item) {
       const inner = item.timetable_list.find(
         (_inner: any) =>
-          _inner.period.from === from_date && _inner.period.to === to_date
+          (_inner.period.from === from_date && _inner.period.to === to_date) ||
+          _inner.period.to >= to_date
       );
       if (inner) return callback(inner);
     }

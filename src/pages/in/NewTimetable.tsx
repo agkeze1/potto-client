@@ -21,6 +21,7 @@ import {
   GET_CLASS_TIMETABLE,
   REMOVE_TIMETABLE,
 } from "../../queries/Timetable.query";
+import LevelClass from "./partials/LevelClass";
 
 const NewTimetable: FC<IProps> = ({ history }) => {
   const [classSet, SetClassSet] = useState<boolean>(false);
@@ -55,82 +56,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
 
   // Get  School of logged in user
   const { school } = authService.GetUser();
-
-  // Get Levels for level input
-  const { loading: lLoading } = useQuery(GET_LEVELS, {
-    variables: {
-      school: school.id,
-    },
-    onError: (err) => {
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      });
-      SetShowLevelsRefresh(true);
-    },
-    onCompleted: (data) => {
-      if (data && data.GetLevels) {
-        SetLevel(
-          data.GetLevels.docs.map((level: any) => ({
-            label: level.name,
-            value: level.id,
-          }))
-        );
-        SetShowLevelsRefresh(false);
-      }
-    },
-  });
-
-  // Get Levels on Reload level button click
-  const [GetLevels, { loading: llLoading }] = useLazyQuery(GET_LEVELS, {
-    variables: {
-      school: school.id,
-    },
-    onError: (err) => {
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      });
-      SetShowLevelsRefresh(true);
-    },
-    onCompleted: (data) => {
-      if (data && data.GetLevels) {
-        SetLevel(
-          data.GetLevels.docs.map((level: any) => ({
-            label: level.name,
-            value: level.id,
-          }))
-        );
-        SetShowLevelsRefresh(false);
-      }
-    },
-  });
-
-  // Get classes for class input
-  const [GetClasses, { loading: cLoading }] = useLazyQuery(GET_CLASSES, {
-    onError: (err) =>
-      SetCMessage({
-        message: err.message,
-        failed: true,
-      }),
-    onCompleted: (data) => {
-      if (data)
-        SetClasses(
-          data.GetClasses.docs.map((item: any) => ({
-            label: item.name,
-            value: item.id,
-          }))
-        );
-    },
-  });
-
-  // Fetch classes for Class input on Level change
-  useEffect(() => {
-    if (activeLevel?.id) {
-      SetClasses(undefined);
-      GetClasses({ variables: { level: activeLevel?.id } });
-    }
-  }, [activeLevel?.id]);
 
   // Fetch List of Periods under a class
   const [
@@ -291,104 +216,33 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                   <div className="element-box">
                     <div className="row justify-content-center">
                       <div className="col-lg-12">
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
+                        <LevelClass
+                          schoolId={school.id}
+                          onLevelChange={(level: any) => {
+                            SetActiveLevel({
+                              name: level?.label,
+                              id: level?.value,
+                            });
+                            SetTimetableInput({
+                              ...timetableInput,
+                              current_class: undefined,
+                            });
+                            GetSubjects();
+                          }}
+                          onClassChange={(_class: any) => {
+                            SetTimetableInput({
+                              ...timetableInput,
+                              current_class: {
+                                name: _class.label,
+                                id: _class.value,
+                              },
+                            });
+                          }}
+                          onSubmit={() => {
                             if (timetableInput?.current_class)
                               SetClassSet(true);
                           }}
-                        >
-                          <div className="row">
-                            <div className="col-md-6">
-                              {/* Level input */}
-                              <label>
-                                Level <br />
-                              </label>
-                              <Select
-                                options={levels}
-                                value={{
-                                  label: activeLevel?.name || (
-                                    <span className="text-gray">Select...</span>
-                                  ),
-                                  value: activeLevel?.id,
-                                }}
-                                onChange={(item: any) => {
-                                  SetActiveLevel({
-                                    name: item?.label,
-                                    id: item?.value,
-                                  });
-                                  SetTimetableInput({
-                                    ...timetableInput,
-                                    current_class: undefined,
-                                  });
-                                  GetSubjects();
-                                }}
-                              />
-                              {showLevelsRefresh && (
-                                <button
-                                  onClick={() => {
-                                    SetShowLevelsRefresh(false);
-                                    SetLMessage(undefined);
-                                    GetLevels({
-                                      variables: {
-                                        school: school.id,
-                                      },
-                                    });
-                                  }}
-                                  className="btn btn-primary btn-sm px-1 my-2"
-                                  type="submit"
-                                >
-                                  Reload Level
-                                </button>
-                              )}
-                              <LoadingState loading={lLoading || llLoading} />
-                              <AlertMessage
-                                message={lMessage?.message}
-                                failed={lMessage?.failed}
-                              />
-                            </div>
-                            <div className="col-md-6">
-                              {/* Class Input */}
-                              <label>
-                                Class <br />
-                              </label>
-                              <Select
-                                options={classes}
-                                value={{
-                                  label: timetableInput?.current_class
-                                    ?.name || (
-                                    <span className="text-gray">Select...</span>
-                                  ),
-                                  value: timetableInput?.current_class?.id,
-                                }}
-                                onChange={(item: any) => {
-                                  SetTimetableInput({
-                                    ...timetableInput,
-                                    current_class: {
-                                      name: item.label,
-                                      id: item.value,
-                                    },
-                                  });
-                                }}
-                              />
-                              <LoadingState loading={cLoading} />
-                              <AlertMessage
-                                message={cMessage?.message}
-                                failed={cMessage?.failed}
-                              />
-                            </div>
-                            <div className="col-12 mt-3">
-                              <div className="buttons-w">
-                                <button
-                                  className="btn btn-primary px-3"
-                                  type="submit"
-                                >
-                                  Start Timetable
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </form>
+                        />
                       </div>
                     </div>
                   </div>

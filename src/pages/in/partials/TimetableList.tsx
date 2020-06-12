@@ -42,7 +42,18 @@ const TimetableList: FC<IProps> = ({ classId }) => {
     {
       onError: (err: any) => toast.error(CleanMessage(err.message)),
       onCompleted: (d) => {
-        setTimetable(d.GetClassTimetable.docs);
+        setTimetable(
+          d.GetClassTimetable.docs.map((i: any) => ({
+            ...i,
+            timetable_list: i.timetable_list.map((t: any) => ({
+              ...t,
+              period: {
+                from: new Date(t.period.from).toISOString(),
+                to: new Date(t.period.to).toISOString(),
+              },
+            })),
+          }))
+        );
       },
     }
   );

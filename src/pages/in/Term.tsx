@@ -131,6 +131,17 @@ const Term: FC<IProps> = ({ history }) => {
       }),
   });
 
+  // Set Active Term
+  // const [ChangePriSchool, { loading: pLoading }] = useMutation(MAKE_PRIMARY, {
+  //   onCompleted: (data) => {
+  //     if (data) {
+  //       const { doc, token } = data.MakePrimarySchool;
+  //       authService.Login(doc, token);
+  //       document.location.reload(true);
+  //     }
+  //   },
+  // });
+
   return (
     <>
       <Helmet>
@@ -211,8 +222,34 @@ const Term: FC<IProps> = ({ history }) => {
                                 (term: any, index: number) => (
                                   <tr>
                                     <td>{index + 1}</td>
-                                    <td>{term.name}</td>
+                                    <td>
+                                      {term.name}
+                                      {/* {term.id === school.id && (
+                                        <label className="badge badge-success-inverted ml-2">
+                                          Active
+                                        </label>
+                                      )}
+                                      {activeSchId === rec.id && (
+                                        <LoadingState loading={pLoading} />
+                                      )} */}
+                                    </td>
                                     <td className="row-actions text-center">
+                                      {/* {rec.id !== school.id && (
+                                        <a
+                                          href="#"
+                                          title="Make primary School"
+                                          onClick={() => {
+                                            SetActiveSchId(rec.id);
+                                            ChangePriSchool({
+                                              variables: {
+                                                school: rec.id,
+                                              },
+                                            });
+                                          }}
+                                        >
+                                          <i className="os-icon os-icon-check-square"></i>
+                                        </a>
+                                      )} */}
                                       <a
                                         href="#"
                                         title="Edit"

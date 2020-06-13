@@ -13958,7 +13958,7 @@ body.menu-side-right .layout-w {
   transform: translateX(0px) scale(1);
 }
 .menu-w.sub-menu-style-over .sub-menu-w {
-  border-radius:10px;
+  border-radius: 10px;
   z-index: 9999;
   visibility: hidden;
   opacity: 0;

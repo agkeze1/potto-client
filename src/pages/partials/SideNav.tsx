@@ -173,32 +173,6 @@ const SideNav: FC<SideProps> = ({ location }) => {
                             Super Admin
                         </NavLink>
                     </li>
-                    {/* <li className="has-sub-menu">
-                        <NavLink to="/in/super-admin-list" onClick={() => scrollTop()}>
-                            <div className="icon-w">
-                                <i className="os-icon os-icon-layout"></i>
-                            </div>
-                            <span>Super Admin</span>
-                        </NavLink>
-                        <div className="sub-menu-w">
-                            <div className="sub-menu-header">Super Admin</div>
-                            <div className="sub-menu-icon"></div>
-                            <div className="sub-menu-i">
-                                <ul className="sub-menu">
-                                    <li>
-                                        <NavLink to="/in/new-super-admin" onClick={() => scrollTop()}>
-                                            New
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/super-admin-list" onClick={() => scrollTop()}>
-                                            List
-                                        </NavLink>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li> */}
                     <li className="has-sub-menu">
                         <NavLink to="#" onClick={() => scrollTop()}>
                             <div className="icon-w">
@@ -324,7 +298,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
                                     </li>
                                     <li>
                                         <NavLink to="/in/class-attendance" onClick={() => scrollTop()}>
-                                            Class Attendance
+                                            Roll Call
                                         </NavLink>
                                     </li>
                                     <li>

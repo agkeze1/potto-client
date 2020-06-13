@@ -7,6 +7,8 @@ export const PERIOD_PROPS = gql`
     to
     break
     taken
+    from_date
+    to_date
   }
 `;
 
@@ -16,11 +18,15 @@ export const GET_PERIODS = gql`
     GetSchoolPeriodList {
       message
       docs {
-        ...PERIOD_PROPS
+        id
+        from
+        to
+        break
+        from_date
+        to_date
       }
     }
   }
-  ${PERIOD_PROPS}
 `;
 
 export const GET_DAY_PERIODS = gql`
@@ -59,10 +65,6 @@ export const UPDATE_PERIOD = gql`
   mutation UPDATE_PERIOD($id: ID!, $model: PeriodInput!) {
     UpdatePeriod(id: $id, model: $model) {
       message
-      doc {
-        ...PERIOD_PROPS
-      }
     }
   }
-  ${PERIOD_PROPS}
 `;

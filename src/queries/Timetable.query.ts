@@ -80,3 +80,11 @@ export const NEW_TIMETABLE = gql`
     }
   }
 `;
+export const REMOVE_TIMETABLE = gql`
+  mutation REMOVE_TIMETABLE($id: ID!) {
+    RemoveTimetable(id: $id) {
+      status
+      message
+    }
+  }
+`;

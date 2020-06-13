@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, FC } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, CLEAN_DATE } from "../../context/App";
+import { GetAppName, CLEAN_DATE, GetAge } from "../../context/App";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 import TeacherTTAccordion from "../partials/TeacherTTAccordion";
@@ -201,15 +201,13 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                         <tbody>
                                                             {data.GetTeachers.docs.map((teacher: any, index: number) => (
                                                                 <tr key={index}>
-                                                                    <td>
-                                                                        <strong>{index + 1}</strong>
-                                                                    </td>
+                                                                    <td>{index + 1}</td>
                                                                     <td>
                                                                         <div
                                                                             onClick={() => {
                                                                                 SetActiveImg({
                                                                                     image: teacher.image,
-                                                                                    name: teacher.first_name + " " + teacher.middle_name + " " + teacher.last_name,
+                                                                                    name: teacher.name,
                                                                                 });
                                                                             }}
                                                                             className="user-with-avatar clickable"
@@ -219,7 +217,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                                             <img src={teacher.image || "/avatar.png"} alt="passport" />
                                                                         </div>
                                                                     </td>
-                                                                    <td>{teacher.first_name + " " + teacher.middle_name + " " + teacher.last_name}</td>
+                                                                    <td>{teacher.name}</td>
                                                                     <td>{teacher.gender}</td>
                                                                     <td>{teacher.email}</td>
                                                                     <td>{teacher.phone}</td>
@@ -264,9 +262,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                                             href="#"
                                                                             title="Delete"
                                                                             onClick={async () => {
-                                                                                let del = window.confirm(
-                                                                                    `Are you sure you want to delete "${teacher.first_name + " " + teacher.middle_name + " " + teacher.last_name}"?`
-                                                                                );
+                                                                                let del = window.confirm(`Are you sure you want to delete "${teacher.name}"?`);
                                                                                 if (del) {
                                                                                     await RemoveTeacher({
                                                                                         variables: {
@@ -293,7 +289,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                         {/* Pagination */}
                                         {data && (
                                             <div className="col-lg fade-in">
-                                                <div className="element-box no-bg bg-white">
+                                                <div className="element-box">
                                                     <Pagination
                                                         length={data.GetTeachers.totalDocs}
                                                         {...data.GetTeachers}
@@ -342,7 +338,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                     }}
                                                 />
 
-                                                <h2 className="up-header ">{activeTeacher.first_name + " " + activeTeacher.middle_name + " " + activeTeacher.last_name}</h2>
+                                                <h2 className="up-header ">{activeTeacher.name}</h2>
                                                 <h6 className="up-sub-header">
                                                     {activeTeacher.email}
                                                     <i className="os-icon os-icon-check-circle text-success ml-2" title="Email verified"></i>
@@ -377,7 +373,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                                 </li>
                                                                 <li>
                                                                     <span>Date of Birth</span> | <b>{CLEAN_DATE(activeTeacher.dob)}</b>
-                                                                    <i> ( 20yrs )</i>
+                                                                    <span className="badge badge-primary ml-2 p-1">{GetAge(activeTeacher.dob)}Yrs</span>
                                                                 </li>
                                                                 <li>
                                                                     <span>Phone number</span> | <b>{activeTeacher.phone}</b>

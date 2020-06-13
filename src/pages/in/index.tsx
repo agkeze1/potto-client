@@ -31,6 +31,7 @@ import NewTimetable from "./NewTimetable";
 import ViewTimetable from "./ViewTimetable";
 import Dashboard from "./Dashboard";
 import Period from "./Period";
+import ClassAttendance from "./ClassAttendance";
 import { authService } from "../../services/Auth.Service";
 import SendFeedback from "./SendFeedback";
 import GraduateStudent from "./GraduateStudent";
@@ -88,6 +89,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                                 <Route path="/in/new-timetable" component={NewTimetable} />
                                 <Route path="/in/view-timetable" component={ViewTimetable} />
                                 <Route path="/in/period" component={Period} />
+                                <Route path="/in/class-attendance" component={ClassAttendance} />
                                 <Route path="/in/send-feedback" component={SendFeedback} />
                                 <Route path="/in/graduate-student" component={GraduateStudent} />
                                 <Route path="/in/teacher-attendance" component={TeacherAttendance} />
@@ -96,9 +98,9 @@ const Home: FC<IProps> = ({ location, history }) => {
                     </div>
                 </div>
                 <hr />
-                <a className="font-sm text-center footer mb-2" href="http://afari.com">
-                    <img src="/img/lloydant.png" alt="app logo" className="logo-footer mr-2" />
-                    Powered by Afari
+                <a className="font-sm text-center footer mb-2" href="http://potto.com">
+                    <img src="/avatar.png" alt="app logo" className="logo-footer mr-2" />
+                    Powered by Potto
                 </a>
             </div>
         </>

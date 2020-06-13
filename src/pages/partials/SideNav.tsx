@@ -35,6 +35,9 @@ const SideNav: FC<SideProps> = ({ location }) => {
                 </div>
                 <div className="logged-user-w avatar-inline">
                     <div className="logged-user-i">
+                        <div className="avatar-w">
+                            <img alt={user.name} src={user.image} />
+                        </div>
                         <div className="logged-user-info-w">
                             <div className="logged-user-name">{user?.name}</div>
                             <div className="logged-user-role">{user?.email}</div>

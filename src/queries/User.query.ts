@@ -9,6 +9,9 @@ export const USER_PROPS = gql`
         phone
         image
         created_at
+        school {
+            id
+        }
     }
 `;
 

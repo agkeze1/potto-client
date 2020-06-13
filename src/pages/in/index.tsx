@@ -34,6 +34,7 @@ import Period from "./Period";
 import { authService } from "../../services/Auth.Service";
 import SendFeedback from "./SendFeedback";
 import GraduateStudent from "./GraduateStudent";
+import TeacherAttendance from "./TeacherAttendance";
 
 const Home: FC<IProps> = ({ location, history }) => {
     document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
@@ -89,6 +90,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                                 <Route path="/in/period" component={Period} />
                                 <Route path="/in/send-feedback" component={SendFeedback} />
                                 <Route path="/in/graduate-student" component={GraduateStudent} />
+                                <Route path="/in/teacher-attendance" component={TeacherAttendance} />
                             </Switch>
                         </div>
                     </div>

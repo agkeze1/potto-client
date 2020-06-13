@@ -201,7 +201,9 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                         <tbody>
                                                             {data.GetTeachers.docs.map((teacher: any, index: number) => (
                                                                 <tr key={index}>
-                                                                    <td>{index + 1}</td>
+                                                                    <td>
+                                                                        <strong>{index + 1}</strong>
+                                                                    </td>
                                                                     <td>
                                                                         <div
                                                                             onClick={() => {
@@ -291,7 +293,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                         {/* Pagination */}
                                         {data && (
                                             <div className="col-lg fade-in">
-                                                <div className="element-box">
+                                                <div className="element-box no-bg bg-white">
                                                     <Pagination
                                                         length={data.GetTeachers.totalDocs}
                                                         {...data.GetTeachers}

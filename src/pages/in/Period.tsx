@@ -1,3 +1,4 @@
+/* eslint-disable no-script-url */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState } from "react";
 import { IProps } from "../../models/IProps";
@@ -14,10 +15,11 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { authService } from "../../services/Auth.Service";
 
 const Period: FC<IProps> = ({ history }) => {
-    const [timeRange, SetTimeRange] = useState<any>();
     const [showNewPeriod, SetShowNewPeriod] = useState<boolean>(true);
-    const [newPeriod, SetNewPeriod] = useState<any>({
+    const [newPeriod, SetNewPeriod] = useState({
         isBreak: false,
+        from: new Date(),
+        to: new Date(),
     });
     const [editPeriod, SetEditPeriod] = useState<any>({});
 
@@ -126,7 +128,7 @@ const Period: FC<IProps> = ({ history }) => {
                                 <div className="element-box">
                                     <span className="element-actions">
                                         <a
-                                            href="#"
+                                            href="javascript:void(0)"
                                             title="toggle collapse"
                                             onClick={() => {
                                                 SetShowNewPeriod(!showNewPeriod);
@@ -170,7 +172,7 @@ const Period: FC<IProps> = ({ history }) => {
                                                         onChange={(time) => {
                                                             SetNewPeriod({
                                                                 ...newPeriod,
-                                                                from: time,
+                                                                from: time || new Date(),
                                                             });
                                                         }}
                                                     />
@@ -189,10 +191,11 @@ const Period: FC<IProps> = ({ history }) => {
                                                         timeCaption="Time"
                                                         dateFormat="h:mm aa"
                                                         placeholderText="12:00 AM"
+                                                        startDate={newPeriod.from}
                                                         onChange={(time) => {
                                                             SetNewPeriod({
                                                                 ...newPeriod,
-                                                                to: time,
+                                                                to: time || new Date(),
                                                             });
                                                         }}
                                                     />
@@ -230,7 +233,7 @@ const Period: FC<IProps> = ({ history }) => {
 
                                 {/* Period List */}
                                 {data?.GetSchoolPeriodList.docs.length > 0 && (
-                                    <div className="element-box">
+                                    <div className="element-box no-bg bg-white">
                                         <h6 className="">Period List</h6>
                                         <hr />
                                         <div className="row">

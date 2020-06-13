@@ -413,7 +413,7 @@ a.btn-icon > i:hover {
     border-radius: 50%;
 }
 .avatar {
-    border: solid #ffffff 3px;
+    border: solid #ffffff 2px;
     -moz-box-shadow: 0 0 4px #27a7e5;
     -webkit-box-shadow: 0 0 4px #27a7e5;
     box-shadow: 0 0 4px #27a7e5;

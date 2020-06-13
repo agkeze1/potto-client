@@ -42,7 +42,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           </div>
         </div>
         <div className="element-search autosuggest-search-activator">
-          <input placeholder="Start typing to search..." />
+          <input placeholder="Search..." />
         </div>
         <ul className="main-menu">
           <li className="selected">

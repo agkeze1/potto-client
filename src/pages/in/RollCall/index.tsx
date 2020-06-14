@@ -3,7 +3,6 @@ import { IProps } from "../../../models/IProps";
 import { authService } from "../../../services/Auth.Service";
 import { GetAppName } from "../../../context/App";
 import Helmet from "react-helmet";
-import Select from "react-select";
 import SwitchInput from "../../partials/SwitchInput";
 import LevelClass from "../partials/LevelClass";
 import FromToDate from "../partials/FromToDate";
@@ -17,10 +16,8 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
   const [showAttendance, SetShowAttendance] = useState<boolean>();
   const [showDateRange, SetShowDateRange] = useState<boolean>(true);
   const [showAttendanceResult, SetShowAttendanceResult] = useState<boolean>();
-  const [showSummary, SetShowSummary] = useState<boolean>(true);
   const [activeLevel, SetActiveLevel] = useState<any>({});
   const [attendanceInput, SetAttendanceInput] = useState<any>();
-  const [attendanceResult, SetAttendanceResult] = useState<any>();
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
@@ -29,11 +26,11 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
   // Get  School of logged in user
   const { school } = authService.GetUser();
 
-  const [GetRollCall, { loading }] = useLazyQuery(ROLL_CALL, {
+  // Get Roll call attendance
+  const [GetRollCall, { loading, data }] = useLazyQuery(ROLL_CALL, {
     onError: (err) => toast.error(err.message),
-    onCompleted: (data) => {
-      if (data) SetAttendanceResult(data.GetClassRollCallAttendances.docs);
-      console.log("Attendance Result: ", data.GetClassRollCallAttendances.docs);
+    onCompleted: () => {
+      console.log("Completed: ", data.GetClassRollCallAttendances.docs);
     },
   });
 
@@ -93,7 +90,6 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
                 </div>
               </div>
             )}
-            <LoadingState loading={loading} />
             {/* Attendance Result */}
             {showAttendance && attendanceInput?.current_class && (
               <div className="row">
@@ -131,10 +127,14 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
                     />
                   </div>
                 )}
-                {showAttendanceResult && (
+
+                <LoadingState loading={loading} />
+
+                {showAttendanceResult && data && (
                   <AttendanceResult
+                    record={data.GetClassRollCallAttendances.docs}
                     activeLevel={activeLevel?.name}
-                    activeClass={attendanceInput?.current_class?.name}
+                    activeClass={attendanceInput?.current_class}
                     onChangeClass={() => {
                       SetAttendanceInput(undefined);
                       SetShowAttendance(false);

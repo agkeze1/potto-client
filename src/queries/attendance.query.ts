@@ -11,19 +11,6 @@ export const ROLL_CALL = gql`
           id
           name
         }
-        active_class {
-          id
-          name
-          level {
-            id
-            name
-          }
-        }
-        form_teacher {
-          id
-          name
-          image
-        }
         attendances {
           id
           present

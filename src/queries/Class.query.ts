@@ -15,6 +15,8 @@ export const CLASS_PROPS = gql`
       middle_name
       last_name
       phone
+      image
+      name
       created_at
     }
   }
@@ -26,6 +28,18 @@ export const GET_CLASSES = gql`
     GetClasses(level: $level) {
       message
       docs {
+        ...CLASS_PROPS
+      }
+    }
+  }
+  ${CLASS_PROPS}
+`;
+
+export const GET_CLASS = gql`
+  query GET_CLASS($id: ID!) {
+    GetClass(id: $id) {
+      message
+      doc {
         ...CLASS_PROPS
       }
     }

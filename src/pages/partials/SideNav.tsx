@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { GetAppName } from "../../context/App";
+import { GetAppName, GET_LOGO } from "../../context/App";
 import { authService } from "../../services/Auth.Service";
 
 interface SideProps {
@@ -28,7 +28,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
                 <div className="logo-w">
                     <NavLink className="logo" to="/in/dashboard">
                         <div style={{ display: "inline" }}>
-                            <img alt="logo" src="/logo192.png" />
+                            <img style={{ width: "48px" }} alt="logo" src={GET_LOGO} />
                         </div>
                         <div className="logo-label">{GetAppName()}</div>
                     </NavLink>

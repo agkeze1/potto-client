@@ -1,10 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, CLEAN_DATE } from "../../context/App";
+import { GetAppName, CLEAN_DATE, CleanMessage } from "../../context/App";
 import ImageModal from "../partials/ImageModal";
 import { IProps } from "../../models/IProps";
-import { IMessage } from "../../models/IMessage";
 import { authService } from "../../services/Auth.Service";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { USER_LIST, REMOVE_USER, UPDATE_USER } from "../../queries/User.query";
@@ -15,12 +14,9 @@ import IconInput from "../partials/IconInput";
 import Select from "react-select";
 import gender from "../../data/gender.json";
 import Pagination from "../partials/Pagination";
+import { toast } from "react-toastify";
 
 const UserList: FC<IProps> = ({ history }) => {
-    const [message, SetMessage] = useState<IMessage>();
-    const [rMessage, SetRMessage] = useState<IMessage>();
-    const [uMessage, SetUMessage] = useState<IMessage>();
-
     const [activeUserId, SetActiveUserId] = useState<string>();
     const [editUser, SetEditUser] = useState<any>({});
 
@@ -47,11 +43,7 @@ const UserList: FC<IProps> = ({ history }) => {
     // Fetch List of Users
     const { loading, data, fetchMore } = useQuery(USER_LIST, {
         variables: { page, limit },
-        onError: (err) =>
-            SetMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
     });
 
     useEffect(() => {
@@ -68,11 +60,7 @@ const UserList: FC<IProps> = ({ history }) => {
 
     // Remove User
     const [RemoveUser, { loading: rLoading }] = useMutation(REMOVE_USER, {
-        onError: (err) =>
-            SetRMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
                 query: USER_LIST,
@@ -90,20 +78,15 @@ const UserList: FC<IProps> = ({ history }) => {
                 data: { GetUsers: q.GetUsers },
             });
         },
+        onCompleted: (d) => toast.success(d.RemoveUser.message),
     });
 
     // Update User
     const [UpdateUser, { loading: uLoading }] = useMutation(UPDATE_USER, {
-        onError: (err) =>
-            SetUMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
-            SetUMessage({
-                message: data.UpdateUser.message,
-                failed: false,
-            });
+            toast.success(data.UpdateUser.message);
+            document.getElementById("btnModal")?.click();
         },
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
@@ -174,7 +157,6 @@ const UserList: FC<IProps> = ({ history }) => {
                             </div>
                         )}
                         <LoadingState loading={loading || rLoading} />
-                        <AlertMessage message={message?.message} failed={message?.failed} />
 
                         <div className="row justify-content-center ">
                             {/* User list */}
@@ -199,7 +181,9 @@ const UserList: FC<IProps> = ({ history }) => {
                                                     <tbody>
                                                         {data.GetUsers.docs.map((user: any, index: number) => (
                                                             <tr key={index}>
-                                                                <td>{index + 1}</td>
+                                                                <td>
+                                                                    <strong>{index + 1}</strong>
+                                                                </td>
                                                                 <td>
                                                                     <div
                                                                         onClick={() => {
@@ -234,7 +218,6 @@ const UserList: FC<IProps> = ({ history }) => {
                                                                         href="#"
                                                                         title="Edit"
                                                                         onClick={() => {
-                                                                            SetUMessage(undefined);
                                                                             SetActiveUserId(user.id);
                                                                             SetEditUser({
                                                                                 name: user.name,
@@ -323,13 +306,11 @@ const UserList: FC<IProps> = ({ history }) => {
                             </div>
                             <div className="modal-body pb-2">
                                 <LoadingState loading={uLoading} />
-                                <AlertMessage message={uMessage?.message} failed={uMessage?.failed} />
                                 <form
                                     onSubmit={async (e) => {
                                         e.preventDefault();
                                         // Scroll to top of page
                                         scrollTop();
-                                        SetUMessage(undefined);
                                         UpdateUser({
                                             variables: {
                                                 id: activeUserId,

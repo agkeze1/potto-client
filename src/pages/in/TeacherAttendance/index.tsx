@@ -4,10 +4,11 @@ import { GetAppName, CleanMessage } from "../../../context/App";
 import Select from "react-select";
 import TeacherAttendanceList from "./AttendanceItems";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
-import { GET_ALL_TEACHERS_SHORT, GET_TEACHER_ATTENDANCE } from "../../../queries/Teacher.query";
+import { GET_ALL_TEACHERS_SHORT, GET_TEACHER_ATTENDANCE, GET_TEACHER_TIMETABLE } from "../../../queries/Teacher.query";
 import { toast } from "react-toastify";
 import LoadingState from "../../partials/loading";
 import DatePicker from "react-datepicker";
+import { CountCard } from "../partials/CountCard";
 
 const TeacherAttendance = () => {
     const title = "Teacher Attendance Report";
@@ -15,7 +16,9 @@ const TeacherAttendance = () => {
     const [teacher, setTeacher] = useState<string>("");
     const [person, setPerson] = useState<any>(undefined);
     const [teachers, setTeachers] = useState<Array<any>>([]);
-    const [filter, setFilter] = useState({ from: new Date(), to: new Date() });
+    const [from_filter, setFromFilter] = useState<any>(undefined);
+    const [to_filter, setToFilter] = useState<any>(undefined);
+    const [expected, setExpected] = useState<number>(0);
 
     const { loading } = useQuery(GET_ALL_TEACHERS_SHORT, {
         onError: (e) => toast.error(CleanMessage(e.message)),
@@ -27,9 +30,16 @@ const TeacherAttendance = () => {
     const [getTeacherFunc, { loading: tLoading, data }] = useLazyQuery(GET_TEACHER_ATTENDANCE, {
         onError: (e) => toast.error(CleanMessage(e.message)),
     });
+
+    const [getTeacherTimetableFunc, { loading: exLoading }] = useLazyQuery(GET_TEACHER_TIMETABLE, {
+        onError: (e) => toast.error(CleanMessage(e.message)),
+        onCompleted: (d) => {
+            setExpected(d.GetTeacherTimetables.docs.map((a: any) => a.total).reduce((a: number, b: number) => a + b));
+        },
+    });
     useEffect(() => {
-        if (teacher) getTeacherFunc({ variables: { teacher } });
-    }, [teacher, getTeacherFunc]);
+        if (teacher && from_filter && to_filter) getTeacherFunc({ variables: { teacher, from: from_filter, to: to_filter } });
+    }, [teacher, getTeacherFunc, from_filter, to_filter]);
 
     return (
         <>
@@ -57,10 +67,11 @@ const TeacherAttendance = () => {
                                                 id="teacher"
                                                 isMulti={false}
                                                 isSearchable={true}
-                                                onChange={(item: any) => {
+                                                onChange={async (item: any) => {
                                                     setTeacher(item.value);
                                                     const _item = teachers.find((d) => d.id === item.value);
                                                     setPerson(_item);
+                                                    await getTeacherTimetableFunc({ variables: { id: _item.id } });
                                                 }}
                                             />
                                         </div>
@@ -71,9 +82,9 @@ const TeacherAttendance = () => {
                                                 className="form-control"
                                                 required
                                                 dateFormat="dd MMMM, YYY"
-                                                selected={filter.from}
+                                                selected={from_filter}
                                                 onChange={(date) => {
-                                                    setFilter({ from: date || new Date(), to: date || new Date() });
+                                                    setFromFilter(date);
                                                 }}
                                             />
                                         </div>
@@ -83,11 +94,11 @@ const TeacherAttendance = () => {
                                                 placeholderText="select date .."
                                                 className="form-control"
                                                 required
-                                                minDate={filter.from}
+                                                minDate={from_filter}
                                                 dateFormat="dd MMMM, YYY"
-                                                selected={filter.to}
+                                                selected={to_filter}
                                                 onChange={(date) => {
-                                                    setFilter({ ...filter, to: date || new Date() });
+                                                    setToFilter(date);
                                                 }}
                                             />
                                         </div>
@@ -108,8 +119,21 @@ const TeacherAttendance = () => {
                                         )}
                                     </div>
                                 </div>
-                                <LoadingState loading={loading || tLoading} />
-                                {data && <TeacherAttendanceList items={data.GetTeacherSubjectAttendance.docs} />}
+                                <LoadingState loading={tLoading} />
+                                {data && (
+                                    <div className="row">
+                                        <div className="col-md-10 col-12">
+                                            <TeacherAttendanceList total={data.GetTeacherSubjectAttendance.total} items={data.GetTeacherSubjectAttendance.docs} />
+                                        </div>
+                                        <div className="col-12 col-md-2">
+                                            <div className="row">
+                                                <div className="col-12">
+                                                    <CountCard title="Total Students" loading={exLoading} value={expected} cssClass="bg-darkseagreen" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

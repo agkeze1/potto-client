@@ -118,7 +118,6 @@ export const GET_STUDENT = gql`
 export const SEARCH_STUDENTS = gql`
     query SEARCH_STUDENTS($regNo: String, $level: ID, $_class: ID, $page: Int, $limit: Int) {
         SearchStudents(regNo: $regNo, level: $level, _class: $_class, page: $page, limit: $limit) {
-            message
             docs {
                 ...STU_PROPS
             }

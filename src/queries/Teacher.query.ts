@@ -108,8 +108,8 @@ export const GET_ALL_TEACHERS_SHORT = gql`
     }
 `;
 export const GET_TEACHER_ATTENDANCE = gql`
-    query GetTeacherAttendances($teacher: ID!) {
-        GetTeacherSubjectAttendance(teacher: $teacher) {
+    query GetTeacherAttendances($teacher: ID!, $from: String!, $to: String!) {
+        GetTeacherSubjectAttendance(teacher: $teacher, start: $from, end: $to) {
             docs {
                 id
                 timetable {
@@ -117,6 +117,8 @@ export const GET_TEACHER_ATTENDANCE = gql`
                     period {
                         from
                         to
+                        from_time
+                        to_time
                         total
                     }
                     subject {
@@ -129,9 +131,17 @@ export const GET_TEACHER_ATTENDANCE = gql`
                     }
                 }
                 date
-                students {
-                    present
-                }
+            }
+            total
+        }
+    }
+`;
+
+export const GET_TEACHER_TIMETABLE = gql`
+    query GetTeacherTimetables($id: ID!) {
+        GetTeacherTimetables(teacher: $id) {
+            docs {
+                total
             }
         }
     }

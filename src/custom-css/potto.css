@@ -1,89 +1,83 @@
 .auth-wrapper:before,
 .menu-w.sub-menu-style-over .sub-menu-w,
 .top-bar .logged-user-w .logged-user-menu {
-  background: rgb(15, 72, 130) !important;
-  background: linear-gradient(
-    270deg,
-    #0f4882 39%,
-    rgba(5, 130, 204, 1) 72%,
-    rgba(0, 162, 245, 0.9923319669664741) 90%
-  ) !important;
+    background: rgb(15, 72, 130) !important;
+    background: linear-gradient(270deg, #0f4882 39%, rgba(5, 130, 204, 1) 72%, rgba(0, 162, 245, 0.9923319669664741) 90%) !important;
 }
 .auth-box-w .auth-header:after,
 .element-wrapper .element-header:after {
-  background-color: #0582cc !important;
+    background-color: #0582cc !important;
 }
 
 .auth-box-w form .form-group .pre-icon {
-  color: #0582cc;
+    color: #0582cc;
 }
 .btn-primary,
 .all-wrapper .fc-button.fc-state-active {
-  background-color: #0582cc;
-  border-color: #0582cc;
+    background-color: #0582cc;
+    border-color: #0582cc;
 }
 .btn-primary:hover,
 .all-wrapper .fc-button.fc-state-active:hover,
 .btn-primary:active {
-  background-color: #0f4882 !important;
-  border-color: #0f4882 !important;
+    background-color: #0f4882 !important;
+    border-color: #0f4882 !important;
 }
 
 .form-control:focus {
-  border-color: #0582cc;
+    border-color: #0582cc;
 }
 
 .menu-w ul.main-menu > li.sub-header,
 .menu-w ul.main-menu > li .icon-w {
-  color: #0582cc;
+    color: #0582cc;
 }
 
 .menu-w.sub-menu-style-over.sub-menu-color-bright ul.main-menu > li.active > a {
-  color: #fff !important;
-  border-top-left-radius: 18px;
-  border-bottom-left-radius: 18px;
-  background: rgb(7, 118, 179);
-  background: linear-gradient(
-    87deg,
-    rgba(7, 118, 179, 1) 21%,
-    rgba(3, 133, 167, 1) 72%,
-    rgba(16, 191, 236, 0.9923319669664741) 97%
-  );
+    color: #fff !important;
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+    background: rgb(7, 118, 179);
+    background: linear-gradient(87deg, rgba(7, 118, 179, 1) 21%, rgba(3, 133, 167, 1) 72%, rgba(16, 191, 236, 0.9923319669664741) 97%);
 }
-.menu-w.sub-menu-style-over.sub-menu-color-bright
-  ul.main-menu
-  > li.active
-  > .icon-w {
-  color: #fff !important;
+.menu-w.sub-menu-style-over.sub-menu-color-bright ul.main-menu > li.active > .icon-w {
+    color: #fff !important;
 }
 .menu-w.color-scheme-light .logo-w .logo:hover .logo-label {
-  color: #0582cc;
+    color: #0582cc;
 }
 .menu-w.color-scheme-light .logo-w .logo:hover .logo-label:after {
-  background-color: #0582cc;
+    background-color: #0582cc;
 }
 .btn-outline-primary.disabled,
 .btn-outline-primary:disabled {
-  color: #0582cc;
-  background-color: transparent;
+    color: #0582cc;
+    background-color: transparent;
 }
 .btn-outline-primary:hover {
-  border-color: #0f4882;
+    border-color: #0f4882;
 }
 .btn-outline-primary {
-  color: #0582cc;
-  border-color: #0582cc;
+    color: #0582cc;
+    border-color: #0582cc;
 }
 .btn-primary:focus,
 .all-wrapper .fc-button.fc-state-active:focus,
 .btn-primary.focus,
 .all-wrapper .focus.fc-button.fc-state-active {
-  background-color: #0582cc;
-  border-color: #0f4882;
+    background-color: #0582cc;
+    border-color: #0f4882;
 }
 .text-primary {
-  color: #0582cc !important;
+    color: #0582cc !important;
 }
 .active-bdr-primary {
-  border: 2px solid #0582cc !important;
+    border: 2px solid #0582cc !important;
+}
+li.menu-link > a.active {
+    border-left: 2px solid #0582cc !important;
+}
+li.menu-link > a.active > div.icon-w,
+li.menu-link > a.active > span {
+    color: #0582cc !important;
 }

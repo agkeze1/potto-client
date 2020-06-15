@@ -36,10 +36,7 @@ const ClassAttendance: FC<IProps> = ({ history }) => {
 
             {/* Attendance Result */}
             <div className="row justify-content-center">
-              <AttendanceResult
-                showFilter={showFilter}
-                SetShowFilter={(val: boolean) => SetShowFilter(val)}
-              />
+              <AttendanceResult showFilter={showFilter} />
             </div>
           </div>
         </div>

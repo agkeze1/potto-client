@@ -154,165 +154,179 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
       <div className="content-i">
         <div className="content-box">
           <div className="element-wrapper">
-            {showFilter && (
-              <>
-                <h5 className="element-header">View Timetable</h5>
-                {/* Select Level and Class Section */}
-                <div className="element-box">
-                  <div className="row justify-content-center">
-                    <div className="col-lg-12">
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          if (timetableInput?.current_class) {
-                            SetShowTimetable(true);
-                            SetShowFilter(false);
-                            GetTimetable({
-                              variables: {
-                                _class: timetableInput.current_class?.id,
-                              },
-                            });
-                          }
-                        }}
-                      >
-                        <div className="row">
-                          <div className="col-md-6">
-                            {/* Level input */}
-                            <label>
-                              Level <br />
-                            </label>
-                            <Select
-                              isLoading={llLoading}
-                              options={levels}
-                              value={{
-                                label: activeLevel?.name || (
-                                  <span className="text-gray">Select...</span>
-                                ),
-                                value: activeLevel?.id,
-                              }}
-                              onChange={(item: any) => {
-                                SetActiveLevel({
-                                  name: item?.label,
-                                  id: item?.value,
-                                });
-                                SetTimetableInput({
-                                  ...timetableInput,
-                                  current_class: undefined,
-                                });
-                              }}
-                            />
-                            {showLevelsRefresh && (
-                              <button
-                                onClick={() => {
-                                  SetShowLevelsRefresh(false);
-                                  SetLMessage(undefined);
-                                  GetLevels({
-                                    variables: {
-                                      school: school.id,
-                                    },
-                                  });
-                                }}
-                                className="btn btn-primary btn-sm px-1 my-2"
-                                type="submit"
-                              >
-                                Reload Level
-                              </button>
-                            )}
-                            <LoadingState loading={lLoading || llLoading} />
-                            <AlertMessage
-                              message={lMessage?.message}
-                              failed={lMessage?.failed}
-                            />
-                          </div>
-                          <div className="col-md-6">
-                            {/* Class Input */}
-                            <label>
-                              Class <br />
-                            </label>
-                            <Select
-                              options={classes}
-                              value={{
-                                label: timetableInput?.current_class?.name || (
-                                  <span className="text-gray">Select...</span>
-                                ),
-                                value: timetableInput?.current_class?.id,
-                              }}
-                              onChange={(item: any) => {
-                                SetTimetableInput({
-                                  ...timetableInput,
-                                  current_class: {
-                                    name: item.label,
-                                    id: item.value,
+            <h5 className="element-header">View Timetable</h5>
+            <div className="row">
+              {showFilter && (
+                <>
+                  <div className="col-12">
+                    {/* Select Level and Class Section */}
+                    <div className="element-box">
+                      <div className="row justify-content-center">
+                        <div className="col-lg-12">
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              if (timetableInput?.current_class) {
+                                SetShowTimetable(true);
+                                SetShowFilter(false);
+                                GetTimetable({
+                                  variables: {
+                                    _class: timetableInput.current_class?.id,
                                   },
                                 });
-                              }}
-                            />
-                            <LoadingState loading={cLoading} />
-                            <AlertMessage
-                              message={cMessage?.message}
-                              failed={cMessage?.failed}
-                            />
-                          </div>
-                          <div className="col-12 mt-3">
-                            <div className="buttons-w">
-                              <button
-                                className="btn btn-primary px-3"
-                                type="submit"
-                              >
-                                View Timetable
-                              </button>
+                              }
+                            }}
+                          >
+                            <div className="row">
+                              <div className="col-md-6">
+                                {/* Level input */}
+                                <label>
+                                  Level <br />
+                                </label>
+                                <Select
+                                  isLoading={llLoading}
+                                  options={levels}
+                                  value={{
+                                    label: activeLevel?.name || (
+                                      <span className="text-gray">
+                                        Select...
+                                      </span>
+                                    ),
+                                    value: activeLevel?.id,
+                                  }}
+                                  onChange={(item: any) => {
+                                    SetActiveLevel({
+                                      name: item?.label,
+                                      id: item?.value,
+                                    });
+                                    SetTimetableInput({
+                                      ...timetableInput,
+                                      current_class: undefined,
+                                    });
+                                  }}
+                                />
+                                {showLevelsRefresh && (
+                                  <button
+                                    onClick={() => {
+                                      SetShowLevelsRefresh(false);
+                                      SetLMessage(undefined);
+                                      GetLevels({
+                                        variables: {
+                                          school: school.id,
+                                        },
+                                      });
+                                    }}
+                                    className="btn btn-primary btn-sm px-1 my-2"
+                                    type="submit"
+                                  >
+                                    Reload Level
+                                  </button>
+                                )}
+                                <LoadingState loading={lLoading || llLoading} />
+                                <AlertMessage
+                                  message={lMessage?.message}
+                                  failed={lMessage?.failed}
+                                />
+                              </div>
+                              <div className="col-md-6">
+                                {/* Class Input */}
+                                <label>
+                                  Class <br />
+                                </label>
+                                <Select
+                                  options={classes}
+                                  value={{
+                                    label: timetableInput?.current_class
+                                      ?.name || (
+                                      <span className="text-gray">
+                                        Select...
+                                      </span>
+                                    ),
+                                    value: timetableInput?.current_class?.id,
+                                  }}
+                                  onChange={(item: any) => {
+                                    SetTimetableInput({
+                                      ...timetableInput,
+                                      current_class: {
+                                        name: item.label,
+                                        id: item.value,
+                                      },
+                                    });
+                                  }}
+                                />
+                                <LoadingState loading={cLoading} />
+                                <AlertMessage
+                                  message={cMessage?.message}
+                                  failed={cMessage?.failed}
+                                />
+                              </div>
+                              <div className="col-12 mt-3">
+                                <div className="buttons-w">
+                                  <button
+                                    className="btn btn-primary px-3"
+                                    type="submit"
+                                  >
+                                    View Timetable
+                                  </button>
+                                </div>
+                              </div>
                             </div>
-                          </div>
+                          </form>
                         </div>
-                      </form>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+              <AlertMessage
+                message={tTMessage?.message}
+                failed={tTMessage?.failed}
+              />
+              <LoadingState loading={tTLoading} />
+
+              {/* Selected Level and class timetable */}
+              {ShowTimetable && tTData?.GetClassTimetable && (
+                <div className="col-12">
+                  <div className="element-box">
+                    <span className="element-actions">
+                      <a
+                        href="#"
+                        title="Change Class"
+                        className="m-3"
+                        onClick={() => {
+                          SetShowFilter(true);
+                          SetShowTimetable(false);
+                        }}
+                      >
+                        <i className="os-icon os-icon-edit"></i>
+                      </a>
+                      <a
+                        href="#"
+                        title="Toggle expasion"
+                        onClick={() => {
+                          ExpandTimetable();
+                        }}
+                      >
+                        <i className="os-icon os-icon-maximize"></i>
+                      </a>
+                    </span>
+                    <h6 className="element-header">
+                      <b className="text-primary mr-2">
+                        {" "}
+                        {activeLevel?.name} -{" "}
+                        {timetableInput?.current_class?.name}
+                      </b>
+                      Timetable
+                    </h6>
+                    <div className="table-responsive">
+                      <TimetableList
+                        classId={timetableInput.current_class?.id}
+                      />
                     </div>
                   </div>
                 </div>
-              </>
-            )}
-            <AlertMessage
-              message={tTMessage?.message}
-              failed={tTMessage?.failed}
-            />
-            <LoadingState loading={tTLoading} />
-
-            {/* Selected Level and class timetable */}
-            {ShowTimetable && tTData?.GetClassTimetable && (
-              <div className="element-box">
-                <span className="element-actions">
-                  <a
-                    href="#"
-                    title="Change Class"
-                    className="m-3"
-                    onClick={() => {
-                      SetShowFilter(true);
-                      SetShowTimetable(false);
-                    }}
-                  >
-                    <i className="os-icon os-icon-edit"></i>
-                  </a>
-                  <a
-                    href="#"
-                    title="Toggle expasion"
-                    onClick={() => {
-                      ExpandTimetable();
-                    }}
-                  >
-                    <i className="os-icon os-icon-maximize"></i>
-                  </a>
-                </span>
-                <h6 className="element-header">
-                  <b className="text-primary mr-2">
-                    {" "}
-                    {activeLevel?.name} - {timetableInput?.current_class?.name}
-                  </b>
-                  Timetable
-                </h6>
-                <div className="table-responsive">
-                  <TimetableList classId={timetableInput.current_class?.id} />
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

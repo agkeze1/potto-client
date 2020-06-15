@@ -66,7 +66,7 @@ const TimetableList: FC<IProps> = ({ classId }) => {
     return (
       <>
         <LoadingState loading={loading || fLoading} />
-        <table className="table table-bordered table-lg table-v2 table-striped">
+        <table className="table table-bordered table-v2 table-striped">
           <thead>
             <tr>
               <th className="text-center"></th>

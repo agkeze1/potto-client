@@ -5,17 +5,16 @@ import { toast } from "react-toastify";
 import { CLEAN_DATE } from "../../../context/App";
 import { GET_CLASS } from "../../../queries/Class.query";
 import LoadingState from "../../partials/loading";
-import LevelClass from "../partials/LevelClass";
 import { authService } from "../../../services/Auth.Service";
 import { ROLL_CALL } from "../../../queries/attendance.query";
 import FromToDate from "../partials/FromToDate";
+import LevelClassDateRange from "../partials/LevelClassDateRange";
 
 interface IProps {
   showFilter?: boolean;
-  SetShowFilter?: any;
 }
 
-const AttendanceResult: FC<IProps> = ({ showFilter, SetShowFilter }) => {
+const AttendanceResult: FC<IProps> = ({ showFilter }) => {
   const [showSummary, SetShowSummary] = useState<boolean>(true);
   const [activeLevel, SetActiveLevel] = useState<any>({});
   const [showAttendanceResult, SetShowAttendanceResult] = useState<boolean>();
@@ -86,12 +85,13 @@ const AttendanceResult: FC<IProps> = ({ showFilter, SetShowFilter }) => {
 
   return (
     <>
-      {/* Level and Class Input */}
+      {/* Level, Class and Date Range Input */}
       {showLevelClass && (
         <div className="col-lg-12">
           <div className="element-box">
-            <LevelClass
+            <LevelClassDateRange
               schoolId={school.id}
+              buttonText="View Attendance"
               onLevelChange={(level: any) => {
                 SetActiveLevel({
                   name: level?.label,
@@ -111,16 +111,35 @@ const AttendanceResult: FC<IProps> = ({ showFilter, SetShowFilter }) => {
                   },
                 });
               }}
-              onSubmit={() => {
-                if (attendanceInput?.current_class) {
+              onFromChange={(fromDate: any) => {
+                SetAttendanceInput({
+                  ...attendanceInput,
+                  fromDate,
+                });
+              }}
+              onToChange={(toDate: any) => {
+                SetAttendanceInput({
+                  ...attendanceInput,
+                  toDate,
+                });
+              }}
+              onSubmit={(item: any) => {
+                if (item?._class && item?.fromDate && item?.toDate) {
                   GetClass({
                     variables: {
                       id: attendanceInput?.current_class?.id,
                     },
                   });
+                  GetRollCall({
+                    variables: {
+                      _class: attendanceInput.current_class?.id,
+                      start: attendanceInput.fromDate,
+                      end: attendanceInput.toDate,
+                    },
+                  });
+                  SetShowAttendanceResult(true);
                   SetShowAttendanceInfo(true);
                   SetShowLevelClass(false);
-                  SetShowFilter(true);
                 }
               }}
             />
@@ -130,107 +149,77 @@ const AttendanceResult: FC<IProps> = ({ showFilter, SetShowFilter }) => {
 
       {showAttendanceInfo && (
         <>
-          {/* Date Range */}
-          {showFilter && (
-            <div className="col-lg-12">
-              <FromToDate
-                onFromChange={(date: any) => {
-                  SetAttendanceInput({
-                    ...attendanceInput,
-                    fromDate: date,
-                  });
-                }}
-                onToChange={(date: any) => {
-                  SetAttendanceInput({
-                    ...attendanceInput,
-                    toDate: date,
-                  });
-                }}
-                onSubmit={() => {
-                  if (attendanceInput.fromDate && attendanceInput.toDate) {
-                    GetRollCall({
-                      variables: {
-                        _class: attendanceInput.current_class?.id,
-                        start: attendanceInput.fromDate,
-                        end: attendanceInput.toDate,
-                      },
-                    });
-                    SetShowAttendanceResult(true);
-                    SetShowFilter(false);
-                  }
-                }}
-              />
-            </div>
-          )}
           {/* Class info */}
-          <div className="col-12">
-            <div className="element-box bg-azure p-0 pl-3">
-              <div className="row">
-                <div className="col-sm-4">
-                  <LoadingState loading={cLoading} />
-                  <div className="users-list-w bdr-r">
-                    {cData?.GetClass.doc.form_teacher && (
-                      <div className="user-w">
-                        <div className="user-avatar-w">
-                          <div className="user-avatar">
-                            <img
-                              alt=""
-                              src={cData?.GetClass.doc.form_teacher?.image}
-                            />
+          {showFilter && (
+            <div className="col-12">
+              <div className="element-box bg-azure p-0 pl-3">
+                <div className="row">
+                  <div className="col-sm-4">
+                    <LoadingState loading={cLoading} />
+                    <div className="users-list-w bdr-r">
+                      {cData?.GetClass.doc.form_teacher && (
+                        <div className="user-w">
+                          <div className="user-avatar-w">
+                            <div className="user-avatar">
+                              <img
+                                alt=""
+                                src={cData?.GetClass.doc.form_teacher?.image}
+                              />
+                            </div>
+                          </div>
+                          <div className="user-name">
+                            <h6 className="user-title">
+                              {cData?.GetClass.doc.form_teacher?.name}
+                            </h6>
+                            <div className="user-role text-primary">
+                              Form Teacher
+                            </div>
                           </div>
                         </div>
-                        <div className="user-name">
-                          <h6 className="user-title">
-                            {cData?.GetClass.doc.form_teacher?.name}
-                          </h6>
-                          <div className="user-role text-primary">
-                            Form Teacher
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    {!cData?.GetClass.doc.form_teacher && (
-                      <h6 className="text-danger mt-3">No Form teacher</h6>
-                    )}
+                      )}
+                      {!cData?.GetClass.doc.form_teacher && (
+                        <h6 className="text-danger mt-3">No Form teacher</h6>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="col-sm-6 mt-3">
-                  <label htmlFor="">
-                    Level | <b>{activeLevel?.name || "No Level"}</b>
-                  </label>
-                  <br />
-                  <label htmlFor="">
-                    Class |{" "}
-                    <b>{attendanceInput?.current_class.name || "No Class"}</b>
-                  </label>
-                </div>
-                <div className="col-sm-2 mt-3">
-                  <a
-                    href="javascript:void(0)"
-                    title="Expand / Collapse"
-                    className="icon-lg m-3 float-right"
-                    onClick={() => {
-                      ExpandAttendanced();
-                    }}
-                  >
-                    <i className="os-icon os-icon-maximize"></i>
-                  </a>
-                  <a
-                    href="javascript:void(0)"
-                    title="Change Class"
-                    className="icon-lg m-3 float-right"
-                    onClick={() => {
-                      SetShowLevelClass(true);
-                      SetShowAttendanceInfo(false);
-                      SetShowAttendanceResult(false);
-                    }}
-                  >
-                    <i className="os-icon os-icon-edit"></i>
-                  </a>
+                  <div className="col-sm-6 mt-3">
+                    <label htmlFor="">
+                      Level | <b>{activeLevel?.name || "No Level"}</b>
+                    </label>
+                    <br />
+                    <label htmlFor="">
+                      Class |{" "}
+                      <b>{attendanceInput?.current_class.name || "No Class"}</b>
+                    </label>
+                  </div>
+                  <div className="col-sm-2 mt-3">
+                    <a
+                      href="javascript:void(0)"
+                      title="Expand / Collapse"
+                      className="icon-lg m-3 float-right"
+                      onClick={() => {
+                        ExpandAttendanced();
+                      }}
+                    >
+                      <i className="os-icon os-icon-maximize"></i>
+                    </a>
+                    <a
+                      href="javascript:void(0)"
+                      title="Change Class"
+                      className="icon-lg m-3 float-right"
+                      onClick={() => {
+                        SetShowLevelClass(true);
+                        SetShowAttendanceInfo(false);
+                        SetShowAttendanceResult(false);
+                      }}
+                    >
+                      <i className="os-icon os-icon-edit"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
           <LoadingState loading={rCLoading} />
           {/* Attendance Result */}
           {rCData?.GetClassRollCallAttendances.docs.length > 0 &&
@@ -263,7 +252,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter, SetShowFilter }) => {
                                 <div className="">{CLEAN_DATE(rec.date)}</div>
                               </div>
                               <div className="col-2 text-center att-stu">
-                                <b className="text-primary">42</b>
+                                <b className="text-primary">{rec.total}</b>
                               </div>
                             </div>
                           </a>

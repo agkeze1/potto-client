@@ -35,6 +35,7 @@ import RollCall from "./RollCall";
 import { authService } from "../../services/Auth.Service";
 import SendFeedback from "./SendFeedback";
 import GraduateStudent from "./GraduateStudent";
+import SubjectAttendance from "./SubjectAttendance.tsx";
 
 const Home: FC<IProps> = ({ location, history }) => {
   document.body.className =
@@ -97,6 +98,10 @@ const Home: FC<IProps> = ({ location, history }) => {
                 <Route
                   path="/in/graduate-student"
                   component={GraduateStudent}
+                />
+                <Route
+                  path="/in/subject-attendance"
+                  component={SubjectAttendance}
                 />
               </Switch>
             </div>

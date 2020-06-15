@@ -6,25 +6,33 @@ import { GET_LEVELS } from "../../../queries/Level.query";
 import { GET_CLASSES } from "../../../queries/Class.query";
 import Select from "react-select";
 import LoadingState from "../../partials/loading";
+import DatePicker from "react-datepicker";
 
 interface IProps {
   onLevelChange?: any;
   onClassChange?: any;
+  onFromChange?: any;
+  onToChange?: any;
   onSubmit?: any;
   schoolId: string;
+  buttonText: string;
 }
 
-const LevelClass: FC<IProps> = ({
+const LevelClassDateRange: FC<IProps> = ({
   onLevelChange,
   onClassChange,
+  onFromChange,
+  onToChange,
   onSubmit,
   schoolId,
+  buttonText,
 }) => {
   const [levels, SetLevel] = useState<any>([]);
   const [classes, SetClasses] = useState<any>([]);
   const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>();
   const [activeLevel, SetActiveLevel] = useState<any>({});
   const [activeClass, SetActiveClass] = useState<any>({});
+  const [data, SetData] = useState<any>();
 
   // Get Levels for level input
   const { loading: lLoading } = useQuery(GET_LEVELS, {
@@ -98,11 +106,15 @@ const LevelClass: FC<IProps> = ({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (onSubmit) onSubmit();
+        onSubmit({
+          _class: activeClass,
+          fromDate: data?.fromDate,
+          toDate: data?.toDate,
+        });
       }}
     >
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-lg-3 col-md-6 col-sm-12">
           {/* Level input */}
           <label>
             Level <br />
@@ -121,7 +133,7 @@ const LevelClass: FC<IProps> = ({
                 id: item?.value,
               });
               SetActiveClass(undefined);
-              if (onLevelChange) onLevelChange(item);
+              onLevelChange(item);
             }}
           />
           {showLevelsRefresh && (
@@ -138,7 +150,7 @@ const LevelClass: FC<IProps> = ({
           )}
           <LoadingState loading={lLoading || llLoading} />
         </div>
-        <div className="col-md-6">
+        <div className="col-lg-3 col-md-6 col-sm-12">
           {/* Class Input */}
           <label>
             Class <br />
@@ -156,15 +168,52 @@ const LevelClass: FC<IProps> = ({
                 label: item.label,
                 value: item.value,
               });
-              if (onClassChange) onClassChange(item);
+              onClassChange(item);
             }}
           />
           <LoadingState loading={cLoading} />
         </div>
+        <div className="col-lg-3 col-md-6 col-sm-12">
+          {/* From Date*/}
+          <label>From </label>
+          <br />
+          <DatePicker
+            placeholderText="day, month year"
+            selected={data?.fromDate}
+            onChange={(date) => {
+              SetData({
+                ...data,
+                fromDate: date,
+              });
+              onFromChange(date);
+            }}
+            className="form-control"
+            dateFormat="d, MMMM yyyy"
+          />
+        </div>
+        <div className="col-lg-3 col-md-6 col-sm-12">
+          {/* To Date */}
+          <label>To </label>
+          <br />
+          <DatePicker
+            placeholderText="day, month year"
+            selected={data?.toDate}
+            onChange={(date) => {
+              SetData({
+                ...data,
+                toDate: date,
+              });
+              onToChange(date);
+            }}
+            className="form-control"
+            dateFormat="d, MMMM yyyy"
+          />
+        </div>
+
         <div className="col-12 mt-3">
           <div className="buttons-w">
             <button className="btn btn-primary px-3" type="submit">
-              Proceed
+              {buttonText}
             </button>
           </div>
         </div>
@@ -173,4 +222,4 @@ const LevelClass: FC<IProps> = ({
   );
 };
 
-export default LevelClass;
+export default LevelClassDateRange;

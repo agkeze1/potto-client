@@ -527,3 +527,6 @@ a.btn-icon > i:hover {
 .att-date-crd:hover {
   background-color: rgb(231, 231, 231) !important;
 }
+.el-tablo > .label {
+  font-size: small !important;
+}

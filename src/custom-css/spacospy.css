@@ -1,89 +1,83 @@
 .auth-wrapper:before,
 .menu-w.sub-menu-style-over .sub-menu-w,
 .top-bar .logged-user-w .logged-user-menu {
-  background: rgb(0, 105, 92) !important;
-  background: linear-gradient(
-    84deg,
-    rgba(0, 105, 92, 1) 21%,
-    #03a744 86%,
-    rgba(12, 201, 135, 0.9923319669664741) 94%
-  ) !important;
+    background: rgb(0, 105, 92) !important;
+    background: linear-gradient(84deg, rgba(0, 105, 92, 1) 21%, #03a744 86%, rgba(12, 201, 135, 0.9923319669664741) 94%) !important;
 }
 .auth-box-w .auth-header:after,
 .element-wrapper .element-header:after {
-  background-color: #00695c !important;
+    background-color: #00695c !important;
 }
 
 .auth-box-w form .form-group .pre-icon {
-  color: #00695c;
+    color: #00695c;
 }
 .btn-primary,
 .all-wrapper .fc-button.fc-state-active {
-  background-color: #00695c;
-  border-color: #00695c;
+    background-color: #00695c;
+    border-color: #00695c;
 }
 .btn-primary:hover,
 .all-wrapper .fc-button.fc-state-active:hover,
 .btn-primary:active {
-  background-color: #00695c !important;
-  border-color: #00695c !important;
+    background-color: #00695c !important;
+    border-color: #00695c !important;
 }
 
 .form-control:focus {
-  border-color: #00695c;
+    border-color: #00695c;
 }
 
 .menu-w ul.main-menu > li.sub-header,
 .menu-w ul.main-menu > li .icon-w {
-  color: #03a744;
+    color: #03a744;
 }
 
 .menu-w.sub-menu-style-over.sub-menu-color-bright ul.main-menu > li.active > a {
-  color: #fff !important;
-  border-top-left-radius: 18px;
-  border-bottom-left-radius: 18px;
-  background: rgb(10, 129, 89);
-  background: linear-gradient(
-    87deg,
-    rgba(10, 129, 89, 1) 21%,
-    rgba(3, 167, 159, 1) 72%,
-    rgba(16, 236, 144, 0.9923319669664741) 97%
-  );
+    color: #fff !important;
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+    background: rgb(10, 129, 89);
+    background: linear-gradient(87deg, rgba(10, 129, 89, 1) 21%, rgba(3, 167, 159, 1) 72%, rgba(16, 236, 144, 0.9923319669664741) 97%);
 }
-.menu-w.sub-menu-style-over.sub-menu-color-bright
-  ul.main-menu
-  > li.active
-  > .icon-w {
-  color: #fff !important;
+.menu-w.sub-menu-style-over.sub-menu-color-bright ul.main-menu > li.active > .icon-w {
+    color: #fff !important;
 }
 .menu-w.color-scheme-light .logo-w .logo:hover .logo-label {
-  color: #03a744;
+    color: #03a744;
 }
 .menu-w.color-scheme-light .logo-w .logo:hover .logo-label:after {
-  background-color: #03a744;
+    background-color: #03a744;
 }
 .btn-outline-primary.disabled,
 .btn-outline-primary:disabled {
-  color: #03a744;
-  background-color: transparent;
+    color: #03a744;
+    background-color: transparent;
 }
 .btn-outline-primary:hover {
-  border-color: #03a744;
+    border-color: #03a744;
 }
 .btn-outline-primary {
-  color: #00695c;
-  border-color: #00695c;
+    color: #00695c;
+    border-color: #00695c;
 }
 .btn-primary:focus,
 .all-wrapper .fc-button.fc-state-active:focus,
 .btn-primary.focus,
 .all-wrapper .focus.fc-button.fc-state-active {
-  background-color: #03a744;
-  border-color: #00695c;
+    background-color: #03a744;
+    border-color: #00695c;
 }
 .text-primary {
-  color: #03a744 !important;
+    color: #03a744 !important;
 }
 .active-bdr-primary {
-  border-right: 0.5px solid #16a820 !important;
+    border-right: 0.5px solid #16a820 !important;
+}
+li.menu-link > a.active {
+    border-left: 2px solid #16a820 !important;
+}
+li.menu-link > a.active > div.icon-w,
+li.menu-link > a.active > span {
+    color: #16a820 !important;
 }

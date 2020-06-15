@@ -9,9 +9,6 @@ export const USER_PROPS = gql`
         phone
         image
         created_at
-        school {
-            id
-        }
     }
 `;
 
@@ -42,6 +39,11 @@ export const USER_LOGIN = gql`
             message
             doc {
                 ...USER_PROPS
+                school {
+                    id
+                    name
+                    alias
+                }
             }
             token
         }
@@ -74,6 +76,11 @@ export const USER_SETUP = gql`
             token
             doc {
                 ...USER_PROPS
+                school {
+                    id
+                    name
+                    alias
+                }
             }
         }
     }

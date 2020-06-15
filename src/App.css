@@ -337,17 +337,18 @@ body.full-screen .all-wrapper,
 }
 .period {
     border: 1.5px dashed lightgray;
+    cursor: pointer;
 }
 .period:hover {
     background-color: rgb(243, 243, 243);
     transition: all linear 0.1s;
 }
 .std-period {
-    background-color: rgb(179, 218, 182);
+    background-color: rgb(210, 240, 198);
     border: 1.5px dashed #16a820 !important;
 }
 .brk-period {
-    background-color: rgb(240, 195, 154);
+    background-color: rgb(255, 254, 205);
     border: 1.5px dashed gray !important;
 }
 .tkn-period {

@@ -1,13 +1,12 @@
 import React, { FC, useState } from "react";
 import Select from "react-select";
-import { useLazyQuery, useQuery } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/react-hooks";
 import { toast } from "react-toastify";
 import { CLEAN_DATE } from "../../../context/App";
 import { GET_CLASS } from "../../../queries/Class.query";
 import LoadingState from "../../partials/loading";
 import { authService } from "../../../services/Auth.Service";
 import { ROLL_CALL } from "../../../queries/attendance.query";
-import FromToDate from "../partials/FromToDate";
 import LevelClassDateRange from "../partials/LevelClassDateRange";
 
 interface IProps {

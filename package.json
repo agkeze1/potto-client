@@ -22,6 +22,7 @@
     "graphql-client": "^2.0.1",
     "graphql-tag": "^2.10.3",
     "js-base64": "^2.5.1",
+    "npm": "^6.14.5",
     "react": "^16.12.0",
     "react-accessible-accordion": "^3.0.1",
     "react-bar-chart": "^0.1.2",

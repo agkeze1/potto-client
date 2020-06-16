@@ -1,13 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, FC, useEffect } from "react";
+import React, { useState, FC } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, getTimetable, CleanMessage } from "../../context/App";
 import SwitchInput from "../partials/SwitchInput";
 import { IProps } from "../../models/IProps";
 import { authService } from "../../services/Auth.Service";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { GET_LEVELS } from "../../queries/Level.query";
-import { GET_CLASSES } from "../../queries/Class.query";
 import LoadingState from "../partials/loading";
 import Select from "react-select";
 import days from "../../data/days.json";
@@ -29,7 +27,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   const [showDay, SetShowDay] = useState<boolean>(true);
   const [showPeriod, SetShowPeriod] = useState<boolean>(true);
 
-  const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>(false);
   const [subjects, SetSubjects] = useState<any>([]);
   const [teachers, SetTeachers] = useState<any>([]);
   const [activeLevel, SetActiveLevel] = useState<any>({});

@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import { IProps } from "../../../models/IProps";
 import { authService } from "../../../services/Auth.Service";
 import { GetAppName } from "../../../context/App";

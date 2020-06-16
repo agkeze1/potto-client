@@ -1,8 +1,8 @@
-import React, { FC, useState, Fragment } from "react";
+import React, { FC, useState } from "react";
 import { IProps } from "../../models/IProps";
 import Helmet from "react-helmet";
 import { GetAppName, DayString } from "../../context/App";
-import { Doughnut, Polar, Bar } from "react-chartjs-2";
+import { Doughnut, Bar } from "react-chartjs-2";
 import { DASHBOARD } from "../../queries/Dashboard.query";
 import { useQuery } from "@apollo/react-hooks";
 import LoadingState from "../partials/loading";

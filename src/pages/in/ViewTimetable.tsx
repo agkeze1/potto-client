@@ -1,7 +1,6 @@
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
-import Dropdown from "../partials/Dropdown";
 import { IProps } from "../../models/IProps";
 import { authService } from "../../services/Auth.Service";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -109,7 +108,7 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
       SetClasses(undefined);
       GetClasses({ variables: { level: activeLevel?.id } });
     }
-  }, [activeLevel?.id]);
+  }, [activeLevel, GetClasses]);
 
   const [GetTimetable, { loading: tTLoading, data: tTData }] = useLazyQuery(
     GET_CLASS_TIMETABLE,

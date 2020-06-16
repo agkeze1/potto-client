@@ -9,10 +9,12 @@ import LoadingState from "../../partials/loading";
 interface IProps {
   level: any;
   _class: any;
+  onTimetableClick: any;
 }
 
-const DayTimetable: FC<IProps> = ({ level, _class }) => {
+const DayTimetable: FC<IProps> = ({ level, _class, onTimetableClick }) => {
   const [activeRecord, SetActiveRecord] = useState<any>();
+
   // Get Class timetable
   const { loading, data } = useQuery(GET_CLASS_TIMETABLE, {
     variables: { _class: _class?.value },
@@ -73,7 +75,9 @@ const DayTimetable: FC<IProps> = ({ level, _class }) => {
                           data-target="#attModal"
                           data-toggle="modal"
                           href="javascript:void(0)"
-                          onClick={() => {}}
+                          onClick={() => {
+                            onTimetableClick();
+                          }}
                         >
                           <h6 className="label element-header">
                             {tt.period?.from_time} - {tt.period?.to_time}

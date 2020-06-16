@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, CLEAN_DATE } from "../../context/App";
+import { GetAppName, CLEAN_DATE, CleanMessage } from "../../context/App";
 import Dropdown from "../partials/Dropdown";
 import IconInput from "../partials/IconInput";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -20,13 +20,9 @@ import LoadingState from "../partials/loading";
 import AlertMessage from "../partials/AlertMessage";
 import SwitchInput from "../partials/SwitchInput";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 const Class: FC<IProps> = ({ history }) => {
-  const [message, SetMessage] = useState<IMessage>();
-  const [lMessage, SetLMessage] = useState<IMessage>();
-  const [nMessage, SetNMessage] = useState<IMessage>();
-  const [uMessage, SetUMessage] = useState<IMessage>();
-  const [rMessage, SetRMessage] = useState<IMessage>();
   const [newClass, SetNewClass] = useState<any>({});
   const [showNewClass, SetShowNewClass] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
@@ -62,12 +58,7 @@ const Class: FC<IProps> = ({ history }) => {
   // Fetch Levels for Level input
   const { loading: lLoading } = useQuery(GET_LEVELS, {
     variables: { school: school.id },
-    onError: (err) => {
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      });
-    },
+    onError: (err) => toast.error(CleanMessage(err.message)),
     onCompleted: (data) => {
       if (data.GetLevels) {
         SetLevel(
@@ -82,26 +73,13 @@ const Class: FC<IProps> = ({ history }) => {
 
   // Fetch list of Classes
   const [GetClasses, { loading, data }] = useLazyQuery(GET_CLASSES, {
-    onError: (err) =>
-      SetMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
   });
 
   //Save new Class
   const [NewClass, { loading: nLoading }] = useMutation(NEW_CLASS, {
-    onError: (err) =>
-      SetNMessage({
-        message: err.message,
-        failed: true,
-      }),
-    onCompleted: (data) => {
-      SetNMessage({
-        message: data.NewClass.message,
-        failed: false,
-      });
-    },
+    onError: (err) => toast.error(CleanMessage(err.message)),
+    onCompleted: (data) => toast.info(CleanMessage(data.NewClass.message)),
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
         query: GET_CLASSES,
@@ -121,15 +99,11 @@ const Class: FC<IProps> = ({ history }) => {
 
   useEffect(() => {
     if (newClass?.level) GetClasses({ variables: { level: newClass?.level } });
-  }, [newClass?.level, GetClasses]);
+  }, [newClass, GetClasses]);
 
   // Remove Class
   const [RemoveClass, { loading: rLoading }] = useMutation(REMOVE_CLASS, {
-    onError: (err) =>
-      SetRMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
         query: GET_CLASSES,
@@ -153,17 +127,8 @@ const Class: FC<IProps> = ({ history }) => {
 
   // Update Class
   const [UpdateClass, { loading: uLoading }] = useMutation(UPDATE_CLASS, {
-    onError: (err) =>
-      SetUMessage({
-        message: err.message,
-        failed: true,
-      }),
-    onCompleted: (data) => {
-      SetUMessage({
-        message: data.UpdateClass.message,
-        failed: false,
-      });
-    },
+    onError: (err) => toast.error(CleanMessage(err.message)),
+    onCompleted: (data) => toast.info(CleanMessage(data.UpdateClass.message)),
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
         query: GET_CLASSES,
@@ -221,14 +186,9 @@ const Class: FC<IProps> = ({ history }) => {
               <div className="row justify-content-center">
                 <div className="col-lg-12">
                   <LoadingState loading={nLoading} />
-                  <AlertMessage
-                    message={nMessage?.message}
-                    failed={nMessage?.failed}
-                  />
                   <form
                     onSubmit={async (e) => {
                       e.preventDefault();
-                      SetNMessage(undefined);
                       await NewClass({
                         variables: {
                           name: newClass?.name,
@@ -282,10 +242,6 @@ const Class: FC<IProps> = ({ history }) => {
                           label="Level"
                         />
                         <LoadingState loading={lLoading} />
-                        <AlertMessage
-                          message={lMessage?.message}
-                          failed={lMessage?.failed}
-                        />
                       </div>
                       {showNewClass && (
                         <div className="col-sm-12">
@@ -303,7 +259,6 @@ const Class: FC<IProps> = ({ history }) => {
             </div>
 
             <LoadingState loading={loading || rLoading} />
-            <AlertMessage message={message?.message} failed={message?.failed} />
             {data && data.GetClasses.docs.length > 0 && (
               <div className="row justify-content-center ">
                 <div className="col-lg-12 pt-5">
@@ -342,7 +297,6 @@ const Class: FC<IProps> = ({ history }) => {
                                     data-target="#editModal"
                                     data-toggle="modal"
                                     onClick={() => {
-                                      SetUMessage(undefined);
                                       SetActiveClassId(clas.id);
                                       SetEditClass({
                                         name: clas.name,
@@ -418,10 +372,6 @@ const Class: FC<IProps> = ({ history }) => {
             </div>
             <div className="modal-body element-box no-shadow">
               <LoadingState loading={uLoading} />
-              <AlertMessage
-                message={uMessage?.message}
-                failed={uMessage?.failed}
-              />
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();

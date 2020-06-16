@@ -9,7 +9,8 @@ import DayTimetable from "./DayTimetable";
 
 const SubjectAttendance: FC<IProps> = ({ history }) => {
   const [showFilter, SetShowFilter] = useState<boolean>(true);
-  const [dayTimetable, SetDayTimetable] = useState<boolean>(false);
+  const [dayTimetable, SetDayTimetable] = useState<boolean>();
+  const [showAttendanceReport, SetShowAttendanceReport] = useState<boolean>();
   const [attInput, SetAttInput] = useState<any>();
   const [activeRecord, SetActiveRecord] = useState<any>();
   // Get  School of logged in user
@@ -39,69 +40,61 @@ const SubjectAttendance: FC<IProps> = ({ history }) => {
               />
             </div>
             <h5 className="element-header">Subject Attendance</h5>
-            <div className="row justify-content-center">
-              {showFilter && (
-                <div className="col-12">
-                  <div className="element-box">
-                    <LevelClass
-                      schoolId={school?.id}
-                      onLevelChange={(level: any) =>
-                        SetAttInput({
-                          ...attInput,
-                          level: level,
-                          current_class: undefined,
-                        })
-                      }
-                      onClassChange={(_class: any) =>
-                        SetAttInput({
-                          ...attInput,
-                          current_class: _class,
-                        })
-                      }
-                      onSubmit={() => {
-                        if (attInput?.current_class) {
-                          SetDayTimetable(true);
-                          SetShowFilter(false);
-                        }
-                      }}
-                    />
+            {!showAttendanceReport && (
+              <>
+                <div className="row justify-content-center">
+                  {showFilter && (
+                    <div className="col-12">
+                      <div className="element-box">
+                        <LevelClass
+                          schoolId={school?.id}
+                          onLevelChange={(level: any) =>
+                            SetAttInput({
+                              ...attInput,
+                              level: level,
+                              current_class: undefined,
+                            })
+                          }
+                          onClassChange={(_class: any) =>
+                            SetAttInput({
+                              ...attInput,
+                              current_class: _class,
+                            })
+                          }
+                          onSubmit={() => {
+                            if (attInput?.current_class) {
+                              SetDayTimetable(true);
+                              SetShowFilter(false);
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {dayTimetable && (
+                    <div className="col-12">
+                      <DayTimetable
+                        onTimetableClick={() => {
+                          SetShowAttendanceReport(true);
+                        }}
+                        level={attInput?.level}
+                        _class={attInput?.current_class}
+                      />
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+            {showAttendanceReport && (
+              <>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="element-box">worked!</div>
                   </div>
                 </div>
-              )}
-
-              {dayTimetable && (
-                <div className="col-12">
-                  <DayTimetable
-                    level={attInput?.level}
-                    _class={attInput?.current_class}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Attendance Modal */}
-      <div
-        aria-hidden="true"
-        className="modal fade"
-        id="attModal"
-        role="dialog"
-      >
-        <div className="modal-dialog modal-lg" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">
-                Subject Attendance Report <hr />
-              </h5>
-              <button className="close" data-dismiss="modal" type="button">
-                <span aria-hidden="true"> &times;</span>
-              </button>
-            </div>
-            <div className="modal-body element-box no-shadow pb-5">
-              {/* Report center */}
-            </div>
+              </>
+            )}
           </div>
         </div>
       </div>

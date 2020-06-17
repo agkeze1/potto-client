@@ -103,6 +103,7 @@ export const GET_ALL_TEACHERS_SHORT = gql`
                 email
                 image
                 first_name
+                phone
             }
         }
     }

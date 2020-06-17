@@ -81,3 +81,9 @@ li.menu-link > a.active > div.icon-w,
 li.menu-link > a.active > span {
     color: #0582cc !important;
 }
+.avatar {
+    border: solid #0582cc 2px;
+    box-shadow: 0 0 4px #e59927;
+    background-color: white;
+    padding: 2px;
+}

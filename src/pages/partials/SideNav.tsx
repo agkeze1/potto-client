@@ -376,14 +376,43 @@ const SideNav: FC<SideProps> = ({ location }) => {
                             </div>
                         </div>
                     </li>
-                    <li className="menu-link">
-                        <NavLink to="/in/send-feedback" onClick={() => scrollTop()}>
-                            <div className="icon-w">
-                                <div className="os-icon os-icon-send"></div>
-                            </div>{" "}
-                            Send Feedback
-                        </NavLink>
+                    <li className="sub-header">
+                        <span>Messaging</span>
                     </li>
+                    <li className="has-sub-menu">
+                        <NavLink to="#" onClick={() => scrollTop()}>
+                            <div className="icon-w">
+                                <div className="os-icon os-icon-email-forward"></div>
+                            </div>
+                            <span>Commination</span>
+                        </NavLink>
+                        <div className="sub-menu-w">
+                            <div className="sub-menu-header">Feedback & SMS</div>
+                            <div className="sub-menu-icon">
+                                <i className="os-icon os-icon-layout"></i>
+                            </div>
+                            <div className="sub-menu-i">
+                                <ul className="sub-menu">
+                                    <li>
+                                        <NavLink to="/in/send-feedback" onClick={() => scrollTop()}>
+                                            Send Feedback
+                                        </NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink to="/in/messaging/teachers" onClick={() => scrollTop()}>
+                                            Message Teachers
+                                        </NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink to="/in/graduate-student" onClick={() => scrollTop()}>
+                                            Message Guardians
+                                        </NavLink>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+
                     <li className="menu-link">
                         <a
                             onClick={() => {

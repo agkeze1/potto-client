@@ -36,6 +36,8 @@ import { authService } from "../../services/Auth.Service";
 import SendFeedback from "./SendFeedback";
 import GraduateStudent from "./GraduateStudent";
 import TeacherAttendance from "./TeacherAttendance";
+import TeacherMessage from "./TeacherMessage";
+import SendTeacherMessage from "./TeacherMessage/NewMessage";
 
 const Home: FC<IProps> = ({ location, history }) => {
     document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
@@ -93,6 +95,8 @@ const Home: FC<IProps> = ({ location, history }) => {
                                 <Route path="/in/send-feedback" component={SendFeedback} />
                                 <Route path="/in/graduate-student" component={GraduateStudent} />
                                 <Route path="/in/teacher-attendance" component={TeacherAttendance} />
+                                <Route path="/in/messaging/teachers" exact={true} component={TeacherMessage} />
+                                <Route path="/in/messaging/teachers/new" component={SendTeacherMessage} />
                             </Switch>
                         </div>
                     </div>

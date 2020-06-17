@@ -501,3 +501,24 @@ a.btn-icon > i:hover {
     background-image: url("/5.png");
     background-repeat: no-repeat;
 }
+
+.fab {
+    position: fixed;
+    bottom: 34px;
+    right: 24px;
+}
+.btn-round {
+    border-radius: 28px;
+}
+.os-progress-bar.blue .bar-level-3,
+.os-progress-bar.primary .bar-level-3 {
+    background-color: #0362c6 !important;
+}
+
+.bg-light-blue {
+    background-color: #65affd !important;
+}
+
+.bg-light-green {
+    background-color: #c5ffd6 !important;
+}

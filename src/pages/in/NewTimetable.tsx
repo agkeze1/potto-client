@@ -65,7 +65,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
         onCompleted: (data) => {
             if (data.GetSubjectsForRegistration.docs) {
                 let subList = [...subjects];
-                data.GetSubjectsForRegistration.docs.map((sub: any) => {
+                data.GetSubjectsForRegistration.docs.forEach((sub: any) => {
                     subList.push({
                         label: sub.title,
                         value: sub.id,
@@ -84,14 +84,14 @@ const NewTimetable: FC<IProps> = ({ history }) => {
         },
         onCompleted: (data) => {
             if (data.GetAllTeachers.docs) {
-                const tchrList = [...teachers];
-                data.GetAllTeachers.docs.map((tchr: any) => {
-                    tchrList.push({
-                        label: tchr.name,
-                        value: tchr.id,
+                const _items = [...teachers];
+                data.GetAllTeachers.docs.forEach((item: any) => {
+                    _items.push({
+                        label: item.name,
+                        value: item.id,
                     });
                 });
-                SetTeachers(tchrList);
+                SetTeachers(_items);
             }
         },
     });

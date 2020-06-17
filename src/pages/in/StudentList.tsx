@@ -1,3 +1,4 @@
+/* eslint-disable no-script-url */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";

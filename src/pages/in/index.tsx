@@ -35,10 +35,10 @@ import RollCall from "./RollCall";
 import { authService } from "../../services/Auth.Service";
 import SendFeedback from "./SendFeedback";
 import GraduateStudent from "./GraduateStudent";
+import SubjectAttendance from "./SubjectAttendance.tsx";
 import TeacherAttendance from "./TeacherAttendance";
 import TeacherMessage from "./TeacherMessage";
 import SendTeacherMessage from "./TeacherMessage/NewMessage";
-import SubjectAttendance from "./SubjectAttendance.tsx";
 
 const Home: FC<IProps> = ({ location, history }) => {
     document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
@@ -64,53 +64,50 @@ const Home: FC<IProps> = ({ location, history }) => {
                             <span>Sidebar</span>
                         </div>
 
-            {/* Content */}
-            <div className="main-container">
-              <Switch>
-                <Route exact path="/in" component={Dashboard} />
-                <Route exact path="/in/dashboard" component={Dashboard} />
-                <Route path="/in/new-school" component={NewSchool} />
-                <Route path="/in/school-list" component={SchoolList} />
-                <Route path="/in/new-user" component={NewUser} />
-                <Route path="/in/user-list" component={UserList} />
-                <Route path="/in/super-admin-list" component={SuperAdmin} />
-                <Route path="/in/level" component={Level} />
-                <Route path="/in/class" component={Class} />
-                <Route path="/in/term" component={Term} />
-                <Route path="/in/subjects" component={Subjects} />
-                <Route path="/in/new-student" component={NewStudent} />
-                <Route path="/in/student-list" component={StudentList} />
-                <Route path="/in/new-teacher" component={NewTeacher} />
-                <Route path="/in/teacher-list" component={TeacherList} />
-                <Route path="/in/guardian-type" component={GuardianType} />
-                <Route path="/in/device-list" component={DeviceList} />
-                <Route path="/in/navigation" component={Navigation} />
-                <Route
-                  path="/in/navigation-group"
-                  component={NavigationGroup}
-                />
-                <Route path="/in/feedback" component={Feedback} />
-                <Route path="/in/feedback-type" component={FeedbackType} />
-                <Route path="/in/role" component={Role} />
-                <Route path="/in/new-timetable" component={NewTimetable} />
-                <Route path="/in/view-timetable" component={ViewTimetable} />
-                <Route path="/in/period" component={Period} />
-                <Route path="/in/roll-call" component={RollCall} />
-                <Route path="/in/send-feedback" component={SendFeedback} />
-                <Route
-                  path="/in/graduate-student"
-                  component={GraduateStudent}
-                />
-                <Route
-                  path="/in/subject-attendance"
-                  component={SubjectAttendance}
-                />
-                <Route path="/in/send-feedback" component={SendFeedback} />
+                        {/* Content */}
+                        <div className="main-container">
+                            <Switch>
+                                <Route exact path="/in" component={Dashboard} />
+                                <Route exact path="/in/dashboard" component={Dashboard} />
+                                <Route path="/in/new-school" component={NewSchool} />
+                                <Route path="/in/school-list" component={SchoolList} />
+                                <Route path="/in/new-user" component={NewUser} />
+                                <Route path="/in/user-list" component={UserList} />
+                                <Route path="/in/super-admin-list" component={SuperAdmin} />
+                                <Route path="/in/level" component={Level} />
+                                <Route path="/in/class" component={Class} />
+                                <Route path="/in/term" component={Term} />
+                                <Route path="/in/subjects" component={Subjects} />
+                                <Route path="/in/new-student" component={NewStudent} />
+                                <Route path="/in/student-list" component={StudentList} />
+                                <Route path="/in/new-teacher" component={NewTeacher} />
+                                <Route path="/in/teacher-list" component={TeacherList} />
+                                <Route path="/in/guardian-type" component={GuardianType} />
+                                <Route path="/in/device-list" component={DeviceList} />
+                                <Route path="/in/navigation" component={Navigation} />
+                                <Route path="/in/navigation-group" component={NavigationGroup} />
+                                <Route path="/in/feedback" component={Feedback} />
+                                <Route path="/in/feedback-type" component={FeedbackType} />
+                                <Route path="/in/role" component={Role} />
+                                <Route path="/in/new-timetable" component={NewTimetable} />
+                                <Route path="/in/view-timetable" component={ViewTimetable} />
+                                <Route path="/in/period" component={Period} />
+                                <Route path="/in/roll-call" component={RollCall} />
+                                <Route path="/in/send-feedback" component={SendFeedback} />
+                                <Route path="/in/subject-attendance" component={SubjectAttendance} />
                                 <Route path="/in/graduate-student" component={GraduateStudent} />
                                 <Route path="/in/teacher-attendance" component={TeacherAttendance} />
                                 <Route path="/in/messaging/teachers" exact={true} component={TeacherMessage} />
                                 <Route path="/in/messaging/teachers/new" component={SendTeacherMessage} />
-              </Switch>
+                            </Switch>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <a className="font-sm text-center footer mb-2" href="http://potto.com">
+                    <img src="/avatar.png" alt="app logo" className="logo-footer mr-2" />
+                    Powered by Potto
+                </a>
             </div>
         </>
     );

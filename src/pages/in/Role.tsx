@@ -1,24 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState } from "react";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
+import { GetAppName, CleanMessage } from "../../context/App";
 // import Select from "react-select";
 import IconInput from "../partials/IconInput";
 import { authService } from "../../services/Auth.Service";
 import { NEW_ROLE, GET_ROLES, REMOVE_ROLE, UPDATE_ROLE } from "../../queries/Role.query";
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import { IMessage } from "../../models/IMessage";
 import { IProps } from "../../models/IProps";
 import LoadingState from "../partials/loading";
-import AlertMessage from "../partials/AlertMessage";
+import { toast } from "react-toastify";
 
 const Role: FC<IProps> = ({ history }) => {
     const [newRole, SetNewRole] = useState<any>({});
-    const [message, SetMessage] = useState<IMessage>();
-    const [lMessage, SetLMessage] = useState<IMessage>();
 
-    const [rMessage, SetRMessage] = useState<IMessage>();
-    const [uMessage, SetUMessage] = useState<IMessage>();
     const [editRole, SetEditRole] = useState<any>({});
 
     // Check if user is authenticated
@@ -33,16 +28,9 @@ const Role: FC<IProps> = ({ history }) => {
 
     // Create New Role
     const [NewRole, { loading }] = useMutation(NEW_ROLE, {
-        onError: (err) =>
-            SetMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
-            SetMessage({
-                message: data.NewRole.message,
-                failed: false,
-            });
+            toast.success(data.NewRole.message);
         },
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
@@ -60,20 +48,12 @@ const Role: FC<IProps> = ({ history }) => {
     });
 
     const { loading: lLoading, data: lData } = useQuery(GET_ROLES, {
-        onError: (err) =>
-            SetLMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
     });
 
     // Remove Role
     const [RemoveRole, { loading: rLoading }] = useMutation(REMOVE_ROLE, {
-        onError: (err) =>
-            SetRMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
                 query: GET_ROLES,
@@ -89,20 +69,14 @@ const Role: FC<IProps> = ({ history }) => {
                 data: { GetRoles: q.GetRoles },
             });
         },
+        onCompleted: (d) => toast.success(d.RemoveRole.doc.message),
     });
 
     // Update Role
     const [UpdateRole, { loading: uLoading }] = useMutation(UPDATE_ROLE, {
-        onError: (err) =>
-            SetUMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
-            SetUMessage({
-                message: data.UpdateRole.message,
-                failed: false,
-            });
+            toast.success(data.UpdateRole.message);
         },
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
@@ -137,12 +111,10 @@ const Role: FC<IProps> = ({ history }) => {
                                     <h6 className="element-header">New Role</h6>
                                     <div className="row">
                                         <div className="col-lg-12">
-                                            <AlertMessage message={message?.message} failed={message?.failed} />
                                             <LoadingState loading={loading} />
                                             <form
                                                 onSubmit={async (e) => {
                                                     e.preventDefault();
-                                                    SetMessage(undefined);
                                                     await NewRole({
                                                         variables: {
                                                             name: newRole?.name,
@@ -195,7 +167,6 @@ const Role: FC<IProps> = ({ history }) => {
                                 <div className="row justify-content-center ">
                                     <div className="col-lg-12 mt-5">
                                         <LoadingState loading={lLoading || rLoading} />
-                                        <AlertMessage message={lMessage?.message} failed={lMessage?.failed} />
                                         {lData && lData.GetRoles.docs.length > 0 && (
                                             <div className="element-box-tp">
                                                 <div className="table-responsive">
@@ -221,7 +192,6 @@ const Role: FC<IProps> = ({ history }) => {
                                                                             href="#"
                                                                             title="Edit"
                                                                             onClick={() => {
-                                                                                SetUMessage(undefined);
                                                                                 SetEditRole({
                                                                                     id: role.id,
                                                                                     name: role.name,
@@ -295,13 +265,11 @@ const Role: FC<IProps> = ({ history }) => {
                             </div>
                             <div className="modal-body element-box no-shadow pb-2">
                                 <LoadingState loading={uLoading} />
-                                <AlertMessage message={uMessage?.message} failed={uMessage?.failed} />
                                 <form
                                     onSubmit={async (e) => {
                                         e.preventDefault();
                                         // Scroll to top of page
                                         scrollTop();
-                                        SetUMessage(undefined);
                                         UpdateRole({
                                             variables: {
                                                 id: editRole?.id,

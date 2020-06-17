@@ -19,7 +19,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
     const [email, SetEmail] = useState<string>();
     const [password, SetPassword] = useState<string>();
 
-    // Check if user is alredy logged in
+    // Check if user is already logged in
     if (authService.IsAuthenticated()) {
         history.push("/in");
     }
@@ -71,7 +71,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                         <div className="auth-box-w">
                             <div className="logo-w">
                                 <a href="/">
-                                    <img alt="logo" width="80" src={GET_LOGO} />
+                                    <img alt="logo" width="48" src={GET_LOGO} />
                                 </a>
                                 <h6 className="mt-2">{GetAppName()}</h6>
                             </div>

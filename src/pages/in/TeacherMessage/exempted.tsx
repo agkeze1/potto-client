@@ -7,7 +7,7 @@ interface iProp {
     onCheck: any;
 }
 
-const StudentCheckExemptedList: FC<iProp> = ({ items, onCheck }) => {
+const TeacherExemptedList: FC<iProp> = ({ items, onCheck }) => {
     if (items.length)
         return (
             <div className="row">
@@ -15,17 +15,17 @@ const StudentCheckExemptedList: FC<iProp> = ({ items, onCheck }) => {
                     <div key={idx} className="col-md-3 col-12 fade-in">
                         <div className="element-box text-center no-bg bg-white">
                             <div className="text-right">
-                                <a className="btn-icon" onClick={() => onCheck(item)} title={`Remove ${item.full_name}`} href="javascript:void(0)">
+                                <a className="btn-icon" onClick={() => onCheck(item)} title={`Remove ${item.name}`} href="javascript:void(0)">
                                     <i className="os-icon os-icon-close"></i>
                                 </a>
                             </div>
                             <br />
-                            <img src={item.passport || "/avatar.png"} className="avatar" style={{ width: "80px", height: "80px" }} alt={item.surname} />
-                            <h6>{item.full_name}</h6>
-                            <span className="text-uppercase">{item.reg_no}</span> <br />
-                            <span className="text-success">
-                                Class: <strong>{item.current_class.name}</strong>
-                            </span>
+                            <img src={item.image || "/avatar.png"} className="avatar" style={{ width: "80px", height: "80px" }} alt={item.first_name} />
+                            <h6>{item.name}</h6>
+                            <span className="text-uppercase text-primary">
+                                <i className="os-icon os-icon-phone"></i> {item.phone}
+                            </span>{" "}
+                            <br />
                         </div>
                     </div>
                 ))}
@@ -35,4 +35,4 @@ const StudentCheckExemptedList: FC<iProp> = ({ items, onCheck }) => {
     return null;
 };
 
-export default StudentCheckExemptedList;
+export default TeacherExemptedList;

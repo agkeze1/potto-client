@@ -9,7 +9,6 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { USER_LIST, REMOVE_USER, UPDATE_USER } from "../../queries/User.query";
 import { IImageProp } from "../../models/IImageProp";
 import LoadingState from "../partials/loading";
-import AlertMessage from "../partials/AlertMessage";
 import IconInput from "../partials/IconInput";
 import Select from "react-select";
 import gender from "../../data/gender.json";
@@ -78,16 +77,12 @@ const UserList: FC<IProps> = ({ history }) => {
                 data: { GetUsers: q.GetUsers },
             });
         },
-        onCompleted: (d) => toast.success(d.RemoveUser.message),
     });
 
     // Update User
     const [UpdateUser, { loading: uLoading }] = useMutation(UPDATE_USER, {
         onError: (err) => toast.error(CleanMessage(err.message)),
-        onCompleted: (data) => {
-            toast.success(data.UpdateUser.message);
-            document.getElementById("btnModal")?.click();
-        },
+        onCompleted: (data) => toast.info(CleanMessage(data.UpdateUser.message)),
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
                 query: USER_LIST,
@@ -181,9 +176,7 @@ const UserList: FC<IProps> = ({ history }) => {
                                                     <tbody>
                                                         {data.GetUsers.docs.map((user: any, index: number) => (
                                                             <tr key={index}>
-                                                                <td>
-                                                                    <strong>{index + 1}</strong>
-                                                                </td>
+                                                                <td>{index + 1}</td>
                                                                 <td>
                                                                     <div
                                                                         onClick={() => {

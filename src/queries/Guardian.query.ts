@@ -1,5 +1,4 @@
 import gql from "graphql-tag";
-import { STU_MIN_PROPS } from "./Student.query";
 
 export const GUARDIAN_PROPS = gql`
   fragment GUARDIAN_PROPS on Guardian {

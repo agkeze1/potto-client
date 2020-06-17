@@ -194,7 +194,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
       SetClasses(undefined);
       GetClasses({ variables: { level: activeLevelId } });
     }
-  }, [activeLevelId]);
+  }, [activeLevelId, GetClasses]);
 
   // Save New Guardian record
   const [SaveNewGuardian, { loading: nGLoading }] = useMutation(NEW_GUARDIAN, {

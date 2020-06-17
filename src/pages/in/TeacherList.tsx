@@ -66,7 +66,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                 };
             },
         });
-    }, [page, limit]);
+    }, [page, limit, fetchMore]);
 
     // Remove Teacher
     const [RemoveTeacher, { loading: rLoading }] = useMutation(REMOVE_TEACHER, {

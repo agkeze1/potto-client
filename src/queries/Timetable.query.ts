@@ -31,6 +31,8 @@ export const CLASS_TT_PROPS = gql`
       period {
         from
         to
+        from_time
+        to_time
         total
       }
       teacher {

@@ -14,7 +14,6 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { authService } from "../../services/Auth.Service";
 
 const Period: FC<IProps> = ({ history }) => {
-    const [timeRange, SetTimeRange] = useState<any>();
     const [showNewPeriod, SetShowNewPeriod] = useState<boolean>(true);
     const [newPeriod, SetNewPeriod] = useState<any>({
         isBreak: false,

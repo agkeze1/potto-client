@@ -5,7 +5,6 @@ import { GetAppName, CLEAN_DATE, GetAge } from "../../context/App";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../partials/ImageModal";
 import SwitchInput from "../partials/SwitchInput";
-import AttAccordion from "../partials/AttAccordion";
 import ImageUpload from "../partials/ImageUpload";
 import IconInput from "../partials/IconInput";
 import { IImageProp } from "../../models/IImageProp";
@@ -225,7 +224,7 @@ const StudentList: FC<IProps> = ({ history }) => {
       SetClasses(undefined);
       GetClasses({ variables: { level: searchInput?.level?.id } });
     }
-  }, [searchInput?.level?.id]);
+  }, [searchInput, GetClasses]);
 
   // Remove Student
   const [RemoveStudent, { loading: rLoading }] = useMutation(REMOVE_STUDENT, {
@@ -408,42 +407,40 @@ const StudentList: FC<IProps> = ({ history }) => {
       {!showProfile && (
         <div className="content-box">
           <div className="element-wrapper">
-            <span className="element-actions mt-n2">
-              <button
-                className="btn btn-primary btn-sm"
-                type="button"
-                onClick={() => {
-                  history.push("/in/new-student");
+            <span className="element-actions" style={{ marginTop: "-1.5rem" }}>
+              <SwitchInput
+                isOn={showFilter}
+                handleToggle={() => {
+                  SetShowFilter(!showFilter);
                 }}
-              >
-                <i className="os-icon os-icon-ui-22"></i>
-                <span>Create New</span>
-              </button>
+                label="Show Filter"
+              />
             </span>
             <h5 className="element-header">Student List</h5>
-            <div className="element-box">
-              <div className="row justify-content-center">
-                <div className="col-lg-12">
-                  <AlertMessage
-                    message={searchMsg?.message}
-                    failed={searchMsg?.failed}
-                  />
-                  <span
-                    className="element-actions"
-                    style={{ marginTop: "-1.5rem" }}
-                  >
-                    <SwitchInput
-                      isOn={showFilter}
-                      handleToggle={() => {
-                        SetShowFilter(!showFilter);
-                      }}
-                      label="Show Filter"
-                    />
-                  </span>
-                  <h5 className="element-header">Filter Student</h5>
-                </div>
-                {showFilter && (
-                  <>
+            {showFilter && (
+              <>
+                <div className="element-box">
+                  <div className="row justify-content-center">
+                    <div className="col-lg-12">
+                      <AlertMessage
+                        message={searchMsg?.message}
+                        failed={searchMsg?.failed}
+                      />
+                      <span className="element-actions mt-n2">
+                        <button
+                          className="btn btn-primary btn-sm"
+                          type="button"
+                          onClick={() => {
+                            history.push("/in/new-student");
+                          }}
+                        >
+                          <i className="os-icon os-icon-ui-22"></i>
+                          <span>Create New</span>
+                        </button>
+                      </span>
+
+                      <h5 className="element-header">Filter Student</h5>
+                    </div>
                     <div className="col-lg-4">
                       {/* Reg No input */}
                       <IconInput
@@ -592,10 +589,10 @@ const StudentList: FC<IProps> = ({ history }) => {
                         Search record
                       </button>
                     </div>
-                  </>
-                )}
-              </div>
-            </div>
+                  </div>
+                </div>{" "}
+              </>
+            )}
 
             {/* Students list */}
             <div className="row justify-content-center ">

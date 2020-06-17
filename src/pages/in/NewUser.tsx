@@ -27,11 +27,6 @@ const NewUser: FC<IProps> = ({ history }) => {
   const [bdrClass, SetBdrClass] = useState<string>();
   const [cPassword, SetCPassword] = useState<string>();
 
-  const scrollTop = () => {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-  };
-
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
     history.push("/login");

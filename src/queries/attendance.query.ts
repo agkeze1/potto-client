@@ -30,3 +30,37 @@ export const ROLL_CALL = gql`
     }
   }
 `;
+
+export const TIMETABLE_ATTENDANCE = gql`
+  query TIMETABLE_ATTENDANCE($timetable: ID!) {
+    GetAttendanceByTimetable(timetable: $timetable) {
+      message
+      docs {
+        id
+        date
+        device {
+          id
+          name
+        }
+        stats {
+          present
+          absent
+          exempted
+          manual
+        }
+        students {
+          student {
+            id
+            full_name
+            passport
+            gender
+            reg_no
+          }
+          present
+          exempted
+          manual
+        }
+      }
+    }
+  }
+`;

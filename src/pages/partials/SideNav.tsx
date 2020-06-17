@@ -229,22 +229,9 @@ const SideNav: FC<SideProps> = ({ location }) => {
                       List
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink
-                      to="/in/teacher-attendance"
-                      onClick={() => scrollTop()}
-                    >
-                      Attendance Report
-                    </NavLink>
-                  </li>
                 </ul>
               </div>
             </div>
-          </li>
-
-          {/* Student Mgt */}
-          <li className="sub-header">
-            <span>Student Mgt</span>
           </li>
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
@@ -320,6 +307,14 @@ const SideNav: FC<SideProps> = ({ location }) => {
                       onClick={() => scrollTop()}
                     >
                       Subject Attendance
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/in/teacher-attendance"
+                      onClick={() => scrollTop()}
+                    >
+                      Teacher Attendance
                     </NavLink>
                   </li>
                 </ul>

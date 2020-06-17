@@ -12,6 +12,7 @@ import AlertMessage from "../partials/AlertMessage";
 import Select from "react-select";
 import { GET_CLASS_TIMETABLE } from "../../queries/Timetable.query";
 import TimetableList from "./partials/TimetableList";
+import { ToggleExpansion } from "../../context/App";
 
 const ViewTimetable: FC<IProps> = ({ history }) => {
   const [ShowTimetable, SetShowTimetable] = useState<boolean>(false);
@@ -120,30 +121,6 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
         }),
     }
   );
-
-  // Toggle Timetable Expansion
-  const ExpandTimetable = () => {
-    const sideNav = document.getElementById("sideNav");
-    const header = document.getElementById("header");
-
-    //Toggle sideNav visibility
-    if (sideNav) {
-      if (sideNav.style.display === "none") {
-        sideNav.style.display = "block";
-      } else {
-        sideNav.style.display = "none";
-      }
-    }
-
-    // Toggle header visibility
-    if (header) {
-      if (header.style.display === "none") {
-        header.style.display = "block";
-      } else {
-        header.style.display = "none";
-      }
-    }
-  };
 
   return (
     <>
@@ -303,7 +280,7 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
                         href="#"
                         title="Toggle expasion"
                         onClick={() => {
-                          ExpandTimetable();
+                          ToggleExpansion();
                         }}
                       >
                         <i className="os-icon os-icon-maximize"></i>

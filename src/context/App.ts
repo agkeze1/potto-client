@@ -68,3 +68,29 @@ export const getTimetable = (
   }
   return callback(null);
 };
+
+/**
+ * Expansion / Show side nav and header
+ */
+export const ToggleExpansion = () => {
+  const sideNav = document.getElementById("sideNav");
+  const header = document.getElementById("header");
+
+  //Toggle sideNav visibility
+  if (sideNav) {
+    if (sideNav.style.display === "none") {
+      sideNav.style.display = "block";
+    } else {
+      sideNav.style.display = "none";
+    }
+  }
+
+  // Toggle header visibility
+  if (header) {
+    if (header.style.display === "none") {
+      header.style.display = "block";
+    } else {
+      header.style.display = "none";
+    }
+  }
+};

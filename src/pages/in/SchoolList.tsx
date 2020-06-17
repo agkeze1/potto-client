@@ -32,6 +32,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
 
   // Get  School of logged in user
   const { school } = authService.GetUser();
+  console.log("Active School: ", school);
 
   // Get List of schools
   const { data, loading, fetchMore } = useQuery(GET_SCHOOL_LIST, {
@@ -76,15 +77,13 @@ const SchoolList: FC<IProps> = ({ history }) => {
         <div className="content-box">
           <div className="element-wrapper">
             <span className="element-actions mt-n2">
-              <button
+              <NavLink
+                to="/in/new-school"
                 className="btn btn-primary "
-                data-target="#exampleModal1"
-                id="#newMax"
-                data-toggle="modal"
                 type="button"
               >
                 Create New
-              </button>
+              </NavLink>
             </span>
             <h5 className="element-header">School List</h5>
             <div className="element-box">

@@ -4,6 +4,6 @@
     force = false
     status = 200
 
-[build]
+[[build]]
     command = "CI=false && yarn build"
     publish = "build"

@@ -66,12 +66,14 @@ const MessageEditor: FC<iProp> = ({ onSubmit, total }) => {
                         {Math.ceil(character / perPage)}
                     </span>
                 </div>
-                <div>
-                    <strong>Receiver</strong>{" "}
-                    <span className="text-primary" style={{ fontSize: "1.5em" }}>
-                        {Intl.NumberFormat("en-US").format(total)}
-                    </span>
-                </div>
+                {total > 0 && (
+                    <div>
+                        <strong>Receiver</strong>{" "}
+                        <span className="text-primary" style={{ fontSize: "1.5em" }}>
+                            {Intl.NumberFormat("en-US").format(total)}
+                        </span>
+                    </div>
+                )}
             </div>
             <div className="text-right mt-3">
                 <button className="btn btn-primary" type="submit">

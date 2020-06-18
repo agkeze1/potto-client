@@ -58,7 +58,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
         <>
             {!data && !uData && (
                 <h5 className="text-center" style={{ paddingTop: "15%", color: "lightGrey" }}>
-                    <img src="./loading.gif" style={{ width: "50px" }} /> <br />
+                    <img src="./loading.gif" alt="loading" style={{ width: "50px" }} /> <br />
                     loading
                 </h5>
             )}
@@ -71,7 +71,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                         <div className="auth-box-w">
                             <div className="logo-w">
                                 <a href="/">
-                                    <img alt="logo" width="48" src={GET_LOGO} />
+                                    <img alt="application-logo" width="48" src={GET_LOGO} />
                                 </a>
                                 <h6 className="mt-2">{GetAppName()}</h6>
                             </div>

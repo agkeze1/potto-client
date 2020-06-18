@@ -404,7 +404,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink to="/in/graduate-student" onClick={() => scrollTop()}>
+                                        <NavLink to="/in/messaging/guardian" onClick={() => scrollTop()}>
                                             Message Guardians
                                         </NavLink>
                                     </li>

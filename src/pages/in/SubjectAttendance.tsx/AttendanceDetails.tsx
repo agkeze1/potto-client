@@ -222,7 +222,7 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
                       </thead>
                       <tbody>
                         {activeAtt.students.map((stu: any, index: number) => (
-                          <tr>
+                          <tr key={index}>
                             <td>{index + 1}</td>
                             <td className="text-left">
                               <img

@@ -49,7 +49,7 @@ const TeacherMessage = () => {
                             {data && !item && (
                                 <>
                                     <div className="col-12 fade-in">
-                                        <div className="element-box no-bg bg-white" style={{ minHeight: "480px" }}>
+                                        <div className="element-box" style={{ minHeight: "480px" }}>
                                             <TeacherMessageList items={data.GetTeacherMessageLog.docs} onSelect={(__item: any) => setItem(__item)} />
                                         </div>
                                     </div>
@@ -96,23 +96,48 @@ const TeacherMessage = () => {
                                                     <h6 className="element-header">Message Summary</h6>
                                                 </div>
                                                 <div className="col-md-12 col-12 mb-4">
-                                                    <Doughnut
-                                                        data={{
-                                                            labels: ["Teacher Selected", "Excluded"],
-                                                            datasets: [
-                                                                {
-                                                                    data: [item.teachers.length, item.excluded.length],
-                                                                    backgroundColor: ["#3ee36f", "#0582cc"],
-                                                                    hoverBackgroundColor: ["#3ee36f", "#0582cc"],
-                                                                },
-                                                            ],
-                                                        }}
-                                                        height={60}
-                                                        width={60}
-                                                        options={{
-                                                            cutoutPercentage: 80,
-                                                        }}
-                                                    />
+                                                    <div className="row justify-content-center">
+                                                        <div className="col-9">
+                                                            <Doughnut
+                                                                data={{
+                                                                    labels: ["Sent", "Failed"],
+                                                                    datasets: [
+                                                                        {
+                                                                            data: [item.successful_phone.length, item.invalid_phone.length],
+                                                                            backgroundColor: ["#3ee36f", "lightcoral"],
+                                                                            hoverBackgroundColor: ["#3ee36f", "lightcoral"],
+                                                                        },
+                                                                    ],
+                                                                }}
+                                                                height={60}
+                                                                width={60}
+                                                                options={{
+                                                                    cutoutPercentage: 80,
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="row justify-content-center">
+                                                        <div className="col-9">
+                                                            <Doughnut
+                                                                data={{
+                                                                    labels: ["Teacher Selected", "Excluded"],
+                                                                    datasets: [
+                                                                        {
+                                                                            data: [item.teachers.length, item.excluded.length],
+                                                                            backgroundColor: ["#3ee36f", "#0582cc"],
+                                                                            hoverBackgroundColor: ["#3ee36f", "#0582cc"],
+                                                                        },
+                                                                    ],
+                                                                }}
+                                                                height={60}
+                                                                width={60}
+                                                                options={{
+                                                                    cutoutPercentage: 80,
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div className="col-12">
                                                     <h6 className="element-header">Teacher Summary</h6>

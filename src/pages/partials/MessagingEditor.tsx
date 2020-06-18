@@ -39,9 +39,9 @@ const MessageEditor: FC<iProp> = ({ onSubmit, total }) => {
                 rows={10}
                 className="form-control"
             ></textarea>
-            <hr />
 
             <div
+                className="mt-5"
                 style={{
                     display: "flex",
                     justifyContent: "space-around",

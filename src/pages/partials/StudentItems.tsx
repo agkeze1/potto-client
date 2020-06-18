@@ -15,8 +15,8 @@ const StudentListing: FC<iProp> = ({ items }) => {
                             <th>Passport</th>
                             <th>FullName</th>
                             <th>Reg. No</th>
-                            <th>Class</th>
-                            <th>Gender</th>
+                            <th className="text-center">Class</th>
+                            <th className="text-right">Gender</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,10 +32,10 @@ const StudentListing: FC<iProp> = ({ items }) => {
                                 </td>
                                 <td>{stu.full_name}</td>
                                 <td>{stu.reg_no}</td>
-                                <td>
+                                <td className="text-center">
                                     <strong>{stu.current_class?.name}</strong>
                                 </td>
-                                <td>{stu.gender}</td>
+                                <td className="text-right">{stu.gender}</td>
                             </tr>
                         ))}
                     </tbody>

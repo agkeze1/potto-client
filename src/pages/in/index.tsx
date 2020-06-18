@@ -39,6 +39,7 @@ import SubjectAttendance from "./SubjectAttendance.tsx";
 import TeacherAttendance from "./TeacherAttendance";
 import TeacherMessage from "./TeacherMessage";
 import SendTeacherMessage from "./TeacherMessage/NewMessage";
+import GuardianMessage from "./GuardianMessage/index";
 
 const Home: FC<IProps> = ({ location, history }) => {
     document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
@@ -99,6 +100,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                                 <Route path="/in/teacher-attendance" component={TeacherAttendance} />
                                 <Route path="/in/messaging/teachers" exact={true} component={TeacherMessage} />
                                 <Route path="/in/messaging/teachers/new" component={SendTeacherMessage} />
+                                <Route path="/in/messaging/guardian" component={GuardianMessage} />
                             </Switch>
                         </div>
                     </div>

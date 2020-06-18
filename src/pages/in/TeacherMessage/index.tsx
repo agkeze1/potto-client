@@ -67,7 +67,7 @@ const TeacherMessage = () => {
                                             <div className="element-box no-bg bg-white">
                                                 <h5 className="element-header">
                                                     <button onClick={() => setItem(undefined)} className="btn btn-default">
-                                                        <i className="os-icon os-icon-arrow-left6 text-primary"></i>
+                                                        <i style={{ fontSize: "1.5em" }} className="os-icon os-icon-arrow-left2 text-primary"></i>
                                                     </button>
                                                     Message Detail
                                                 </h5>
@@ -78,6 +78,7 @@ const TeacherMessage = () => {
                                                 <strong>Status</strong>
                                                 <p>
                                                     {item.status ? <span className="badge badge-success text-uppercase">Sent</span> : <span className="badge badge-danger text-uppercase">Failed</span>}
+                                                    {!item.status && <span>{item.sms_message}</span>}
                                                 </p>
                                                 {item.excluded.length > 0 && (
                                                     <>
@@ -137,6 +138,30 @@ const TeacherMessage = () => {
                                                 <div className="col-md-6 col-12">
                                                     <CountCard title="SMS Page" loading={loading} value={item.smsPage} cssClass="bg-light-blue" />
                                                 </div>
+                                                {item.successful_phone.length > 0 && (
+                                                    <div className="col-12 fade-in">
+                                                        <h6 className="element-header">Successful Phones</h6>
+                                                        <div className="box-parent">
+                                                            {item.successful_phone.map((phone: string) => (
+                                                                <div key={phone} className="box">
+                                                                    <strong>{phone}</strong>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {item.invalid_phone.length > 0 && (
+                                                    <div className="col-12 fade-in">
+                                                        <h6 className="element-header">Invalid Phones</h6>
+                                                        <div className="box-parent">
+                                                            {item.invalid_phone.map((phone: string) => (
+                                                                <div key={phone} className="box">
+                                                                    <strong>{phone}</strong>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

@@ -22,7 +22,9 @@ const StudentListing: FC<iProp> = ({ items }) => {
                     <tbody>
                         {items.map((stu: any, index: number) => (
                             <tr key={index}>
-                                <td>{index + 1}</td>
+                                <td>
+                                    <strong>{index + 1}</strong>
+                                </td>
                                 <td>
                                     <div className="user-with-avatar clickable" data-toggle="modal">
                                         <img src={stu.passport || "/avatar.png"} alt="" />

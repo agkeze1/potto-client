@@ -113,19 +113,19 @@ const TeacherAttendance = () => {
                                         <div className="row">
                                             <div className="col-12">
                                                 <div className="row">
-                                                    <div className="col-4">
+                                                    <div className="col-md-4 col-12">
                                                         <CountCard loading={summaryLoading} cssClass="bg-light-green" title="Expected Attendance" value={Math.round(totalTimetable * week.value)} />
                                                     </div>
-                                                    <div className="col-4">
+                                                    <div className="col-md-4 col-12">
                                                         <CountCard loading={summaryLoading} cssClass="bg-darkseagreen" title="Total Attendance" value={totalAttendance} />
                                                     </div>
-                                                    <div className="col-4">
+                                                    <div className="col-md-4 col-12">
                                                         <CountCard loading={loading} cssClass="bg-light-blue" title="Total Timetable" value={totalTimetable} />
                                                     </div>
-                                                    <div className="col-4">
+                                                    <div className="col-md-4 col-12">
                                                         <CountCard loading={summaryLoading} cssClass="bg-lightcoral" title="Total Tardiness" value={toPrettyTime(totalMinutes)} />
                                                     </div>
-                                                    <div className="col-4">
+                                                    <div className="col-md-4 col-12">
                                                         <CountCard
                                                             loading={summaryLoading}
                                                             cssClass="bg-light-red"

@@ -30,7 +30,7 @@ const AttendanceTardiness: FC<iProp> = ({ items, onTeacher }) => {
                                     <td>
                                         <div className="users-list-w">
                                             <div className="user-w with-status status-green fade-in ">
-                                                <Image alt={item.teacher.first_name} src={item.teacher.image} width={50} />
+                                                <Image alt={item.teacher.first_name} src={item.teacher.image} width={40} />
                                                 <div className="user-name">
                                                     <h6 className="user-title">{item.teacher.name}</h6>
                                                     <div className="user-role">

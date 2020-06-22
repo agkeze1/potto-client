@@ -9,4 +9,6 @@ export class User {
     image = "";
     school = new School();
     created_at = "";
+    admin = false;
+    superAdmin = false;
 }

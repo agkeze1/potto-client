@@ -4,13 +4,13 @@ import { cleanDate, GetTimeDifference } from "../../../context/App";
 interface iProp {
     items: Array<any>;
     onSelect?: any;
-    total: number;
+    total?: number;
 }
 
-const TeacherAttendanceList: FC<iProp> = ({ items, onSelect, total }) => {
+const TeacherAttendanceList: FC<iProp> = ({ items }) => {
     if (items.length)
         return (
-            <div className="row fade-in">
+            <div className="row fade-in ">
                 <div className="col-12">
                     <table className="table table-padded">
                         <thead>

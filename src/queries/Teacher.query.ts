@@ -161,3 +161,12 @@ export const TEACHER_LOGIN = gql`
     }
     ${TEACHER_PROPS}
 `;
+
+export const UPDATE_PASSWORD_TEACHER = gql`
+    mutation UpdateTeacherPassword($old: String!, $_new: String!) {
+        UpdateTeacherPassword(oldPassword: $old, newPassword: $_new) {
+            message
+            token
+        }
+    }
+`;

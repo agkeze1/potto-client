@@ -1,43 +1,36 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import { GetAppName, GET_LOGO } from "../../context/App";
-import { NavLink } from "react-router-dom";
+import { GetAppName, GET_LOGO, GetParamFromQuery } from "../../context/App";
 import Input from "../partials/Input";
 import LoadingState from "../partials/loading";
-import { useMutation } from "@apollo/react-hooks";
 
-import { IProps } from "../../models/IProps";
 import { toast } from "react-toastify";
-import { CleanMessage } from "./../../context/App";
-import { TEACHER_LOGIN } from "../../queries/Teacher.query";
+import { CleanMessage } from "../../context/App";
+import { CHANGE_TEACHER_PASSWORD } from "../../queries/Teacher.query";
+import { useMutation } from "@apollo/react-hooks";
 import { teacherAuthService } from "../../services/teacher.auth.service";
+import { Redirect } from "react-router-dom";
 
-const TeacherLogin: React.FC<IProps> = ({ history }) => {
+const TeacherNewPassword = () => {
     document.body.className = "auth-wrapper";
 
-    const [email, SetEmail] = useState<string>();
-    const [password, SetPassword] = useState<string>();
+    const email = GetParamFromQuery("email");
+    const [newPassword, setNewPassword] = useState<string>();
+    const [confirmPassword, setConfirmPassword] = useState<string>();
 
-    // Check if user is already logged in
-    if (teacherAuthService.IsAuthenticated()) {
-        history.push("/teacher/app");
-    }
-
-    const [Login, { loading }] = useMutation(TEACHER_LOGIN, {
+    const [changeFunc, { loading }] = useMutation(CHANGE_TEACHER_PASSWORD, {
         onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
-            const { doc, token, message } = data.TeacherLogin;
+            const { message, token, doc } = data.ChangeTeacherPassword;
+            toast.success(message);
             teacherAuthService.Login(doc, token);
-            toast.success(message, {
-                position: "bottom-center",
-            });
         },
     });
-
+    if (!email) return <Redirect to="/teacher/login" />;
     return (
         <>
             <Helmet>
-                <title> Teacher Login | {GetAppName()}</title>
+                <title> Teacher New Password | {GetAppName()}</title>
             </Helmet>
             <div className="all-wrapper menu-side with-pattern slide-in-elliptic-top-fwd">
                 <div className="auth-box-w">
@@ -47,61 +40,50 @@ const TeacherLogin: React.FC<IProps> = ({ history }) => {
                         </a>
                         <h6 className="mt-1">{GetAppName()}</h6>
                     </div>
-                    <h4 className="auth-header">Teacher's Login</h4>
+                    <h4 className="auth-header">Teacher's New Password</h4>
                     <form
                         className="pb-4"
                         onSubmit={async (e) => {
                             e.preventDefault();
-                            // Reset Message
-
-                            if (email && password) {
-                                // Login
-                                await Login({
-                                    variables: {
-                                        email,
-                                        password,
-                                    },
-                                });
+                            if (newPassword === confirmPassword) {
+                                await changeFunc({ variables: { email, newPassword } });
                                 if (teacherAuthService.IsAuthenticated()) {
                                     document.location.href = "/teacher/app";
                                 }
+                            } else {
+                                toast.warning("Password do not match!");
                             }
                         }}
                     >
-                        {/* Email input */}
-                        <Input
-                            name="email"
-                            placeholder="Enter email or phone"
-                            label="Email / Phone"
-                            onChange={(email: string) => {
-                                SetEmail(email);
-                            }}
-                            icon="os-icon-user-male-circle"
-                            required={true}
-                            type="text"
-                        />
-
-                        {/* Password input */}
                         <Input
                             name="password"
                             placeholder="Enter password"
                             label="Password"
                             onChange={(password: string) => {
-                                SetPassword(password);
+                                setNewPassword(password);
                             }}
                             icon="os-icon-fingerprint"
                             required={true}
                             type="password"
                         />
+                        <Input
+                            name="confirm-password"
+                            placeholder="confirm password"
+                            label="Confirm Password"
+                            onChange={(password: string) => {
+                                setConfirmPassword(password);
+                            }}
+                            icon="os-icon-fingerprint"
+                            required={true}
+                            type="password"
+                        />
+
                         <LoadingState loading={loading} />
-                        <div className="buttons-w pb-3">
+                        <div className="text-center pb-3">
                             <button type="submit" disabled={loading} className="btn btn-primary">
-                                {loading ? <span>Please wait</span> : <span>Login</span>}
+                                {loading ? <span>Please wait</span> : <span>Submit</span>}
                                 <div className="os-icon os-icon-arrow-right7"></div>
                             </button>
-                            <NavLink className="btn btn-link text-primary" to="/teacher/reset-password">
-                                Forgot password?
-                            </NavLink>
                         </div>
                     </form>
                     <a className="text-center font-sm footer pb-3 text-primary" href="http://afari.com">
@@ -113,4 +95,4 @@ const TeacherLogin: React.FC<IProps> = ({ history }) => {
         </>
     );
 };
-export default TeacherLogin;
+export default TeacherNewPassword;

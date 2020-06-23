@@ -14,6 +14,7 @@ import TeacherLogin from "./pages/teacher-corner/Login";
 import PrivateRouteTeacher from "./context/PrivateRouteTeacher";
 import TeacherCorner from "./pages/teacher-corner";
 import TeacherPasswordReset from "./pages/teacher-corner/PasswordReset";
+import TeacherNewPassword from "./pages/teacher-corner/TeacherNewPassword";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/teacher/login" component={TeacherLogin} />
                 <PrivateRouteTeacher path="/teacher/app" component={TeacherCorner} />
                 <Route path="/teacher/reset-password" component={TeacherPasswordReset} />
+                <Route path="/teacher/new-password" component={TeacherNewPassword} />
             </Switch>
             <ToastContainer position="top-center" />
         </>

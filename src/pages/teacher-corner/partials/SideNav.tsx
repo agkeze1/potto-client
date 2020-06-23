@@ -27,7 +27,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
          nav-bg-color"
             >
                 <div className="logo-w">
-                    <NavLink className="logo" to="/in/dashboard">
+                    <NavLink className="logo" to="/teacher/app">
                         <div style={{ display: "inline" }}>
                             <img style={{ width: "48px" }} alt="logo" src={GET_LOGO} />
                         </div>
@@ -36,7 +36,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
                 </div>
                 <ul className="main-menu">
                     <li className="menu-link">
-                        <NavLink to="/teacher/app/profile" onClick={() => scrollTop()}>
+                        <NavLink exact to="/teacher/app" onClick={() => scrollTop()}>
                             <div className="icon-w">
                                 <div className="os-icon os-icon-ui-90"></div>
                             </div>
@@ -60,6 +60,14 @@ const SideNav: FC<SideProps> = ({ location }) => {
                         </NavLink>
                     </li>
                     <li className="menu-link">
+                        <NavLink to="/teacher/app/feedback" onClick={() => scrollTop()}>
+                            <div className="icon-w">
+                                <div className="os-icon os-icon-mail-14"></div>
+                            </div>
+                            <span>Send Feedback</span>
+                        </NavLink>
+                    </li>
+                    <li className="menu-link">
                         <NavLink to="/teacher/app/update-password" onClick={() => scrollTop()}>
                             <div className="icon-w">
                                 <div className="os-icon os-icon-ui-46"></div>
@@ -71,8 +79,10 @@ const SideNav: FC<SideProps> = ({ location }) => {
                     <li className="menu-link">
                         <a
                             onClick={() => {
-                                teacherAuthService.Logout();
-                                document.location.href = "/teacher/login";
+                                if (window.confirm("Are you sure you want to logout?")) {
+                                    teacherAuthService.Logout();
+                                    document.location.href = "/teacher/login";
+                                }
                             }}
                             href="#"
                         >

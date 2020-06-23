@@ -9,6 +9,7 @@ import { Switch, Route } from "react-router-dom";
 import TeacherTimetable from "./Timetable";
 import TeacherAttendance from "./Attendance";
 import UpdateTeacherPassword from "./UpdatePassword";
+import SendFeedback from "../in/SendFeedback";
 
 const TeacherCorner: FC<IProps> = ({ location }) => {
     const { name } = teacherAuthService.GetTeacher();
@@ -35,11 +36,11 @@ const TeacherCorner: FC<IProps> = ({ location }) => {
                         {/* Content */}
                         <div className="main-container">
                             <Switch>
-                                <Route exact path="/teacher/app/" component={TeacherProfile} />
-                                <Route exact path="/teacher/app/profile" component={TeacherProfile} />
-                                <Route exact path="/teacher/app/timetable" component={TeacherTimetable} />
-                                <Route exact path="/teacher/app/attendance" component={TeacherAttendance} />
-                                <Route exact path="/teacher/app/update-password" component={UpdateTeacherPassword} />
+                                <Route exact path="/teacher/app" component={TeacherProfile} />
+                                <Route exact={true} path="/teacher/app/timetable" component={TeacherTimetable} />
+                                <Route exact={true} path="/teacher/app/attendance" component={TeacherAttendance} />
+                                <Route exact={true} path="/teacher/app/update-password" component={UpdateTeacherPassword} />
+                                <Route exact={true} path="/teacher/app/feedback" component={SendFeedback} />
                             </Switch>
                         </div>
                     </div>

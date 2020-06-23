@@ -27,7 +27,7 @@ const TeacherPasswordReset = () => {
             <Helmet>
                 <title> Teacher Password Reset | {GetAppName()}</title>
             </Helmet>
-            <div className="all-wrapper menu-side with-pattern slide-in-elliptic-bottom-fwd">
+            <div className="all-wrapper menu-side with-pattern slide-in-elliptic-top-fwd">
                 <div className="auth-box-w">
                     <div className="logo-w">
                         <a href="/">

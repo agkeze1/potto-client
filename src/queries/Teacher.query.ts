@@ -175,3 +175,16 @@ export const PASSWORD_RESET = gql`
         PasswordReset(no: $no)
     }
 `;
+
+export const CHANGE_TEACHER_PASSWORD = gql`
+    mutation ChangeTeacherPassword($email: String!, $newPassword: String!) {
+        ChangeTeacherPassword(email: $email, newPassword: $newPassword) {
+            token
+            message
+            doc {
+                ...TEACHER_PROPS
+            }
+        }
+    }
+    ${TEACHER_PROPS}
+`;

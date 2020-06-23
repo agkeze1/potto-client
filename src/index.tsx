@@ -9,14 +9,17 @@ import { authService } from "./services/Auth.Service";
 import { GET_API_URL } from "./context/App";
 import ApolloClient from "apollo-boost";
 import ThemeSelector from "./theme/ThemeSelector";
+import { teacherAuthService } from "./services/teacher.auth.service";
 
 const client = new ApolloClient({
     uri: GET_API_URL(),
     request: (operation) => {
         const token = authService.GetToken();
+        const teacher_token = teacherAuthService.GetToken();
+
         operation.setContext({
             headers: {
-                authorization: token ? `Bearer ${token}` : "",
+                authorization: token || teacher_token ? `Bearer ${token || teacher_token}` : "",
             },
         });
     },

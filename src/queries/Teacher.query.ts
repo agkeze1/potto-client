@@ -148,3 +148,16 @@ export const GET_TEACHER_TIMETABLE = gql`
         }
     }
 `;
+
+export const TEACHER_LOGIN = gql`
+    mutation TEACHER_LOGIN($email: String!, $password: String!) {
+        TeacherLogin(email: $email, password: $password) {
+            token
+            message
+            doc {
+                ...TEACHER_PROPS
+            }
+        }
+    }
+    ${TEACHER_PROPS}
+`;

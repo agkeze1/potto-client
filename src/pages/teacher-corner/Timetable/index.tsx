@@ -15,6 +15,7 @@ const TeacherTimetable = () => {
         onError: (e) => toast.error(CleanMessage(e.message)),
         variables: { teacher: teacher.id },
     });
+
     return (
         <>
             <Helmet>

@@ -6,6 +6,7 @@ import { IProps } from "./../../models/IProps";
 import SideNav from "./partials/SideNav";
 import TeacherProfile from "./Profile";
 import { Switch, Route } from "react-router-dom";
+import TeacherTimetable from "./Timetable";
 
 const TeacherCorner: FC<IProps> = ({ location }) => {
     const { name } = teacherAuthService.GetTeacher();
@@ -33,6 +34,7 @@ const TeacherCorner: FC<IProps> = ({ location }) => {
                         <div className="main-container">
                             <Switch>
                                 <Route exact path="/teacher/app/profile" component={TeacherProfile} />
+                                <Route exact path="/teacher/app/timetable" component={TeacherTimetable} />
                             </Switch>
                         </div>
                     </div>

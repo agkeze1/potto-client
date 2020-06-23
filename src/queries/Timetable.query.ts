@@ -182,3 +182,12 @@ export const GET_ATTENDANCE_SUMMARY = gql`
         }
     }
 `;
+
+export const GET_SINGLE_TIMETABLE_ATTENDANCE = gql`
+    query GetTeacherAttendanceByTimetable($timetable: ID!) {
+        GetTeacherAttendanceByTimetable(timetable: $timetable) {
+            date
+            totalMinutes
+        }
+    }
+`;

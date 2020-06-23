@@ -10,9 +10,8 @@ const TeacherAttendanceSummary: FC<iProp> = ({ items }) => {
     if (items.length)
         return (
             <div>
-                <h3>Record available</h3>
                 {items.map((item: any, idx: number) => (
-                    <Accordion allowMultipleExpanded={true} key={idx} preExpanded={["accordion"]} className="mb-2">
+                    <Accordion allowMultipleExpanded={true} key={idx} preExpanded={["accordion__panel-0"]} className="mb-2">
                         <AccordionItem>
                             <AccordionItemHeading>
                                 <AccordionItemButton>

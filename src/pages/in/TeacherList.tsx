@@ -9,22 +9,19 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import { TEACHER_LIST, REMOVE_TEACHER, UPDATE_TEACHER } from "../../queries/Teacher.query";
 import { authService } from "../../services/Auth.Service";
 import { IProps } from "../../models/IProps";
-import { IMessage } from "../../models/IMessage";
 import LoadingState from "../partials/loading";
-import AlertMessage from "../partials/AlertMessage";
 import { IImageProp } from "../../models/IImageProp";
 import Pagination from "../partials/Pagination";
 import IconInput from "../partials/IconInput";
-// import ImageUpload from "../partials/ImageUpload";
 import gender from "../../data/gender.json";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
+import { toast } from "react-toastify";
+import { CleanMessage } from "./../../context/App";
+import MessageEditor from "../partials/MessagingEditor";
+import { SEND_TEACHER_MESSAGE } from "../../queries/teacher-message.query";
 
 const TeacherList: FC<IProps> = ({ history }) => {
-    const [message, SetMessage] = useState<IMessage>();
-    const [rMessage, SetRMessage] = useState<IMessage>();
-    const [uMessage, SetUMessage] = useState<IMessage>();
-
     const [activeTeacherId, SetActiveTeacherId] = useState<string>();
     const [activeTeacher, SetActiveTeacher] = useState<any>({});
     const [editTeacher, SetEditTeacher] = useState<any>({});
@@ -49,11 +46,14 @@ const TeacherList: FC<IProps> = ({ history }) => {
     // Fetch List of Teachers
     const { loading, data, fetchMore } = useQuery(TEACHER_LIST, {
         variables: { page, limit },
-        onError: (err) =>
-            SetMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
+    });
+
+    const [sendMesageFunc, { loading: messageLoading }] = useMutation(SEND_TEACHER_MESSAGE, {
+        onError: (err) => toast.error(CleanMessage(err.message)),
+        onCompleted: (d) => {
+            toast.success(d.SendTeachersMessage.message);
+        },
     });
 
     useEffect(() => {
@@ -70,11 +70,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
 
     // Remove Teacher
     const [RemoveTeacher, { loading: rLoading }] = useMutation(REMOVE_TEACHER, {
-        onError: (err) =>
-            SetRMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
                 query: TEACHER_LIST,
@@ -96,16 +92,9 @@ const TeacherList: FC<IProps> = ({ history }) => {
 
     // Update Teacher
     const [UpdateTeacher, { loading: uLoading }] = useMutation(UPDATE_TEACHER, {
-        onError: (err) =>
-            SetUMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
-            SetUMessage({
-                message: data.UpdateTeacher.message,
-                failed: false,
-            });
+            toast.success(data.UpdateTeacher.message);
         },
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
@@ -179,8 +168,6 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                 )}
 
                                 <LoadingState loading={loading || rLoading} />
-                                <AlertMessage failed={message?.failed} message={message?.message} />
-                                <AlertMessage failed={rMessage?.failed} message={rMessage?.message} />
                                 {data && data.GetTeachers.docs.length > 0 && (
                                     <div className="row justify-content-center ">
                                         <div className="col-lg-12 pt-5">
@@ -236,7 +223,6 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                                             href="#"
                                                                             title="Edit"
                                                                             onClick={() => {
-                                                                                SetUMessage(undefined);
                                                                                 SetActiveTeacherId(teacher.id);
                                                                                 SetEditTeacher({
                                                                                     firstname: teacher.first_name,
@@ -361,6 +347,12 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                                 Timetable
                                                             </a>
                                                         </li>
+                                                        {/* MESSAGE */}
+                                                        <li className="nav-item text-uppercase">
+                                                            <a className="nav-link" data-toggle="tab" href="#message">
+                                                                Send Message
+                                                            </a>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                                 <div className="tab-content">
@@ -398,6 +390,25 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                                             <TeacherTTAccordion day="Friday" />
                                                         </div>
                                                     </div>
+                                                    <div className="tab-pane" id="message">
+                                                        <div className="slit-in-vertical">
+                                                            <MessageEditor
+                                                                onSubmit={async (message: string) =>
+                                                                    await sendMesageFunc({
+                                                                        variables: {
+                                                                            model: {
+                                                                                message,
+                                                                                excluded: [],
+                                                                                teachers: [activeTeacher.id],
+                                                                            },
+                                                                        },
+                                                                    })
+                                                                }
+                                                                total={1}
+                                                            />
+                                                            <LoadingState loading={messageLoading} />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -428,7 +439,6 @@ const TeacherList: FC<IProps> = ({ history }) => {
                             </div>
                             <div className="modal-body element-box pb-2">
                                 <LoadingState loading={uLoading} />
-                                <AlertMessage message={uMessage?.message} failed={uMessage?.failed} />
                                 <form
                                     onSubmit={async (e) => {
                                         e.preventDefault();

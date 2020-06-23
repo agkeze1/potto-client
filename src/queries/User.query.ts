@@ -43,6 +43,8 @@ export const USER_LOGIN = gql`
                     id
                     name
                 }
+                admin
+                superAdmin
             }
             token
         }
@@ -80,6 +82,8 @@ export const USER_SETUP = gql`
                     name
                     alias
                 }
+                admin
+                superAdmin
             }
         }
     }

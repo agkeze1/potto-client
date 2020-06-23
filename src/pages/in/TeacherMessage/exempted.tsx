@@ -12,7 +12,7 @@ const TeacherExemptedList: FC<iProp> = ({ items, onCheck }) => {
         return (
             <div className="row">
                 {items.map((item: any, idx) => (
-                    <div key={idx} className="col-md-3 col-12 fade-in">
+                    <div key={idx} className="col-md-3 col-12 slit-out-horizontal slit-in-vertical">
                         <div className="element-box text-center no-bg bg-white">
                             <div className="text-right">
                                 <a className="btn-icon" onClick={() => onCheck(item)} title={`Remove ${item.name}`} href="javascript:void(0)">

@@ -3,6 +3,7 @@ import React, { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { GetAppName, GET_LOGO } from "../../context/App";
 import { authService } from "../../services/Auth.Service";
+import Image from "./Image";
 
 interface SideProps {
     location?: any;
@@ -35,9 +36,8 @@ const SideNav: FC<SideProps> = ({ location }) => {
                 </div>
                 <div className="logged-user-w avatar-inline">
                     <div className="logged-user-i">
-                        <div className="avatar-w">
-                            <img alt={user.name} src={user.image} />
-                        </div>
+                        <Image alt={user.name} src={user.image} width={40} />
+
                         <div className="logged-user-info-w">
                             <div className="logged-user-name">{user?.name}</div>
                             <div className="logged-user-role">{user?.email}</div>
@@ -57,122 +57,131 @@ const SideNav: FC<SideProps> = ({ location }) => {
                         </NavLink>
                     </li>
 
-                    {/* School Mgt */}
-                    <li className="sub-header">
-                        <span>School Mgt</span>
-                    </li>
-                    <li className="has-sub-menu">
-                        <NavLink to="#" onClick={() => scrollTop()}>
-                            <div className="icon-w">
-                                <div className="os-icon os-icon-home"></div>
-                            </div>
-                            <span>School</span>
-                        </NavLink>
-                        <div className="sub-menu-w">
-                            <div className="sub-menu-header">School</div>
-                            <div className="sub-menu-icon">
-                                <i className="os-icon os-icon-layout"></i>
-                            </div>
-                            <div className="sub-menu-i">
-                                <ul className="sub-menu">
-                                    <li>
-                                        <NavLink to="/in/new-school" onClick={() => scrollTop()} className="">
-                                            New
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/school-list" onClick={() => scrollTop()}>
-                                            List
-                                        </NavLink>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li className="has-sub-menu">
-                        <NavLink to="#" onClick={() => scrollTop()}>
-                            <div className="icon-w">
-                                <div className="os-icon os-icon-settings"></div>
-                            </div>
-                            <span>Setup</span>
-                        </NavLink>
-                        <div className="sub-menu-w">
-                            <div className="sub-menu-header">Setup</div>
-                            <div className="sub-menu-icon">
-                                <i className="os-icon os-icon-layout"></i>
-                            </div>
-                            <div className="sub-menu-i">
-                                <ul className="sub-menu">
-                                    <li>
-                                        <NavLink to="/in/term" onClick={() => scrollTop()}>
-                                            <span>Term</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/level" onClick={() => scrollTop()}>
-                                            <span>Level</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/class" onClick={() => scrollTop()}>
-                                            <span>Class</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/subjects" onClick={() => scrollTop()}>
-                                            <span>Subjects</span>
-                                        </NavLink>
-                                    </li>
+                    {user.superAdmin && (
+                        <>
+                            {/* School Mgt */}
+                            <li className="sub-header">
+                                <span>School Mgt</span>
+                            </li>
+                            <li className="has-sub-menu">
+                                <NavLink to="#" onClick={() => scrollTop()}>
+                                    <div className="icon-w">
+                                        <div className="os-icon os-icon-home"></div>
+                                    </div>
+                                    <span>School</span>
+                                </NavLink>
+                                <div className="sub-menu-w">
+                                    <div className="sub-menu-header">School</div>
+                                    <div className="sub-menu-icon">
+                                        <i className="os-icon os-icon-layout"></i>
+                                    </div>
+                                    <div className="sub-menu-i">
+                                        <ul className="sub-menu">
+                                            <li>
+                                                <NavLink to="/in/new-school" onClick={() => scrollTop()} className="">
+                                                    New
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to="/in/school-list" onClick={() => scrollTop()}>
+                                                    List
+                                                </NavLink>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </>
+                    )}
 
-                                    <li>
-                                        <NavLink to="/in/guardian-type" onClick={() => scrollTop()}>
-                                            <span>Guardian Type</span>
-                                        </NavLink>
-                                    </li>
-                                </ul>
-                                <ul className="sub-menu">
-                                    <li>
-                                        <NavLink to="/in/period" onClick={() => scrollTop()}>
-                                            <span>Period</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/new-timetable" onClick={() => scrollTop()}>
-                                            <span>New Timetable</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/view-timetable" onClick={() => scrollTop()}>
-                                            <span>View Timetable</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/device-list" onClick={() => scrollTop()}>
-                                            <span>Device List</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/role" onClick={() => scrollTop()}>
-                                            <span>Role</span>
-                                        </NavLink>
-                                    </li>
-                                </ul>
+                    {user.admin && (
+                        <li className="has-sub-menu">
+                            <NavLink to="#" onClick={() => scrollTop()}>
+                                <div className="icon-w">
+                                    <div className="os-icon os-icon-settings"></div>
+                                </div>
+                                <span>Setup</span>
+                            </NavLink>
+                            <div className="sub-menu-w">
+                                <div className="sub-menu-header">Setup</div>
+                                <div className="sub-menu-icon">
+                                    <i className="os-icon os-icon-layout"></i>
+                                </div>
+                                <div className="sub-menu-i">
+                                    <ul className="sub-menu">
+                                        <li>
+                                            <NavLink to="/in/term" onClick={() => scrollTop()}>
+                                                <span>Term</span>
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/in/level" onClick={() => scrollTop()}>
+                                                <span>Level</span>
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/in/class" onClick={() => scrollTop()}>
+                                                <span>Class</span>
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/in/subjects" onClick={() => scrollTop()}>
+                                                <span>Subjects</span>
+                                            </NavLink>
+                                        </li>
+
+                                        <li>
+                                            <NavLink to="/in/guardian-type" onClick={() => scrollTop()}>
+                                                <span>Guardian Type</span>
+                                            </NavLink>
+                                        </li>
+                                    </ul>
+                                    <ul className="sub-menu">
+                                        <li>
+                                            <NavLink to="/in/period" onClick={() => scrollTop()}>
+                                                <span>Period</span>
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/in/new-timetable" onClick={() => scrollTop()}>
+                                                <span>New Timetable</span>
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/in/view-timetable" onClick={() => scrollTop()}>
+                                                <span>View Timetable</span>
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/in/device-list" onClick={() => scrollTop()}>
+                                                <span>Device List</span>
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/in/role" onClick={() => scrollTop()}>
+                                                <span>Role</span>
+                                            </NavLink>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    </li>
+                        </li>
+                    )}
 
                     {/* User Mgt */}
                     <li className="sub-header">
                         <span>User Mgt</span>
                     </li>
-                    <li className="menu-link">
-                        <NavLink to="/in/super-admin-list" onClick={() => scrollTop()}>
-                            <div className="icon-w">
-                                <i className="os-icon os-icon-layout"></i>
-                            </div>{" "}
-                            Super Admin
-                        </NavLink>
-                    </li>
+                    {user.superAdmin && (
+                        <li className="menu-link">
+                            <NavLink to="/in/super-admin-list" onClick={() => scrollTop()}>
+                                <div className="icon-w">
+                                    <i className="os-icon os-icon-layout"></i>
+                                </div>{" "}
+                                Super Admin
+                            </NavLink>
+                        </li>
+                    )}
                     <li className="has-sub-menu">
                         <NavLink to="#" onClick={() => scrollTop()}>
                             <div className="icon-w">
@@ -310,74 +319,77 @@ const SideNav: FC<SideProps> = ({ location }) => {
                             </div>
                         </div>
                     </li>
+                    {user.superAdmin && (
+                        <>
+                            {/* Navigation Mgt */}
+                            <li className="sub-header">
+                                <span>Navigation Mgt</span>
+                            </li>
+                            <li className="has-sub-menu">
+                                <NavLink to="#" onClick={() => scrollTop()}>
+                                    <div className="icon-w">
+                                        <div className="os-icon os-icon-list"></div>
+                                    </div>
+                                    <span>Navigation</span>
+                                </NavLink>
+                                <div className="sub-menu-w">
+                                    <div className="sub-menu-header">Navigation</div>
+                                    <div className="sub-menu-icon">
+                                        <i className="os-icon os-icon-layout"></i>
+                                    </div>
+                                    <div className="sub-menu-i">
+                                        <ul className="sub-menu">
+                                            <li>
+                                                <NavLink to="/in/navigation" onClick={() => scrollTop()}>
+                                                    Navigation
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to="/in/navigation-group" onClick={() => scrollTop()}>
+                                                    Navigation Group
+                                                </NavLink>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
 
-                    {/* Navigation Mgt */}
+                            {/* Feedback Mgt */}
+                            <li className="sub-header">
+                                <span>Feedback Mgt</span>
+                            </li>
+                            <li className="has-sub-menu">
+                                <NavLink to="#" onClick={() => scrollTop()}>
+                                    <div className="icon-w">
+                                        <div className="os-icon os-icon-common-07"></div>
+                                    </div>
+                                    <span>Feedback</span>
+                                </NavLink>
+                                <div className="sub-menu-w">
+                                    <div className="sub-menu-header">Feedback</div>
+                                    <div className="sub-menu-icon">
+                                        <i className="os-icon os-icon-layout"></i>
+                                    </div>
+                                    <div className="sub-menu-i">
+                                        <ul className="sub-menu">
+                                            <li>
+                                                <NavLink to="/in/feedback" onClick={() => scrollTop()}>
+                                                    Feedback
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to="/in/feedback-type" onClick={() => scrollTop()}>
+                                                    Feedback Type
+                                                </NavLink>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </>
+                    )}
                     <li className="sub-header">
-                        <span>Navigation Mgt</span>
-                    </li>
-                    <li className="has-sub-menu">
-                        <NavLink to="#" onClick={() => scrollTop()}>
-                            <div className="icon-w">
-                                <div className="os-icon os-icon-list"></div>
-                            </div>
-                            <span>Navigation</span>
-                        </NavLink>
-                        <div className="sub-menu-w">
-                            <div className="sub-menu-header">Navigation</div>
-                            <div className="sub-menu-icon">
-                                <i className="os-icon os-icon-layout"></i>
-                            </div>
-                            <div className="sub-menu-i">
-                                <ul className="sub-menu">
-                                    <li>
-                                        <NavLink to="/in/navigation" onClick={() => scrollTop()}>
-                                            Navigation
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/navigation-group" onClick={() => scrollTop()}>
-                                            Navigation Group
-                                        </NavLink>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-
-                    {/* Feedback Mgt */}
-                    <li className="sub-header">
-                        <span>Feedback Mgt</span>
-                    </li>
-                    <li className="has-sub-menu">
-                        <NavLink to="#" onClick={() => scrollTop()}>
-                            <div className="icon-w">
-                                <div className="os-icon os-icon-common-07"></div>
-                            </div>
-                            <span>Feedback</span>
-                        </NavLink>
-                        <div className="sub-menu-w">
-                            <div className="sub-menu-header">Feedback</div>
-                            <div className="sub-menu-icon">
-                                <i className="os-icon os-icon-layout"></i>
-                            </div>
-                            <div className="sub-menu-i">
-                                <ul className="sub-menu">
-                                    <li>
-                                        <NavLink to="/in/feedback" onClick={() => scrollTop()}>
-                                            Feedback
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/in/feedback-type" onClick={() => scrollTop()}>
-                                            Feedback Type
-                                        </NavLink>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li className="sub-header">
-                        <span>Messaging</span>
+                        <span>MORE</span>
                     </li>
                     <li className="has-sub-menu">
                         <NavLink to="#" onClick={() => scrollTop()}>

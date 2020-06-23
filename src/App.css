@@ -640,9 +640,9 @@ a.btn-icon > i:hover {
     }
 }
 
-.btn {
+/* .btn {
     border-radius: 2em !important;
-}
+} */
 
 .slide-in-elliptic-top-fwd {
     -webkit-animation: slide-in-elliptic-top-fwd 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;

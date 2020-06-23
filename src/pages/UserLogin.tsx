@@ -129,7 +129,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                 </div>
 
                                 <div className="text-center">
-                                    <NavLink className="btn btn-link text-primary text-center" to="/teacher-login">
+                                    <NavLink className="btn btn-link text-primary text-center" to="/teacher/login">
                                         Teacher's Corner
                                     </NavLink>
                                 </div>

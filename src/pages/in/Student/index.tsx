@@ -7,6 +7,7 @@ import {
   CLEAN_DATE,
   GetAge,
   CleanMessage,
+  ToggleExpansion,
 } from "../../../context/App";
 import { NavLink } from "react-router-dom";
 import ImageModal from "../../partials/ImageModal";
@@ -701,21 +702,30 @@ const StudentList: FC<IProps> = ({ history }) => {
             <div className="element-wrapper">
               <h5 className="element-header">Student Profile</h5>
               <div className="element-box ">
-                <div className="text-left">
-                  <NavLink
-                    to="#"
+                <div className="">
+                  <a
+                    href="javascript:void(0)"
+                    title="Expand / Collapse"
+                    className="icon-lg m-3 float-right"
+                    onClick={() => {
+                      ToggleExpansion();
+                    }}
+                  >
+                    <i className="os-icon os-icon-maximize"></i>
+                  </a>
+                  <a
+                    href="javascript:void(0)"
+                    title="Expand / Collapse"
+                    className="icon-lg m-3 float-left"
                     onClick={() => {
                       SetShowNewGuardian(false);
                       SetShowProfile(false);
                     }}
                   >
-                    <i
-                      className="icon-lg os-icon os-icon-arrow-left6"
-                      style={{ fontSize: "25px" }}
-                    ></i>
-                  </NavLink>
+                    <i className="os-icon os-icon-arrow-left6"></i>
+                  </a>
                 </div>
-                <div className="text-center mb-5">
+                <div className="text-center mb-5 mt-3">
                   <img
                     className="avatar mb-3"
                     alt="Passport"

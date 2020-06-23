@@ -285,7 +285,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
               <span>Report</span>
             </NavLink>
             <div className="sub-menu-w">
-              <div className="sub-menu-header">Attendance</div>
+              <div className="sub-menu-header">Report</div>
               <div className="sub-menu-icon">
                 <i className="os-icon os-icon-layout"></i>
               </div>

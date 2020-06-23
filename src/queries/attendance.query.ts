@@ -101,6 +101,10 @@ export const STU_SUB_ATT = gql`
             code
           }
         }
+        device {
+          id
+          name
+        }
         attendances {
           id
           date

@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { STU_SUB_ATT } from "../../../../queries/attendance.query";
 import { toast } from "react-toastify";
-import { CleanMessage } from "../../../../context/App";
+import { CleanMessage, cleanDate } from "../../../../context/App";
 import LoadingState from "../../../partials/loading";
 import days from "../../../../data/days.json";
 
@@ -13,6 +13,7 @@ const SubjectAttendance: FC<IProps> = ({ studentId }) => {
   const [attRecord, SetAttRecord] = useState<any>();
   const [activeAttRecord, SetActiveAttRecord] = useState<any>();
   const [activeDay, SetActiveDay] = useState<any>();
+  const [activeTimetableAtt, SetActiveTimetableAtt] = useState<any>();
   const [showResult, SetShowResult] = useState<boolean>(false);
 
   const { loading } = useQuery(STU_SUB_ATT, {
@@ -88,10 +89,16 @@ const SubjectAttendance: FC<IProps> = ({ studentId }) => {
                   {activeAttRecord?.map((rec: any) => (
                     <div className={showResult ? "col-md-12" : "col-md-6"}>
                       <a
-                        className="element-box el-tablo no-bg bg-beige mt-0 active-bdr-primary p-3"
+                        className={`element-box el-tablo no-bg bg-beige mt-0 p-3 bdr ${
+                          activeTimetableAtt?.timetable?.id ===
+                          rec.timetable?.id
+                            ? "active-bdr-primary"
+                            : ""
+                        }`}
                         href="javascript:void(0)"
                         onClick={() => {
                           SetShowResult(true);
+                          SetActiveTimetableAtt(rec);
                         }}
                       >
                         <div className="label">
@@ -117,7 +124,7 @@ const SubjectAttendance: FC<IProps> = ({ studentId }) => {
             </div>
 
             {/* Result Section */}
-            {showResult && (
+            {showResult && activeTimetableAtt && (
               <div className="col-md-8">
                 <div className="table-responsive element-box no-bg no-shadow bdr">
                   <table className="table table-striped">
@@ -130,36 +137,41 @@ const SubjectAttendance: FC<IProps> = ({ studentId }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>21st Jan. 2020</td>
-                        <td>
-                          <label className="badge badge-success-inverted">
-                            Attended
-                          </label>
-                        </td>
-                        <td>Device Component</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>29st Jan. 2020</td>
-                        <td>
-                          <label className="badge badge-danger-inverted">
-                            Absent
-                          </label>
-                        </td>
-                        <td>Device Component</td>
-                      </tr>
-                      <tr>
-                        <td>3</td>
-                        <td>6th Feb. 2020</td>
-                        <td>
-                          <label className="badge badge-warning-inverted">
-                            Exempted
-                          </label>
-                        </td>
-                        <td>Device Component</td>
-                      </tr>
+                      {activeTimetableAtt?.attendances?.map(
+                        (att: any, idx: number) => (
+                          <tr>
+                            <td>{idx + 1}</td>
+                            <td>
+                              {cleanDate(
+                                new Date(parseInt(att.date)).toISOString()
+                              )}
+                            </td>
+                            <td>
+                              <label
+                                className={`badge badge-${
+                                  att.present
+                                    ? "success"
+                                    : !att.present && !att.manual
+                                    ? "danger"
+                                    : att.exempted
+                                    ? "warning"
+                                    : ""
+                                }-inverted`}
+                              >
+                                {att.present && "Present"}
+                                {!att.present && !att.manual && "Absent"}
+                                {att.exempted && "Exempted"}
+                              </label>
+                              {att.manual && (
+                                <label className="badge badge-primary-inverted">
+                                  Manual
+                                </label>
+                              )}
+                            </td>
+                            <td>Device</td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
                 </div>

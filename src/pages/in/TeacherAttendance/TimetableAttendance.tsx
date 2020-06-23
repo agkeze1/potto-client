@@ -42,7 +42,7 @@ const TimetableAttendance: FC<iProp> = ({ items, onItem }) => {
             </div>
         );
     return (
-        <div className="element-box text-center pb-5" style={{ minHeight: "40vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+        <div className="element-box text-center pb-5" style={{ minHeight: "80vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
             <h3 className="text-info">No Record</h3>
             <p>Select another teacher to view assigned timetable</p>
         </div>

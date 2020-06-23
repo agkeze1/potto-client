@@ -23,7 +23,7 @@ function App() {
                 <Route path="/default_school" component={FirstSchool} />
                 <Route path="/signup" component={UserSignup} />
                 <Route path="/in" component={In} />
-                <Route path="/teacher-login" component={TeacherLogin} />
+                <Route path="/teacher/login" component={TeacherLogin} />
                 <PrivateRouteTeacher path="/teacher/app" component={TeacherCorner} />
             </Switch>
             <ToastContainer position="top-center" />

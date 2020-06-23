@@ -75,7 +75,7 @@ const Header: FC<IProps> = ({ location }) => {
                                     <a
                                         onClick={() => {
                                             authService.Logout();
-                                            document.location.reload();
+                                            document.location.href = "/login";
                                         }}
                                         href="#"
                                     >

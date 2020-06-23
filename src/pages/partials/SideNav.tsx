@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { GetAppName } from "../../context/App";
+import { GetAppName, GET_LOGO } from "../../context/App";
 import { authService } from "../../services/Auth.Service";
 
 interface SideProps {
@@ -28,13 +28,16 @@ const SideNav: FC<SideProps> = ({ location }) => {
         <div className="logo-w">
           <NavLink className="logo" to="/in/dashboard">
             <div style={{ display: "inline" }}>
-              <img alt="logo" src="/logo192.png" />
+              <img style={{ width: "48px" }} alt="logo" src={GET_LOGO} />
             </div>
             <div className="logo-label">{GetAppName()}</div>
           </NavLink>
         </div>
         <div className="logged-user-w avatar-inline">
           <div className="logged-user-i">
+            <div className="avatar-w">
+              <img alt={user.name} src={user.image} />
+            </div>
             <div className="logged-user-info-w">
               <div className="logged-user-name">{user?.name}</div>
               <div className="logged-user-role">{user?.email}</div>
@@ -42,7 +45,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
           </div>
         </div>
         <div className="element-search autosuggest-search-activator">
-          <input placeholder="Search..." />
+          <input placeholder="Start typing to search..." />
         </div>
         <ul className="main-menu">
           <li className="selected">
@@ -270,16 +273,16 @@ const SideNav: FC<SideProps> = ({ location }) => {
             </div>
           </li>
 
-          {/* Attendance Mgt */}
+          {/* Report Mgt */}
           <li className="sub-header">
-            <span>Attendance</span>
+            <span>Report</span>
           </li>
           <li className="has-sub-menu">
             <NavLink to="#" onClick={() => scrollTop()}>
               <div className="icon-w">
                 <div className="os-icon os-icon-calendar-time"></div>
               </div>
-              <span>Attendance</span>
+              <span>Report</span>
             </NavLink>
             <div className="sub-menu-w">
               <div className="sub-menu-header">Attendance</div>
@@ -390,14 +393,49 @@ const SideNav: FC<SideProps> = ({ location }) => {
               </div>
             </div>
           </li>
-          <li className="menu-link">
-            <NavLink to="/in/send-feedback" onClick={() => scrollTop()}>
-              <div className="icon-w">
-                <div className="os-icon os-icon-send"></div>
-              </div>{" "}
-              Send Feedback
-            </NavLink>
+          <li className="sub-header">
+            <span>Messaging</span>
           </li>
+          <li className="has-sub-menu">
+            <NavLink to="#" onClick={() => scrollTop()}>
+              <div className="icon-w">
+                <div className="os-icon os-icon-email-forward"></div>
+              </div>
+              <span>Commination</span>
+            </NavLink>
+            <div className="sub-menu-w">
+              <div className="sub-menu-header">Feedback & SMS</div>
+              <div className="sub-menu-icon">
+                <i className="os-icon os-icon-layout"></i>
+              </div>
+              <div className="sub-menu-i">
+                <ul className="sub-menu">
+                  <li>
+                    <NavLink to="/in/send-feedback" onClick={() => scrollTop()}>
+                      Send Feedback
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/in/messaging/teachers"
+                      onClick={() => scrollTop()}
+                    >
+                      Message Teachers
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/in/messaging/guardian"
+                      onClick={() => scrollTop()}
+                    >
+                      Message Guardians
+                    </NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+
           <li className="menu-link">
             <a
               onClick={() => {

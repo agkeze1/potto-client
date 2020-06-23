@@ -1,3 +1,4 @@
+/* eslint-disable no-script-url */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState } from "react";
 import { IProps } from "../../models/IProps";
@@ -28,11 +29,6 @@ const Period: FC<IProps> = ({ history }) => {
   const [lMessage, SetLMessage] = useState<IMessage>();
   const [rMessage, SetRMessage] = useState<IMessage>();
   const [uMessage, SetUMessage] = useState<IMessage>();
-
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
 
   // Fetch List of Periods
   const { loading, data, refetch: refetchPeriodList } = useQuery(GET_PERIODS, {

@@ -1,6 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable no-script-url */
 import React, { FC, useState } from "react";
 import Select from "react-select";
-import { CLEAN_DATE, ToggleExpansion } from "../../../context/App";
+import { CLEAN_DATE } from "../../../../context/App";
+import SmallImage from "../../partials/SmallImage";
+import { IImageProp } from "../../../../models/IImageProp";
+import ImageModal from "../../../partials/ImageModal";
 
 interface IProps {
   attData: any;
@@ -10,8 +15,11 @@ interface IProps {
 const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
   const [activeAtt, SetActiveAtt] = useState<any>(attData[0]);
   const [showSummary, SetShowSummary] = useState<boolean>(true);
-  const [hideDate, SetHideDate] = useState<boolean>();
-  const [activeAttSort, SetActiveAttSort] = useState<number>();
+  const [activeImg, SetActiveImg] = useState<IImageProp>({
+    image: "/avatar.png",
+    name: "Undefined",
+  });
+  // const [activeAttSort, SetActiveAttSort] = useState<number>();
 
   // Attendance Sort criteria
   const attSort = [
@@ -31,80 +39,54 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
 
   return (
     <div className="row">
-      <div className="col-12">
-        {/* Back to Timetable button */}
-        {(attData.length === 0 || hideDate) && (
-          <button
-            className="btn btn-primary mt-n3 mb-2"
-            onClick={() => {
-              onBackClick();
-            }}
-          >
-            Back
-          </button>
-        )}
-      </div>
       {attData.length > 0 && (
         <>
           {/* Date Section */}
-          {!hideDate && (
-            <div className="col-md-4">
-              <div className="element-box">
-                <div className="element-actions">
-                  {/* Back to Timetable button */}
-                  <button
-                    className="btn btn-primary mt-n2"
-                    onClick={() => {
-                      onBackClick();
-                    }}
-                  >
-                    Back
-                  </button>
-                </div>
-                <h6 className="element-header">Date</h6>
-                {attData?.map((rec: any, idx: number) => (
-                  <a
-                    key={idx}
-                    className={`el-tablo att-date-crd ${
-                      activeAtt?.date === rec.date ? "active-att-date" : ""
-                    }`}
-                    href="javascript:void(0)"
-                    onClick={() => {
-                      SetActiveAtt(undefined);
-                      setTimeout(() => {
-                        SetActiveAtt(rec);
-                      }, 0);
-                    }}
-                  >
-                    <div className="row">
-                      <div className="col-10">
-                        <div className="text-primary">
-                          {CLEAN_DATE(rec.date).toUpperCase()}
-                        </div>
+          <div className="col-md-4">
+            <div className="element-box">
+              <div className="element-actions">
+                {/* Back to Timetable button */}
+                <button
+                  className="btn btn-primary mt-n2"
+                  onClick={() => {
+                    onBackClick();
+                  }}
+                >
+                  Back
+                </button>
+              </div>
+              <h6 className="element-header">Date</h6>
+              {attData?.map((rec: any, idx: number) => (
+                <a
+                  key={idx}
+                  className={`el-tablo att-date-crd ${
+                    activeAtt?.date === rec.date ? "active-att-date" : ""
+                  }`}
+                  href="javascript:void(0)"
+                  onClick={() => {
+                    SetActiveAtt(undefined);
+                    setTimeout(() => {
+                      SetActiveAtt(rec);
+                    }, 0);
+                  }}
+                >
+                  <div className="row">
+                    <div className="col-10">
+                      <div className="text-primary">
+                        {CLEAN_DATE(rec.date).toUpperCase()}
                       </div>
                     </div>
-                  </a>
-                ))}
-              </div>
+                  </div>
+                </a>
+              ))}
             </div>
-          )}
+          </div>
 
           {activeAtt && (
-            <div className={hideDate ? "col-12" : "col-md-8"}>
+            <div className="col-md-8">
               {/* Summary Section */}
               <div className="element-box bg-white">
                 <span className="element-actions">
-                  <a
-                    href="#"
-                    title="Toggle expasion"
-                    className="mr-2"
-                    onClick={() => {
-                      ToggleExpansion();
-                      SetHideDate(!hideDate);
-                    }}
-                  >
-                    <i className="os-icon os-icon-maximize"></i>
-                  </a>
                   <a
                     href="javascript:void(0)"
                     title="toggle collapse"
@@ -206,7 +188,7 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
                     <Select
                       options={attSort}
                       onChange={(item: any) => {
-                        SetActiveAttSort(item?.value || 1);
+                        // SetActiveAttSort(item?.value || 1);
                       }}
                     />
                   </div>
@@ -217,6 +199,7 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
                         <tr>
                           <th>#</th>
                           <th className="text-left">Student</th>
+                          <th className="text-left">Gender</th>
                           <th>Status</th>
                         </tr>
                       </thead>
@@ -225,13 +208,19 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td className="text-left">
-                              <img
-                                className="avatar img-sm mr-2"
-                                src={stu.student?.passport}
-                                alt="passport"
-                              />
+                              <SmallImage
+                                imgPath={stu.student?.passport}
+                                onClick={() =>
+                                  SetActiveImg({
+                                    image: stu.student?.passport,
+                                    name: stu.student?.full_name,
+                                  })
+                                }
+                              />{" "}
+                              &nbsp;
                               {stu.student?.full_name}
                             </td>
+                            <td className="text-left">{stu.student?.gender}</td>
                             <td>
                               <label
                                 className={`badge ${
@@ -256,14 +245,26 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
       )}
       {attData.length === 0 && (
         <>
-          <div className="col-12">
+          <div className="col-12 text-center">
             <h5 className="text-danger text-center mt-5">
               {" "}
               No Attendance record found!
             </h5>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                onBackClick();
+              }}
+            >
+              <i className="os-icon os-icon-arrow-left6"></i>
+              Back
+            </button>
           </div>
         </>
       )}
+
+      {/* Modal for Image */}
+      <ImageModal image={activeImg.image} name={activeImg.name} />
     </div>
   );
 };

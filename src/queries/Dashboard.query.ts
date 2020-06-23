@@ -5,7 +5,7 @@ const ACTIVE_TERM = gql`
     GetActiveTerm {
       message
       doc {
-        year
+        startDate
         term {
           name
         }

@@ -10,7 +10,7 @@ export const GetAppName = (): string => REACT_APP_NAME || "";
 export const GET_API_URL = () => process.env.REACT_APP_BASEURL;
 export const GET_APP_ID = key || "potto";
 
-export const GET_LOGO = REACT_APP_LOGO;
+export const GET_LOGO = REACT_APP_LOGO || "/logo192.png";
 export const GET_FULL_NAME = REACT_APP_FULL_NAME;
 
 export const CLEAN_DATE = (date: string): string => {
@@ -69,6 +69,31 @@ export const getTimetable = (
   return callback(null);
 };
 
+export const GetTimeDifference = (from: string, second: string): string => {
+  const _first = new Date(from).getTime();
+  const _second = new Date(second).getTime();
+  const diff = _second - _first;
+  const _date = new Date(diff);
+  return `${_date.getHours()}H:${_date.getMinutes()}M`;
+};
+export const cleanDate = (date: string, onlyDate = false, short = true) =>
+  onlyDate
+    ? Intl.DateTimeFormat("en-GB", {
+        month: short ? "short" : "long",
+        year: "numeric",
+        weekday: short ? "short" : "long",
+        day: "numeric",
+      }).format(new Date(date))
+    : Intl.DateTimeFormat("en-GB", {
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false,
+        month: short ? "short" : "long",
+        year: "numeric",
+        weekday: short ? "short" : "long",
+        day: "numeric",
+      }).format(new Date(date));
 /**
  * Expansion / Show side nav and header
  */
@@ -93,4 +118,23 @@ export const ToggleExpansion = () => {
       header.style.display = "none";
     }
   }
+};
+
+/**
+ *
+ * @param attResult Attendance result to be ordered
+ */
+export const OrderTimetableByDay = (ttResult: Array<any>) => {
+  if (ttResult) {
+    const result: any[] = [];
+    ttResult.forEach((att: any) => {
+      if (att.day === "MON") result[0] = att;
+      else if (att.day === "TUE") result[1] = att;
+      else if (att.day === "WED") result[2] = att;
+      else if (att.day === "THUR") result[3] = att;
+      else if (att.day === "FRI") result[4] = att;
+    });
+    return result;
+  }
+  return null;
 };

@@ -19,7 +19,12 @@ const ImageModal: FC<IImageProp> = ({ image, name }) => {
           </div>
           <div className="modal-body">
             <div className="pt-avatar-w text-center">
-              <img alt="passport" src={image} style={{ width: "250px" }} />
+              <img
+                alt={name}
+                className="no-scale"
+                src={image || "/avatar.png"}
+                style={{ width: "250px" }}
+              />
             </div>
             <hr />
             <div className="pt-user-name text-center pb-3">{name}</div>

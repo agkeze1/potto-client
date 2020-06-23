@@ -1,40 +1,46 @@
+/* eslint-disable no-script-url */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, FC, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, CLEAN_DATE, GetAge } from "../../context/App";
+import {
+  GetAppName,
+  CLEAN_DATE,
+  GetAge,
+  CleanMessage,
+} from "../../../context/App";
 import { NavLink } from "react-router-dom";
-import ImageModal from "../partials/ImageModal";
-import SwitchInput from "../partials/SwitchInput";
-import ImageUpload from "../partials/ImageUpload";
-import IconInput from "../partials/IconInput";
-import { IImageProp } from "../../models/IImageProp";
-import { authService } from "../../services/Auth.Service";
-import { IProps } from "../../models/IProps";
-import { GET_LEVELS } from "../../queries/Level.query";
-import gender from "../../data/gender.json";
+import ImageModal from "../../partials/ImageModal";
+import SwitchInput from "../../partials/SwitchInput";
+import ImageUpload from "../../partials/ImageUpload";
+import IconInput from "../../partials/IconInput";
+import { IImageProp } from "../../../models/IImageProp";
+import { authService } from "../../../services/Auth.Service";
+import { IProps } from "../../../models/IProps";
+import { GET_LEVELS } from "../../../queries/Level.query";
+import gender from "../../../data/gender.json";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { IMessage } from "../../models/IMessage";
-import { GET_CLASSES } from "../../queries/Class.query";
-import LoadingState from "../partials/loading";
-import AlertMessage from "../partials/AlertMessage";
-import state from "../../data/state.json";
-import title from "../../data/title.json";
+import { GET_CLASSES } from "../../../queries/Class.query";
+import LoadingState from "../../partials/loading";
+import state from "../../../data/state.json";
+import title from "../../../data/title.json";
 import Select from "react-select";
-import Pagination from "../partials/Pagination";
+import Pagination from "../../partials/Pagination";
 import DatePicker from "react-datepicker";
 import {
   GET_GUARDIAN_TYPES,
   GET_GUARDIAN_BY_MOBILE,
-} from "../../queries/Guardian.query";
+} from "../../../queries/Guardian.query";
 import {
   SEARCH_STUDENTS,
   REMOVE_STUDENT,
   UPDATE_STUDENT,
   ADD_GUARDIAN,
-} from "../../queries/Student.query";
-import { NEW_GUARDIAN } from "../../queries/Guardian.query";
-import { GET_SUB_BY_LEVEL } from "../../queries/Subject.query";
-import { SubjectList } from "./partials/SubjectList";
+} from "../../../queries/Student.query";
+import { NEW_GUARDIAN } from "../../../queries/Guardian.query";
+import { GET_SUB_BY_LEVEL } from "../../../queries/Subject.query";
+import { SubjectList } from "../partials/SubjectList";
+import { toast } from "react-toastify";
+import SubjectAttendance from "./Attendance/SubjectAttendance";
 
 const StudentList: FC<IProps> = ({ history }) => {
   const [activeImg, SetActiveImg] = useState<IImageProp>({
@@ -48,14 +54,6 @@ const StudentList: FC<IProps> = ({ history }) => {
 
   // For lga under a state
   const [locals, SetLocals] = useState<any>([]);
-
-  const [message, SetMessage] = useState<IMessage>();
-  const [lMessage, SetLMessage] = useState<IMessage>();
-  const [cMessage, SetCMessage] = useState<IMessage>();
-  const [rMessage, SetRMessage] = useState<IMessage>();
-  const [uMessage, SetUMessage] = useState<IMessage>();
-  const [nGMessage, SetNGMessage] = useState<IMessage>();
-  const [subMessage, SetSubMessage] = useState<IMessage>();
 
   const [activeStudentId, SetActiveStudentId] = useState<string>();
   const [activeStudent, SetActiveStudent] = useState<any>({});
@@ -72,27 +70,18 @@ const StudentList: FC<IProps> = ({ history }) => {
   const [classes, SetClasses] = useState<any>([]);
 
   // For New Guardian of Student
-  const [guardByPhoneMsg, SetGuardByPhoneMsg] = useState<IMessage>();
-  const [newGuardMsg, SetNewGuardMsg] = useState<IMessage>();
   const [guardianExists, SetGuardianExists] = useState<boolean>(false);
   const [guardianPhone, SetGuardianPhone] = useState<string>();
   const [returnedGuard, SetReturnedGuard] = useState<any>({});
 
   //Filters
   const [searchInput, SetSearchInput] = useState<any>();
-  const [searchMsg, SetSearchMsg] = useState<IMessage>();
 
   const [guardType, SetGuardType] = useState<any>([]);
-  const [gTMessage, SetGTMessage] = useState<IMessage>();
 
   // Pagination
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(25);
-
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
 
   const scrollTop = () => {
     document.body.scrollTop = 0;
@@ -106,10 +95,7 @@ const StudentList: FC<IProps> = ({ history }) => {
   const { loading: lLoading, data: lData } = useQuery(GET_LEVELS, {
     variables: { school: school.id },
     onError: (err) => {
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
       SetShowLevelsRefresh(true);
     },
     onCompleted: () => {
@@ -128,10 +114,7 @@ const StudentList: FC<IProps> = ({ history }) => {
   // Get Levels on Reload level button click
   const [GetLevels, { loading: llLoading }] = useLazyQuery(GET_LEVELS, {
     onError: (err) => {
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
       SetShowLevelsRefresh(true);
     },
     onCompleted: (data) => {
@@ -150,10 +133,7 @@ const StudentList: FC<IProps> = ({ history }) => {
   // Get classes for class input
   const [GetClasses, { loading: cLoading }] = useLazyQuery(GET_CLASSES, {
     onError: (err) => {
-      SetCMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
       SetShowClassesRefresh(true);
     },
     onCompleted: (data) => {
@@ -172,11 +152,7 @@ const StudentList: FC<IProps> = ({ history }) => {
   const [SearchStudents, { loading, data, fetchMore }] = useLazyQuery(
     SEARCH_STUDENTS,
     {
-      onError: (err) =>
-        SetMessage({
-          message: err.message,
-          failed: true,
-        }),
+      onError: (err) => toast.error(CleanMessage(err.message)),
     }
   );
 
@@ -185,10 +161,7 @@ const StudentList: FC<IProps> = ({ history }) => {
     GET_GUARDIAN_TYPES,
     {
       onError: (err) => {
-        SetGTMessage({
-          message: err.message,
-          failed: true,
-        });
+        toast.error(CleanMessage(err.message));
         SetShowGTRefresh(true);
       },
       onCompleted: (data) => {
@@ -216,7 +189,7 @@ const StudentList: FC<IProps> = ({ history }) => {
           };
         },
       });
-  }, [page]);
+  }, [page, fetchMore]);
 
   // Fetch classes for Class input on Level change
   useEffect(() => {
@@ -228,11 +201,7 @@ const StudentList: FC<IProps> = ({ history }) => {
 
   // Remove Student
   const [RemoveStudent, { loading: rLoading }] = useMutation(REMOVE_STUDENT, {
-    onError: (err) =>
-      SetRMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
         query: SEARCH_STUDENTS,
@@ -270,16 +239,9 @@ const StudentList: FC<IProps> = ({ history }) => {
 
   // Update Student
   const [UpdateStudent, { loading: uLoading }] = useMutation(UPDATE_STUDENT, {
-    onError: (err) =>
-      SetUMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
     onCompleted: (data) => {
-      SetUMessage({
-        message: data.UpdateStudent.message,
-        failed: false,
-      });
+      toast.success(data.UpdateStudent.message);
     },
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
@@ -318,10 +280,7 @@ const StudentList: FC<IProps> = ({ history }) => {
   // Create New Guardian
   const [NewGuardian, { loading: nGLoading }] = useMutation(NEW_GUARDIAN, {
     onError: (err) => {
-      SetNGMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
       SetShowClassesRefresh(true);
     },
     onCompleted: (data) => {
@@ -347,10 +306,7 @@ const StudentList: FC<IProps> = ({ history }) => {
           SetGuardianExists(false);
           SetShowNewGuardian(true);
         } else {
-          SetGuardByPhoneMsg({
-            message: err.message,
-            failed: true,
-          });
+          toast.error(CleanMessage(err.message));
         }
       },
       onCompleted: (data) => {
@@ -364,21 +320,15 @@ const StudentList: FC<IProps> = ({ history }) => {
 
   // Add Existing Guardian to Student
   const [AddNewGuardian, { loading: aGLoading }] = useMutation(ADD_GUARDIAN, {
-    onError: (err) =>
-      SetNewGuardMsg({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
     onCompleted: (data) => {
       if (data && activeStudent) {
         SetActiveStudent({
           ...activeStudent,
           guardians: data.AddStudentGuardian.doc.guardians,
         });
-        SetNewGuardMsg({
-          message: data.AddStudentGuardian.message,
-          failed: false,
-        });
+        toast.success(data.AddStudentGuardian.message);
+
         setTimeout(() => {
           document.getElementById("btnGuardModal")?.click();
         }, 1000);
@@ -391,10 +341,7 @@ const StudentList: FC<IProps> = ({ history }) => {
     GET_SUB_BY_LEVEL,
     {
       onError: (err) => {
-        SetSubMessage({
-          message: err.message,
-          failed: true,
-        });
+        toast.error(CleanMessage(err.message));
       },
     }
   );
@@ -422,10 +369,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                 <div className="element-box">
                   <div className="row justify-content-center">
                     <div className="col-lg-12">
-                      <AlertMessage
-                        message={searchMsg?.message}
-                        failed={searchMsg?.failed}
-                      />
                       <span className="element-actions mt-n2">
                         <button
                           className="btn btn-primary btn-sm"
@@ -495,7 +438,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                         <button
                           onClick={() => {
                             SetShowLevelsRefresh(false);
-                            SetLMessage(undefined);
                             GetLevels({
                               variables: {
                                 school: school.id,
@@ -509,10 +451,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                         </button>
                       )}
                       <LoadingState loading={lLoading || llLoading} />
-                      <AlertMessage
-                        message={lMessage?.message}
-                        failed={lMessage?.failed}
-                      />
                     </div>
                     <div className="col-lg-4">
                       {/* Current Class input */}
@@ -543,8 +481,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                         <button
                           onClick={() => {
                             SetShowClassesRefresh(false);
-                            SetCMessage(undefined);
-                            SetMessage(undefined);
                             GetClasses({
                               variables: { level: searchInput?._class?.id },
                             });
@@ -556,19 +492,12 @@ const StudentList: FC<IProps> = ({ history }) => {
                         </button>
                       )}
                       <LoadingState loading={cLoading} />
-                      <AlertMessage
-                        message={cMessage?.message}
-                        failed={cMessage?.failed}
-                      />
                     </div>
                     <div className="col-lg-12">
                       <button
                         className="btn btn-primary"
                         onClick={() => {
                           if (searchInput) {
-                            SetSearchMsg(undefined);
-                            SetMessage(undefined);
-                            SetRMessage(undefined);
                             SearchStudents({
                               variables: {
                                 regNo: searchInput?.regNo,
@@ -579,10 +508,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                               },
                             });
                           } else {
-                            SetSearchMsg({
-                              message: "No search field enetered!",
-                              failed: true,
-                            });
+                            toast.error("No search field entered!");
                           }
                         }}
                       >
@@ -598,14 +524,6 @@ const StudentList: FC<IProps> = ({ history }) => {
             <div className="row justify-content-center ">
               <div className="col-12">
                 <LoadingState loading={loading || rLoading} />
-                <AlertMessage
-                  message={message?.message}
-                  failed={message?.failed}
-                />
-                <AlertMessage
-                  message={rMessage?.message}
-                  failed={rMessage?.failed}
-                />
               </div>
 
               {data && data.SearchStudents.docs.length > 0 && (
@@ -614,14 +532,15 @@ const StudentList: FC<IProps> = ({ history }) => {
                     <div className="element-box no-bg bg-white">
                       <div className="table-responsive">
                         <h6 className="element-header">
-                          Returned Students of{" "}
+                          Student List of{" "}
                           <b className="text-primary">
                             ({" "}
                             {
                               data?.SearchStudents?.docs[0]?.current_class
                                 ?.level?.name
-                            }{" "}
-                            )
+                            }
+                            {" - "}
+                            {searchInput?._class?.name})
                           </b>
                         </h6>
                         <table className="table table-striped">
@@ -684,7 +603,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                                       href="#"
                                       title="Edit"
                                       onClick={() => {
-                                        SetUMessage(undefined);
                                         SetActiveStudentId(stu.id);
                                         SetEditStudent({
                                           firstname: stu.first_name,
@@ -929,10 +847,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                           }
                         />
                         <LoadingState loading={sLoading} />
-                        <AlertMessage
-                          message={subMessage?.message}
-                          failed={subMessage?.failed}
-                        />
                       </div>
                     </div>
 
@@ -949,7 +863,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                                   data-target="#guardianPhoneModal"
                                   data-toggle="modal"
                                   onClick={() => {
-                                    SetNewGuardMsg(undefined);
                                     SetGuardianExists(false);
                                   }}
                                 >
@@ -1048,7 +961,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                                           <button
                                             onClick={() => {
                                               SetShowGTRefresh(false);
-                                              SetGTMessage(undefined);
                                               GetGuardianTypes();
                                             }}
                                             className="btn btn-primary btn-sm px-2 my-2"
@@ -1057,10 +969,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                                             Reload Relationships
                                           </button>
                                         )}
-                                        <AlertMessage
-                                          message={gTMessage?.message}
-                                          failed={gTMessage?.failed}
-                                        />
                                         <LoadingState loading={gTLoading} />
                                       </div>
                                     </div>
@@ -1216,10 +1124,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                                       }}
                                     />
                                     <LoadingState loading={nGLoading} />
-                                    <AlertMessage
-                                      message={nGMessage?.message}
-                                      failed={nGMessage?.failed}
-                                    />
                                     <div className="buttons-w mt-3 mb-5">
                                       <button
                                         onClick={() => {
@@ -1267,7 +1171,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                 data-toggle="tab"
                                 href="#classAtt"
                               >
-                                Class Att.
+                                Roll Call Att.
                               </a>
                             </li>
                             <li className="nav-item">
@@ -1349,7 +1253,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                             </div>
                           </div>
 
-                          {/* Class Attendance */}
+                          {/* Roll Call Attendance */}
                           <div className="tab-pane" id="classAtt">
                             <div className="text-center element-box no-bg no-shadow">
                               <div className="table-responsive">
@@ -1401,74 +1305,7 @@ const StudentList: FC<IProps> = ({ history }) => {
 
                           {/* Subject Attendance */}
                           <div className="tab-pane" id="subjectAtt">
-                            <div className="row">
-                              <div className="col-md-4">
-                                <a
-                                  className="element-box el-tablo no-bg bg-beige mt-0 active-bdr-primary"
-                                  href="javascript:void(0)"
-                                >
-                                  <div className="label">
-                                    8:30AM - 9:20AM - (Monday)
-                                  </div>
-                                  <div className="value">English Language</div>
-                                </a>
-                                <a
-                                  className="element-box el-tablo no-bg bg-beige mt-0"
-                                  href="javascript:void(0)"
-                                >
-                                  <div className="label">
-                                    8:30AM - 9:20AM - (Monday)
-                                  </div>
-                                  <div className="value">Mathematics</div>
-                                </a>
-                              </div>
-                              <div className="col-md-8">
-                                <div className="table-responsive element-box no-bg no-shadow bdr">
-                                  <table className="table table-striped">
-                                    <thead>
-                                      <tr>
-                                        <th>#</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Device</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <td>1</td>
-                                        <td>21st Jan. 2020</td>
-                                        <td>
-                                          <label className="badge badge-success-inverted">
-                                            Attended
-                                          </label>
-                                        </td>
-                                        <td>Device Component</td>
-                                      </tr>
-                                      <tr>
-                                        <td>2</td>
-                                        <td>29st Jan. 2020</td>
-                                        <td>
-                                          <label className="badge badge-danger-inverted">
-                                            Absent
-                                          </label>
-                                        </td>
-                                        <td>Device Component</td>
-                                      </tr>
-                                      <tr>
-                                        <td>3</td>
-                                        <td>6th Feb. 2020</td>
-                                        <td>
-                                          <label className="badge badge-warning-inverted">
-                                            Exempted
-                                          </label>
-                                        </td>
-                                        <td>Device Component</td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </div>
-                            </div>
+                            <SubjectAttendance studentId={activeStudent?.id} />
                           </div>
                         </div>
                       </div>
@@ -1504,10 +1341,6 @@ const StudentList: FC<IProps> = ({ history }) => {
               </div>
               <div className="modal-body element-box pb-2">
                 <LoadingState loading={uLoading} />
-                <AlertMessage
-                  message={uMessage?.message}
-                  failed={uMessage?.failed}
-                />
                 <form
                   onSubmit={async (e) => {
                     e.preventDefault();
@@ -1751,14 +1584,9 @@ const StudentList: FC<IProps> = ({ history }) => {
                       </div>
                     </div>
                     <LoadingState loading={gLoading} />
-                    <AlertMessage
-                      message={guardByPhoneMsg?.message}
-                      failed={guardByPhoneMsg?.failed}
-                    />
                     <form
                       onSubmit={async (e) => {
                         e.preventDefault();
-                        SetGuardByPhoneMsg(undefined);
                         GetGuardByPhone({
                           variables: {
                             mobile: guardianPhone,
@@ -1809,10 +1637,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                         <h5>{returnedGuard.name}</h5>
                         <label htmlFor="">{returnedGuard.phone}</label>
                         <hr />
-                        <AlertMessage
-                          message={newGuardMsg?.message}
-                          failed={newGuardMsg?.failed}
-                        />
                         <LoadingState loading={aGLoading} />
                         <b>
                           Guardian with entered phone number already exists.

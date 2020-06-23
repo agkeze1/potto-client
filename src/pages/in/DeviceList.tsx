@@ -1,9 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
-import Dropdown from "../partials/Dropdown";
+import { GetAppName, CleanMessage, cleanDate } from "../../context/App";
 import SwitchInput from "../partials/SwitchInput";
-import { IProps } from "../../models/IProps";
 import { authService } from "../../services/Auth.Service";
 import {
   GET_ASSIGNED_DEVICES,
@@ -11,26 +9,21 @@ import {
   ASSIGN_DEVICE,
   UNASSIGN_DEVICE,
 } from "../../queries/Device.query";
-import { IMessage } from "../../models/IMessage";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { Devices } from "./partials/Devices";
-import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
 import { GET_LEVELS } from "../../queries/Level.query";
 import { GET_CLASSES } from "../../queries/Class.query";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
-const DeviceList: FC<IProps> = ({ history }) => {
+const DeviceList = () => {
   const [showUnassignedDevices, SetShowUnassignedDevices] = useState<boolean>(
     false
   );
-  const [message, SetMessage] = useState<IMessage>();
-  const [aMessage, SetAMessage] = useState<IMessage>();
   const [activeDevice, SetActiveDevice] = useState<any>({});
 
   // For Level and Class inputs
-  const [lMessage, SetLMessage] = useState<IMessage>();
-  const [cMessage, SetCMessage] = useState<IMessage>();
   const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>(false);
   const [showClassesRefresh, SetShowClassesRefresh] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
@@ -38,31 +31,20 @@ const DeviceList: FC<IProps> = ({ history }) => {
   const [classes, SetClasses] = useState<any>([]);
   const [activeClass, SetActiveClass] = useState<any>();
 
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
-
   // Get School of logged in user
   const { school } = authService.GetUser();
 
   // Get List of Assigned Devices
   const { loading, data } = useQuery(GET_ASSIGNED_DEVICES, {
     onError: (err) => {
-      SetMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
     },
   });
 
   // Get List of Unassigned Devices
   const { loading: uLoading, data: uData } = useQuery(GET_UNASSIGNED_DEVICES, {
     onError: (err) => {
-      SetMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
     },
   });
 
@@ -70,10 +52,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
   const { loading: lLoading } = useQuery(GET_LEVELS, {
     variables: { school: school.id },
     onError: (err) => {
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
       SetShowLevelsRefresh(true);
     },
     onCompleted: (data) => {
@@ -93,10 +72,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
   const [GetLevels, { loading: rlLoading }] = useLazyQuery(GET_LEVELS, {
     variables: { schschool: school.id },
     onError: (err) => {
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
       SetShowLevelsRefresh(true);
     },
     onCompleted: (data) => {
@@ -115,10 +91,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
   // Get classes for class input
   const [GetClasses, { loading: cLoading }] = useLazyQuery(GET_CLASSES, {
     onError: (err) => {
-      SetCMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
       SetShowClassesRefresh(true);
     },
     onCompleted: (data) => {
@@ -139,22 +112,16 @@ const DeviceList: FC<IProps> = ({ history }) => {
       SetClasses(undefined);
       GetClasses({ variables: { level: activeLevel?.id } });
     }
-  }, [activeLevel?.id]);
+  }, [activeLevel, GetClasses]);
 
   // Assign Device to Class
   const [AssignDevice, { loading: aLoading }] = useMutation(ASSIGN_DEVICE, {
     onError: (err) => {
-      SetAMessage({
-        message: err.message,
-        failed: true,
-      });
+      toast.error(CleanMessage(err.message));
     },
     onCompleted: (data) => {
       if (data) {
-        SetAMessage({
-          message: "Device assigned successfully",
-          failed: false,
-        });
+        toast.success("Device assigned successfully");
         setTimeout(() => {
           document.getElementById("btnAssignDevice")?.click();
           SetShowUnassignedDevices(false);
@@ -200,10 +167,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
     UNASSIGN_DEVICE,
     {
       onError: (err) => {
-        SetMessage({
-          message: err.message,
-          failed: true,
-        });
+        toast.error(CleanMessage(err.message));
       },
       update: (cache, { data }) => {
         // Read Unassigned devices query
@@ -268,10 +232,6 @@ const DeviceList: FC<IProps> = ({ history }) => {
                 <div className="row justify-content-center ">
                   <div className="col-lg-12">
                     <div className="element-box-tp">
-                      <AlertMessage
-                        message={message?.message}
-                        failed={message?.failed}
-                      />
                       <LoadingState
                         loading={loading || uLoading || uDLoading}
                       />
@@ -304,7 +264,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
         </div>
       </div>
 
-      {/* Hidden button to clos Assign device to class modal */}
+      {/* Hidden button to close Assign device to class modal */}
       <button
         id="btnAssignDevice"
         data-target="#AssignToClassModal"
@@ -312,7 +272,7 @@ const DeviceList: FC<IProps> = ({ history }) => {
         style={{ display: "none" }}
       ></button>
 
-      {/* View Device On History Modal */}
+      {/* Device On History Modal */}
       <div
         aria-hidden="true"
         className="modal fade"
@@ -322,7 +282,6 @@ const DeviceList: FC<IProps> = ({ history }) => {
         <div className="modal-dialog modal-md" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Device Power-On History</h5>
               <button
                 aria-label="Close"
                 className="close"
@@ -340,46 +299,47 @@ const DeviceList: FC<IProps> = ({ history }) => {
                     style={{ fontSize: "100px" }}
                   ></i>
                   <div className="mt-3">
-                    <b>DVC-435</b>
+                    <b>{activeDevice?.name}</b>
                   </div>
                   <span>
-                    Assigned to | <b>JSS 2 - A </b>
+                    Assigned to |{" "}
+                    <b>
+                      {activeDevice?.assigned_class?.level?.name}
+                      {" - "}
+                      {activeDevice?.assigned_class?.name}{" "}
+                    </b>
                   </span>
                 </div>
                 <div className="element-wrapper pb-2">
-                  <h5 className="element-header">History</h5>
+                  <h5 className="element-header">Power On History</h5>
                 </div>
-                <table className="table table-striped text-center">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>
-                        21st Jan. 2020 -
-                        <span className="text-primary"> (3:45pm)</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>
-                        29st Jan. 2020 -
-                        <span className="text-primary"> (5:14pm)</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>
-                        6th Feb. 2020 -
-                        <span className="text-primary"> (1:02pm)</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                {activeDevice?.state_histories?.length > 0 && (
+                  <table className="table table-striped text-center">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activeDevice?.state_histories?.map(
+                        (his: any, idx: number) => (
+                          <tr>
+                            <td>{idx + 1}</td>
+                            <td>
+                              <span className="text-primary">
+                                {cleanDate(his.date)}
+                              </span>
+                            </td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                )}
+                {activeDevice?.state_histories?.length === 0 && (
+                  <h6 className="text-danger mt-3">No "On History" found!</h6>
+                )}
               </div>
             </div>
           </div>
@@ -407,15 +367,10 @@ const DeviceList: FC<IProps> = ({ history }) => {
               </button>
             </div>
             <div className="modal-body">
-              <AlertMessage
-                message={aMessage?.message}
-                failed={aMessage?.failed}
-              />
               <LoadingState loading={aLoading} />
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
-                  SetAMessage(undefined);
                   if (activeClass) {
                     AssignDevice({
                       variables: {
@@ -446,7 +401,6 @@ const DeviceList: FC<IProps> = ({ history }) => {
                       <button
                         onClick={() => {
                           SetShowLevelsRefresh(false);
-                          SetLMessage(undefined);
                           GetLevels();
                         }}
                         className="btn btn-primary btn-sm px-1 my-2"
@@ -456,10 +410,6 @@ const DeviceList: FC<IProps> = ({ history }) => {
                       </button>
                     )}
                     <LoadingState loading={lLoading || rlLoading} />
-                    <AlertMessage
-                      message={lMessage?.message}
-                      failed={lMessage?.failed}
-                    />
                   </div>
                   <div className="col-12 mb-4">
                     {/* Current Class input */}
@@ -485,8 +435,6 @@ const DeviceList: FC<IProps> = ({ history }) => {
                       <button
                         onClick={() => {
                           SetShowClassesRefresh(false);
-                          SetCMessage(undefined);
-                          SetMessage(undefined);
                           GetClasses({
                             variables: { level: activeLevel?.id },
                           });
@@ -498,10 +446,6 @@ const DeviceList: FC<IProps> = ({ history }) => {
                       </button>
                     )}
                     <LoadingState loading={cLoading} />
-                    <AlertMessage
-                      message={cMessage?.message}
-                      failed={cMessage?.failed}
-                    />
                   </div>
                   <div className="col-12">
                     <button className="btn btn-primary mb-3" type="submit">

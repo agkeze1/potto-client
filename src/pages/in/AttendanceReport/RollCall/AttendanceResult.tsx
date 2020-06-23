@@ -1,13 +1,20 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable no-script-url */
 import React, { FC, useState } from "react";
 import Select from "react-select";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { toast } from "react-toastify";
-import { CLEAN_DATE } from "../../../context/App";
-import { GET_CLASS } from "../../../queries/Class.query";
-import LoadingState from "../../partials/loading";
-import { authService } from "../../../services/Auth.Service";
-import { ROLL_CALL } from "../../../queries/attendance.query";
-import LevelClassDateRange from "../partials/LevelClassDateRange";
+import { CLEAN_DATE } from "../../../../context/App";
+import { GET_CLASS } from "../../../../queries/Class.query";
+import LoadingState from "../../../partials/loading";
+import { authService } from "../../../../services/Auth.Service";
+import { ROLL_CALL } from "../../../../queries/attendance.query";
+import LevelClassDateRange from "../../partials/LevelClassDateRange";
+import { ToggleExpansion } from "../../../../context/App";
+import attSort from "../../../../data/attSort.json";
+import SmallImage from "../../partials/SmallImage";
+import { IImageProp } from "../../../../models/IImageProp";
+import ImageModal from "../../../partials/ImageModal";
 
 interface IProps {
   showFilter?: boolean;
@@ -19,10 +26,13 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
   const [showAttendanceResult, SetShowAttendanceResult] = useState<boolean>();
   const [showLevelClass, SetShowLevelClass] = useState<boolean>(true);
   const [showAttendanceInfo, SetShowAttendanceInfo] = useState<boolean>();
-
   const [attendanceInput, SetAttendanceInput] = useState<any>();
-  const [activeAttSort, SetActiveAttSort] = useState<number>();
+  // const [activeAttSort, SetActiveAttSort] = useState<number>();
   const [activeRecord, SetActiveRecord] = useState<any>();
+  const [activeImg, SetActiveImg] = useState<IImageProp>({
+    image: "/avatar.png",
+    name: "Undefined",
+  });
 
   // Get  School of logged in user
   const { school } = authService.GetUser();
@@ -41,46 +51,6 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
   const [GetClass, { loading: cLoading, data: cData }] = useLazyQuery(
     GET_CLASS
   );
-
-  // Toggle Attendance Expansion
-  const ExpandAttendanced = () => {
-    const sideNav = document.getElementById("sideNav");
-    const header = document.getElementById("header");
-
-    //Toggle sideNav visibility
-    if (sideNav) {
-      if (sideNav.style.display === "none") {
-        sideNav.style.display = "block";
-      } else {
-        sideNav.style.display = "none";
-      }
-    }
-
-    // Toggle header visibility
-    if (header) {
-      if (header.style.display === "none") {
-        header.style.display = "block";
-      } else {
-        header.style.display = "none";
-      }
-    }
-  };
-
-  // Attendance Sort criteria
-  const attSort = [
-    {
-      label: "All",
-      value: 1,
-    },
-    {
-      label: "Present",
-      value: 2,
-    },
-    {
-      label: "Absent",
-      value: 3,
-    },
-  ];
 
   return (
     <>
@@ -197,7 +167,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                       title="Expand / Collapse"
                       className="icon-lg m-3 float-right"
                       onClick={() => {
-                        ExpandAttendanced();
+                        ToggleExpansion();
                       }}
                     >
                       <i className="os-icon os-icon-maximize"></i>
@@ -370,7 +340,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                             <Select
                               options={attSort}
                               onChange={(item: any) => {
-                                SetActiveAttSort(item?.value || 1);
+                                // SetActiveAttSort(item?.value || 1);
                               }}
                             />
                           </div>
@@ -381,16 +351,31 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                 <tr>
                                   <th>#</th>
                                   <th className="text-left">Student</th>
+                                  <th className="text-left">Gender</th>
                                   <th>Status</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 {activeRecord.attendances.map(
                                   (att: any, index: number) => (
-                                    <tr>
+                                    <tr key={index}>
                                       <td>{index + 1}</td>
                                       <td className="text-left">
+                                        {" "}
+                                        <SmallImage
+                                          imgPath={att.student?.passport}
+                                          onClick={() =>
+                                            SetActiveImg({
+                                              image: att.student?.passport,
+                                              name: att.student?.full_name,
+                                            })
+                                          }
+                                        />{" "}
+                                        &nbsp;
                                         {att.student?.full_name}
+                                      </td>
+                                      <td className="text-left">
+                                        {att.student?.gender}
                                       </td>
                                       <td>
                                         <label
@@ -426,6 +411,9 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
             )}{" "}
         </>
       )}
+
+      {/* Modal for Image */}
+      <ImageModal image={activeImg.image} name={activeImg.name} />
     </>
   );
 };

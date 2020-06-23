@@ -6,6 +6,10 @@ export const DEVICE_PROPS = gql`
     name
     mac
     created_at
+    state_histories {
+      date
+      state
+    }
     assigned_class {
       id
       name

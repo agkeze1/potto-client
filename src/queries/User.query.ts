@@ -42,6 +42,7 @@ export const USER_LOGIN = gql`
         school {
           id
           name
+          alias
         }
       }
       token
@@ -75,9 +76,15 @@ export const USER_SETUP = gql`
       token
       doc {
         ...USER_PROPS
+        school {
+          id
+          name
+          alias
+        }
       }
     }
   }
+
   ${USER_PROPS}
 `;
 

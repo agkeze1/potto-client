@@ -1,5 +1,6 @@
-import React, { FC, useState } from "react";
-import { IProps } from "../../models/IProps";
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable no-script-url */
+import React, { useState } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, DayString } from "../../context/App";
 import { Doughnut, Bar } from "react-chartjs-2";
@@ -9,7 +10,7 @@ import LoadingState from "../partials/loading";
 import { CountCard } from "./partials/CountCard";
 import months from "../../data/month.json";
 
-const Dashboard: FC<IProps> = ({ history }) => {
+const Dashboard = () => {
   const [stuGenderRatio, SetStuGenderRatio] = useState<any>();
   const [tchrGenderRatio, SetTchrGenderRatio] = useState<any>();
   const [userGenderRatio, SetUserGenderRatio] = useState<any>();
@@ -185,7 +186,6 @@ const Dashboard: FC<IProps> = ({ history }) => {
       },
     }
   );
-
   const { loading: userGenderRatioLoading } = useQuery(
     DASHBOARD.USER_GENDER_RATIO,
     {
@@ -377,7 +377,7 @@ const Dashboard: FC<IProps> = ({ history }) => {
                                     }}
                                   ></span>
                                   <strong>
-                                    {" " + months[item.month + 1].abbreviation}
+                                    {" " + months[item.month - 1].abbreviation}
                                   </strong>
                                 </td>
                                 <td>
@@ -433,7 +433,7 @@ const Dashboard: FC<IProps> = ({ history }) => {
                                     }}
                                   ></span>
                                   <strong>
-                                    {" " + months[item.month + 1].abbreviation}
+                                    {" " + months[item.month - 1].abbreviation}
                                   </strong>
                                 </td>
                                 <td>Msg</td>

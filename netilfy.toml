@@ -3,3 +3,7 @@
     to = "/index.html"
     force = false
     status = 200
+
+[[build]]
+    command = "CI=false && yarn build"
+    publish = "build"

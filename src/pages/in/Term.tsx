@@ -1,35 +1,31 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, FC } from "react";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
+import { GetAppName, CleanMessage, cleanDate } from "../../context/App";
 import {
   NEW_TERM,
   TERM_LIST,
   REMOVE_TERM,
   UPDATE_TERM,
+  GET_ACTIVE_TERM,
+  NEW_ACTIVE_TERM,
 } from "../../queries/Term.query";
 import { IProps } from "../../models/IProps";
 import { authService } from "../../services/Auth.Service";
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import { IMessage } from "../../models/IMessage";
-import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
 import IconInput from "../partials/IconInput";
+import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
+import Select from "react-select";
+import { CountCard } from "./partials/CountCard";
 
 const Term: FC<IProps> = ({ history }) => {
   const [newTerm, SetNewTerm] = useState<string>();
   const [editTerm, SetEditTerm] = useState<any>({});
-
-  const [message, SetMessage] = useState<IMessage>();
-  const [lMessage, SetLMessage] = useState<IMessage>();
-  const [rMessage, SetRMessage] = useState<IMessage>();
-  const [uMessage, SetUMessage] = useState<IMessage>();
-
-  const ClearMessages = () => {
-    SetMessage(undefined);
-    SetLMessage(undefined);
-    SetRMessage(undefined);
-    SetUMessage(undefined);
-  };
+  const [activeTerm, SetActiveTerm] = useState<any>();
+  const [newActiveTerm, SetNewActiveTerm] = useState<any>();
+  const [terms, SetTerms] = useState<any>();
 
   // Check if user is authenticated
   if (!authService.IsAuthenticated()) {
@@ -38,16 +34,8 @@ const Term: FC<IProps> = ({ history }) => {
 
   // Create New Term
   const [NewTerm, { loading }] = useMutation(NEW_TERM, {
-    onError: (err) =>
-      SetMessage({
-        message: err.message,
-        failed: true,
-      }),
-    onCompleted: (data) =>
-      SetMessage({
-        message: data.NewTerm.message,
-        failed: false,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
+    onCompleted: (data) => toast.success(data.NewTerm.message),
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
         query: TERM_LIST,
@@ -65,11 +53,7 @@ const Term: FC<IProps> = ({ history }) => {
 
   // Remove Term
   const [RemoveTerm, { loading: rLoading }] = useMutation(REMOVE_TERM, {
-    onError: (err) =>
-      SetRMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
         query: TERM_LIST,
@@ -91,16 +75,9 @@ const Term: FC<IProps> = ({ history }) => {
 
   // Update Term
   const [UpdateTerm, { loading: uLoading }] = useMutation(UPDATE_TERM, {
-    onError: (err) =>
-      SetUMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
     onCompleted: (data) => {
-      SetUMessage({
-        message: data.UpdateTerm.message,
-        failed: false,
-      });
+      toast.success(data.UpdateTerm.message);
     },
     update: (cache, { data }) => {
       const q: any = cache.readQuery({
@@ -124,155 +101,227 @@ const Term: FC<IProps> = ({ history }) => {
 
   // Get list of Terms
   const { loading: lLoading, data: lData } = useQuery(TERM_LIST, {
-    onError: (err) =>
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
+    onCompleted: (data) => {
+      if (data) {
+        const terms = data.GetTerms.docs.map((term: any) => ({
+          label: term?.name,
+          value: term?.id,
+        }));
+        SetTerms(terms);
+      }
+    },
   });
 
-  // Set Active Term
-  // const [ChangePriSchool, { loading: pLoading }] = useMutation(MAKE_PRIMARY, {
-  //   onCompleted: (data) => {
-  //     if (data) {
-  //       const { doc, token } = data.MakePrimarySchool;
-  //       authService.Login(doc, token);
-  //       document.location.reload(true);
-  //     }
-  //   },
-  // });
+  // Get Active Term
+  const { loading: atLoading } = useQuery(GET_ACTIVE_TERM, {
+    onError: (err) => {
+      if (err.message !== "GraphQL error: Bad request! No active term found!")
+        toast.error(CleanMessage(err.message));
+    },
+    onCompleted: (data) => {
+      if (data) {
+        SetActiveTerm(data.GetActiveTerm.doc);
+      }
+    },
+  });
+
+  // New Active Term
+  const [NewActiveTerm, { loading: nATLoading }] = useMutation(
+    NEW_ACTIVE_TERM,
+    {
+      onError: (err) => toast.error(CleanMessage(err.message)),
+      onCompleted: (data) => {
+        if (data) {
+          SetNewActiveTerm(data.NewActiveTerm.doc);
+          toast.info(CleanMessage(data.NewActiveTerm.message));
+        }
+      },
+    }
+  );
 
   return (
     <>
       <Helmet>
         <title>Term | {GetAppName()}</title>
       </Helmet>
-      <div className="row justify-content-center">
-        <div className="col-md-10">
-          <div className="content-i">
-            <div className="content-box">
-              <div className="element-wrapper">
-                <h5 className="element-header">Term</h5>
-                <div className="element-box">
-                  <div className="row justify-content-center">
-                    <div className="col-lg-12"></div>
-                    <div className="col-lg-12">
-                      <AlertMessage
-                        message={message?.message}
-                        failed={message?.failed}
-                      />
-                      <LoadingState loading={loading} />
-                      <form
-                        onSubmit={async (e) => {
-                          e.preventDefault();
-                          ClearMessages();
-                          await NewTerm({
-                            variables: {
-                              name: newTerm,
-                            },
-                          });
-                        }}
-                      >
-                        <div className="row">
-                          <div className="col-12">
-                            {/* Term input */}
-                            <IconInput
-                              placeholder="Enter Term name"
-                              label="New Term "
-                              icon="os-icon-ui-09"
-                              required={true}
-                              type="text"
-                              onChange={(name: string) => {
-                                SetNewTerm(name);
-                              }}
-                            />
-                          </div>
-                          <div className="col-12">
-                            <div className="buttons-w">
-                              <button className="btn btn-primary" type="submit">
-                                Save New
-                              </button>
-                            </div>
+      <div className="content-i">
+        <div className="content-box">
+          <div className="element-wrapper">
+            <div className="row justify-content-center">
+              <div className="col-md-10">
+                <span className="element-actions">
+                  <button
+                    className="btn btn-primary btn-sm"
+                    title="Set Active Term"
+                    data-target="#activeTermModal"
+                    data-toggle="modal"
+                  >
+                    <i className="os-icon os-icon-check-square mr-2"></i>
+                    Set Active Term
+                  </button>
+                </span>
+                <h5 className="element-header">
+                  Term {/* Active Term */}
+                  <LoadingState loading={atLoading} />
+                  {activeTerm && (
+                    <label
+                      className="badge badge-primary-inverted icon-pointer p-2"
+                      title="Click to Edit Active Term"
+                      data-target="#activeTermModal"
+                      data-toggle="modal"
+                    >
+                      <i className="os-icon os-icon-check-square mr-2"></i>
+                      Active Term - <b> {activeTerm.term.name}</b> -{" "}
+                      {cleanDate(activeTerm.startDate)}
+                    </label>
+                  )}
+                </h5>
+                <div className=" justify-content-center">
+                  {/* New Term */}
+                  <div className="element-box">
+                    <LoadingState loading={loading} />
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        await NewTerm({
+                          variables: {
+                            name: newTerm,
+                          },
+                        });
+                      }}
+                    >
+                      <div className="row">
+                        <div className="col-12">
+                          {/* Term input */}
+                          <IconInput
+                            placeholder="Enter Term name"
+                            label="New Term "
+                            icon="os-icon-ui-09"
+                            required={true}
+                            type="text"
+                            onChange={(name: string) => {
+                              SetNewTerm(name);
+                            }}
+                          />
+                        </div>
+                        <div className="col-12">
+                          <div className="buttons-w">
+                            <button className="btn btn-primary" type="submit">
+                              Save New
+                            </button>
                           </div>
                         </div>
-                      </form>
-                    </div>
+                      </div>
+                    </form>
                   </div>
-                </div>
-                <div className="row justify-content-center ">
-                  <div className="col-lg-12 pt-5">
-                    <AlertMessage
-                      message={lMessage?.message || rMessage?.message}
-                      failed={lMessage?.failed || rMessage?.failed}
-                    />
-                    <LoadingState loading={lLoading || rLoading} />
-                    {lData && lData.GetTerms.docs.length > 0 && (
-                      <div className="element-box-tp">
-                        <div className="table-responsive">
-                          <table className="table table-padded">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-                                <th>Term</th>
-                                <th className="text-center">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {lData.GetTerms.docs.map(
-                                (term: any, index: number) => (
-                                  <tr>
-                                    <td>{index + 1}</td>
-                                    <td>{term.name}</td>
-                                    <td className="row-actions text-center">
-                                      <a
-                                        href="#"
-                                        title="Edit"
-                                        data-target="#editModal"
-                                        data-toggle="modal"
-                                        onClick={() => {
-                                          ClearMessages();
-                                          SetEditTerm({
-                                            id: term.id,
-                                            name: term.name,
+
+                  {/* Term List */}
+                  <LoadingState loading={lLoading || rLoading} />
+                  {lData && lData.GetTerms.docs.length > 0 && (
+                    <div className="element-box-tp ">
+                      <div className="table-responsive">
+                        <table className="table table-padded">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Term</th>
+                              <th className="text-center">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {lData.GetTerms.docs.map(
+                              (term: any, index: number) => (
+                                <tr>
+                                  <td>{index + 1}</td>
+                                  <td>{term.name}</td>
+                                  <td className="row-actions text-center">
+                                    <a
+                                      href="#"
+                                      title="Edit"
+                                      data-target="#editModal"
+                                      data-toggle="modal"
+                                      onClick={() => {
+                                        SetEditTerm({
+                                          id: term.id,
+                                          name: term.name,
+                                        });
+                                      }}
+                                    >
+                                      <i className="os-icon os-icon-edit"></i>
+                                    </a>
+                                    <a
+                                      className="danger"
+                                      href="#"
+                                      title="Delete"
+                                      onClick={async () => {
+                                        let del = window.confirm(
+                                          `Are you sure you want to delete "${term.name}"?`
+                                        );
+                                        if (del) {
+                                          await RemoveTerm({
+                                            variables: {
+                                              id: term.id,
+                                            },
                                           });
-                                        }}
-                                      >
-                                        <i className="os-icon os-icon-edit"></i>
-                                      </a>
-                                      <a
-                                        className="danger"
-                                        href="#"
-                                        title="Delete"
-                                        onClick={async () => {
-                                          ClearMessages();
-                                          let del = window.confirm(
-                                            `Are you sure you want to delete "${term.name}"?`
-                                          );
-                                          if (del) {
-                                            await RemoveTerm({
-                                              variables: {
-                                                id: term.id,
-                                              },
-                                            });
-                                          }
-                                        }}
-                                      >
-                                        <i className="os-icon os-icon-ui-15"></i>
-                                      </a>
-                                    </td>
-                                  </tr>
-                                )
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
+                                        }
+                                      }}
+                                    >
+                                      <i className="os-icon os-icon-ui-15"></i>
+                                    </a>
+                                  </td>
+                                </tr>
+                              )
+                            )}
+                          </tbody>
+                        </table>
                       </div>
-                    )}
-                    {lData && lData.GetTerms.docs.length === 0 && (
-                      <div className="text-center pt-5 fade-in">
-                        <h3 className="text-danger"> No Term record found!</h3>
-                      </div>
-                    )}
+                    </div>
+                  )}
+                  {lData && lData.GetTerms.docs.length === 0 && (
+                    <div className="text-center pt-5 fade-in">
+                      <h3 className="text-danger"> No Term record found!</h3>
+                    </div>
+                  )}
+
+                  {/* List of Archived Terms */}
+                  <div className="element-box mt-5">
+                    <h6 className="element-header">Archived Active Terms</h6>
+                    <div className="table-responsive">
+                      <table className="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Term</th>
+                            <th>Start Date</th>
+                            <th className="text-center">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td>
+                              Ist Term
+                              {/* {term.id === activeTerm?.term?.id && (
+                                <label className="badge badge-success-inverted ml-2">
+                                  Active
+                                </label>
+                              )} */}
+                            </td>
+                            <td>3rd Aug. 2019</td>
+                            <td className="row-actions text-center">
+                              <a
+                                href="#"
+                                title="Set as Active"
+                                onClick={() => {}}
+                              >
+                                <i className="os-icon os-icon-check-square"></i>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -300,14 +349,9 @@ const Term: FC<IProps> = ({ history }) => {
             </div>
             <div className="modal-body element-box no-shadow pb-5">
               <LoadingState loading={uLoading} />
-              <AlertMessage
-                message={uMessage?.message}
-                failed={uMessage?.failed}
-              />
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
-                  ClearMessages();
                   await UpdateTerm({
                     variables: {
                       id: editTerm.id,
@@ -342,6 +386,75 @@ const Term: FC<IProps> = ({ history }) => {
                     </div>
                   </div>
                 </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Set Active Term Modal */}
+      <div
+        aria-hidden="true"
+        className="modal fade"
+        id="activeTermModal"
+        role="dialog"
+      >
+        <div className="modal-dialog modal-md" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">
+                Set Active Term <hr />
+              </h5>
+              <button className="close" data-dismiss="modal" type="button">
+                <span aria-hidden="true"> &times;</span>
+              </button>
+            </div>
+            <div className="modal-body element-box no-shadow pb-5">
+              <LoadingState loading={nATLoading} />
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  await NewActiveTerm({
+                    variables: {
+                      model: newActiveTerm,
+                    },
+                  });
+                }}
+              >
+                <div>
+                  {/* From Date*/}
+                  <label>Start Date </label>
+                  <br />
+                  <DatePicker
+                    placeholderText="day, month year"
+                    selected={newActiveTerm?.startDate}
+                    onChange={(date) => {
+                      SetNewActiveTerm({
+                        ...newActiveTerm,
+                        startDate: date,
+                      });
+                    }}
+                    className="form-control"
+                    dateFormat="d, MMMM yyyy"
+                  />
+                </div>
+                <div className="mt-3">
+                  <label>Term </label>
+                  <br />
+                  <Select
+                    options={terms}
+                    onChange={(term: any) => {
+                      SetNewActiveTerm({
+                        ...newActiveTerm,
+                        term: term.value,
+                      });
+                    }}
+                  />
+                </div>
+                <button className="btn btn-primary mt-3" type="submit">
+                  <i className="os-icon os-icon-check-square mr-2"></i>
+                  Set Active
+                </button>
               </form>
             </div>
           </div>

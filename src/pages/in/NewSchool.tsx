@@ -15,28 +15,23 @@ const NewSchool: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
   const [message, SetMessage] = useState<IMessage>();
 
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
-
   const [SaveSchool, { loading }] = useMutation(NEW_SCHOOL, {
-    onError: err =>
+    onError: (err) =>
       SetMessage({
         message: err.message,
-        failed: true
+        failed: true,
       }),
-    onCompleted: data => {
+    onCompleted: (data) => {
       if (data.NewSchool) {
         SetMessage({
           message: data.NewSchool.message,
-          failed: false
+          failed: false,
         });
 
         // Redirect to login
         history.push("/in/school-list");
       }
-    }
+    },
   });
   return (
     <>
@@ -52,7 +47,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
               <div className="col-lg-10 pt-5">
                 <h5 className="element-header">Basic Information</h5>
                 <form
-                  onSubmit={async e => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
                     // Reset message
                     SetMessage(undefined);
@@ -60,8 +55,8 @@ const NewSchool: FC<IProps> = ({ history }) => {
                     //Save School
                     await SaveSchool({
                       variables: {
-                        model: record
-                      }
+                        model: record,
+                      },
                     });
                   }}
                 >
@@ -75,7 +70,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                     onChange={(name: string) => {
                       SetRecord({
                         ...record,
-                        name
+                        name,
                       });
                     }}
                   />
@@ -90,7 +85,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                     onChange={(alias: string) => {
                       SetRecord({
                         ...record,
-                        alias
+                        alias,
                       });
                     }}
                   />
@@ -104,7 +99,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                     onChange={(address: string) => {
                       SetRecord({
                         ...record,
-                        address
+                        address,
                       });
                     }}
                   />
@@ -118,7 +113,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                     onChange={(contactAddress: string) => {
                       SetRecord({
                         ...record,
-                        contactAddress
+                        contactAddress,
                       });
                     }}
                   />
@@ -135,7 +130,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                         onChange={(contactEmail: string) => {
                           SetRecord({
                             ...record,
-                            contactEmail
+                            contactEmail,
                           });
                         }}
                       />
@@ -151,7 +146,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                         onChange={(contactPhone: string) => {
                           SetRecord({
                             ...record,
-                            contactPhone
+                            contactPhone,
                           });
                         }}
                       />
@@ -169,7 +164,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                         onChange={(primaryColor: string) => {
                           SetRecord({
                             ...record,
-                            primaryColor
+                            primaryColor,
                           });
                         }}
                       />
@@ -185,7 +180,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                         onChange={(secondaryColor: string) => {
                           SetRecord({
                             ...record,
-                            secondaryColor
+                            secondaryColor,
                           });
                         }}
                       />
@@ -197,7 +192,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                     onData={(path: string) =>
                       SetRecord({
                         ...record,
-                        logo: path
+                        logo: path,
                       })
                     }
                   />

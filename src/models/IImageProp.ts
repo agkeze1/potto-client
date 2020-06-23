@@ -1,4 +1,4 @@
 export interface IImageProp {
-  image: string;
-  name: string;
+  image?: string;
+  name?: string;
 }

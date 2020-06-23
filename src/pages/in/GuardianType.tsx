@@ -1,9 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
 import { authService } from "../../services/Auth.Service";
 import { IProps } from "../../models/IProps";
-import { IMessage } from "../../models/IMessage";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import {
   NEW_GUARDIAN_TYPE,
@@ -11,23 +11,14 @@ import {
   REMOVE_GUARDIAN_TYPE,
   UPDATE_GUARDIAN_TYPE,
 } from "../../queries/Guardian.query";
-import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
 import IconInput from "../partials/IconInput";
+import { toast } from "react-toastify";
 
 const GuardianType: FC<IProps> = ({ history }) => {
-  const [nMessage, SetNMessage] = useState<IMessage>();
-  const [lMessage, SetLMessage] = useState<IMessage>();
   const [newGuardianType, SetNewGuardianType] = useState<any>();
 
-  const [rMessage, SetRMessage] = useState<IMessage>();
-  const [uMessage, SetUMessage] = useState<IMessage>();
   const [editGuardianType, SetEditGuardianType] = useState<any>({});
-
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
 
   const scrollTop = () => {
     document.body.scrollTop = 0;
@@ -36,27 +27,15 @@ const GuardianType: FC<IProps> = ({ history }) => {
 
   // Get list of Guardian types
   const { loading, data } = useQuery(GET_GUARDIAN_TYPES, {
-    onError: (err) =>
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(err.message),
   });
 
   // Save New Guardian type
   const [NewGuardianType, { loading: nLoading }] = useMutation(
     NEW_GUARDIAN_TYPE,
     {
-      onError: (err) =>
-        SetNMessage({
-          message: err.message,
-          failed: true,
-        }),
-      onCompleted: (data) =>
-        SetNMessage({
-          message: data.NewGuardianType.message,
-          failed: false,
-        }),
+      onError: (err) => toast.error(err.message),
+      onCompleted: (data) => toast.success(data.NewGuardianType.message),
       update: (cache, { data }) => {
         const q: any = cache.readQuery({
           query: GET_GUARDIAN_TYPES,
@@ -77,11 +56,7 @@ const GuardianType: FC<IProps> = ({ history }) => {
   const [RemoveGuardianType, { loading: rLoading }] = useMutation(
     REMOVE_GUARDIAN_TYPE,
     {
-      onError: (err) =>
-        SetRMessage({
-          message: err.message,
-          failed: true,
-        }),
+      onError: (err) => toast.error(err.message),
       update: (cache, { data }) => {
         const q: any = cache.readQuery({
           query: GET_GUARDIAN_TYPES,
@@ -106,16 +81,9 @@ const GuardianType: FC<IProps> = ({ history }) => {
   const [UpdateGuradianType, { loading: uLoading }] = useMutation(
     UPDATE_GUARDIAN_TYPE,
     {
-      onError: (err) =>
-        SetUMessage({
-          message: err.message,
-          failed: true,
-        }),
+      onError: (err) => toast.error(err.message),
       onCompleted: (data) => {
-        SetUMessage({
-          message: data.UpdateGuardianType.message,
-          failed: false,
-        });
+        toast.success(data.UpdateGuardianType.message);
       },
       update: (cache, { data }) => {
         const q: any = cache.readQuery({
@@ -152,10 +120,6 @@ const GuardianType: FC<IProps> = ({ history }) => {
                 <div className="element-box">
                   <div className="row justify-content-center">
                     <div className="col-lg-12">
-                      <AlertMessage
-                        message={nMessage?.message}
-                        failed={nMessage?.failed}
-                      />
                       <LoadingState loading={nLoading} />
                       <label htmlFor="">New Guardian Type</label>
                     </div>
@@ -205,14 +169,6 @@ const GuardianType: FC<IProps> = ({ history }) => {
                   <div className="col-lg-12 pt-5">
                     <div className="element-box-tp">
                       <div className="table-responsive">
-                        <AlertMessage
-                          message={lMessage?.message}
-                          failed={lMessage?.failed}
-                        />
-                        <AlertMessage
-                          message={rMessage?.message}
-                          failed={rMessage?.failed}
-                        />
                         <LoadingState loading={loading || rLoading} />
 
                         {data && data.GetGuardianTypes.docs.length > 0 && (
@@ -235,7 +191,6 @@ const GuardianType: FC<IProps> = ({ history }) => {
                                         href="#"
                                         title="Edit"
                                         onClick={() => {
-                                          SetUMessage(undefined);
                                           SetEditGuardianType({
                                             id: type.id,
                                             name: type.name,
@@ -324,10 +279,6 @@ const GuardianType: FC<IProps> = ({ history }) => {
               </div>
               <div className="modal-body element-box no-shadow pb-2">
                 <LoadingState loading={uLoading} />
-                <AlertMessage
-                  message={uMessage?.message}
-                  failed={uMessage?.failed}
-                />
                 <form
                   onSubmit={async (e) => {
                     e.preventDefault();
@@ -346,7 +297,7 @@ const GuardianType: FC<IProps> = ({ history }) => {
                     <div className="col-12">
                       <IconInput
                         placeholder="Enter Guardian Type"
-                        label="Guardiant Type"
+                        label="Guardian Type"
                         icon="os-icon-email-2-at2"
                         required={true}
                         type="text"

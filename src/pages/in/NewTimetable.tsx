@@ -36,11 +36,6 @@ const NewTimetable: FC<IProps> = ({ history }) => {
   const [periods, SetPeriods] = useState<any>([]);
   const [selectedPeriods, SetSelectedPeriods] = useState<any>([]);
 
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
-
   // Get  School of logged in user
   const { school } = authService.GetUser();
 
@@ -71,7 +66,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
       onCompleted: (data) => {
         if (data.GetSubjectsForRegistration.docs) {
           let subList = [...subjects];
-          data.GetSubjectsForRegistration.docs.map((sub: any) => {
+          data.GetSubjectsForRegistration.docs.forEach((sub: any) => {
             subList.push({
               label: sub.title,
               value: sub.id,
@@ -91,14 +86,14 @@ const NewTimetable: FC<IProps> = ({ history }) => {
     },
     onCompleted: (data) => {
       if (data.GetAllTeachers.docs) {
-        const tchrList = [...teachers];
-        data.GetAllTeachers.docs.map((tchr: any) => {
-          tchrList.push({
-            label: tchr.name,
-            value: tchr.id,
+        const _items = [...teachers];
+        data.GetAllTeachers.docs.forEach((item: any) => {
+          _items.push({
+            label: item.name,
+            value: item.id,
           });
         });
-        SetTeachers(tchrList);
+        SetTeachers(_items);
       }
     },
   });
@@ -359,7 +354,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                             <>
                               <div className="row">
                                 {periods.map((prd: any, index: number) => (
-                                  <>
+                                  <React.Fragment key={index}>
                                     {!prd.break && !prd.taken && (
                                       <div
                                         key={index}
@@ -388,7 +383,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                         }}
                                       >
                                         <label className="mb-0">
-                                          {prd.from + " - " + prd.to}
+                                          <b>{prd.from + " - " + prd.to}</b>
                                         </label>
                                         <br />
                                         <label
@@ -452,7 +447,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                         )}
                                       </div>
                                     )}
-                                  </>
+                                  </React.Fragment>
                                 ))}
                               </div>
                             </>
@@ -538,7 +533,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
               </>
             )}
 
-            {/* Inputed Timetable */}
+            {/* Inputted Timetable */}
             {tTData?.GetClassTimetable.docs &&
               tTData.GetClassTimetable.docs.find(
                 (item: any) => item.day === timetableInput?.day?.value
@@ -546,7 +541,7 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                 <div className="row justify-content-center ">
                   <div className="col-lg-12">
                     <div className="element-box">
-                      <h5 className="element-header">Inputed Timetable</h5>
+                      <h5 className="element-header">Inputted Timetable</h5>
                       <div className="table-responsive">
                         <LoadingState loading={tTLoading || rTLoading} />
                         <table className="table table-striped">
@@ -590,14 +585,21 @@ const NewTimetable: FC<IProps> = ({ history }) => {
                                     <td>{tTable.teacher?.name}</td>
                                     <td className="row-actions text-center">
                                       <a
+                                        // eslint-disable-next-line no-script-url
                                         href="javascript:void(0)"
                                         title="Remove"
-                                        onClick={() => {
-                                          RemoveTimetable({
-                                            variables: {
-                                              id: tTable.id,
-                                            },
-                                          });
+                                        onClick={async () => {
+                                          if (
+                                            window.confirm(
+                                              "Are you sure you want to proceed?"
+                                            )
+                                          ) {
+                                            await RemoveTimetable({
+                                              variables: {
+                                                id: tTable.id,
+                                              },
+                                            });
+                                          }
                                         }}
                                       >
                                         <i className="os-icon os-icon-x text-danger"></i>

@@ -17,7 +17,7 @@ import Class from "./Class";
 import Term from "./Term";
 import Subjects from "./Subjects";
 import NewStudent from "./NewStudent";
-import StudentList from "./StudentList";
+import StudentList from "./Student";
 import NewTeacher from "./NewTeacher";
 import TeacherList from "./TeacherList";
 import GuardianType from "./GuardianType";
@@ -31,19 +31,20 @@ import NewTimetable from "./NewTimetable";
 import ViewTimetable from "./ViewTimetable";
 import Dashboard from "./Dashboard";
 import Period from "./Period";
-import RollCall from "./RollCall";
-import { authService } from "../../services/Auth.Service";
+import RollCall from "./AttendanceReport/RollCall";
 import SendFeedback from "./SendFeedback";
 import GraduateStudent from "./GraduateStudent";
-import SubjectAttendance from "./SubjectAttendance.tsx";
+import SubjectAttendance from "./AttendanceReport/SubjectAttendance";
+import TeacherAttendance from "./TeacherAttendance";
+import TeacherMessage from "./TeacherMessage";
+import SendTeacherMessage from "./TeacherMessage/NewMessage";
+import GuardianMessage from "./GuardianMessage/index";
 
-const Home: FC<IProps> = ({ location, history }) => {
+const Home: FC<IProps> = ({ location }) => {
   document.body.className =
     "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
   // document.body.style.background
 
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) history.push("/login");
   return (
     <>
       <Helmet>
@@ -96,12 +97,29 @@ const Home: FC<IProps> = ({ location, history }) => {
                 <Route path="/in/roll-call" component={RollCall} />
                 <Route path="/in/send-feedback" component={SendFeedback} />
                 <Route
+                  path="/in/subject-attendance"
+                  component={SubjectAttendance}
+                />
+                <Route
                   path="/in/graduate-student"
                   component={GraduateStudent}
                 />
                 <Route
-                  path="/in/subject-attendance"
-                  component={SubjectAttendance}
+                  path="/in/teacher-attendance"
+                  component={TeacherAttendance}
+                />
+                <Route
+                  path="/in/messaging/teachers"
+                  exact={true}
+                  component={TeacherMessage}
+                />
+                <Route
+                  path="/in/messaging/teachers/new"
+                  component={SendTeacherMessage}
+                />
+                <Route
+                  path="/in/messaging/guardian"
+                  component={GuardianMessage}
                 />
               </Switch>
             </div>

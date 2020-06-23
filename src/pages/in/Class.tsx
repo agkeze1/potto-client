@@ -14,10 +14,8 @@ import {
   UPDATE_CLASS,
 } from "../../queries/Class.query";
 import { TEACHER_LIST } from "../../queries/Teacher.query";
-import { IMessage } from "../../models/IMessage";
 import { authService } from "../../services/Auth.Service";
 import LoadingState from "../partials/loading";
-import AlertMessage from "../partials/AlertMessage";
 import SwitchInput from "../partials/SwitchInput";
 import Select from "react-select";
 import { toast } from "react-toastify";
@@ -31,11 +29,6 @@ const Class: FC<IProps> = ({ history }) => {
   // Update Class
   const [activeClassId, SetActiveClassId] = useState<string>();
   const [editClass, SetEditClass] = useState<any>({});
-
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
 
   // Get  School of logged in user
   const { school } = authService.GetUser();

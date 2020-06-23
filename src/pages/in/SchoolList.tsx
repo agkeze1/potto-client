@@ -25,11 +25,6 @@ const SchoolList: FC<IProps> = ({ history }) => {
     name: "Undefined",
   });
 
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
-
   // Get  School of logged in user
   const { school } = authService.GetUser();
   console.log("Active School: ", school);

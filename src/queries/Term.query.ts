@@ -21,6 +21,22 @@ export const TERM_LIST = gql`
   ${TERM_PROPS}
 `;
 
+export const GET_ACTIVE_TERM = gql`
+  query GET_ACTIVE_TERM {
+    GetActiveTerm {
+      message
+      doc {
+        id
+        startDate
+        term {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
 // Mutation Section
 export const NEW_TERM = gql`
   mutation NEW_TERM($name: String!) {
@@ -55,4 +71,19 @@ export const UPDATE_TERM = gql`
     }
   }
   ${TERM_PROPS}
+`;
+
+export const NEW_ACTIVE_TERM = gql`
+  mutation NEW_ACTIVE_TERM($model: ActiveTermInput!) {
+    NewActiveTerm(model: $model) {
+      message
+      doc {
+        id
+        term {
+          id
+          name
+        }
+      }
+    }
+  }
 `;

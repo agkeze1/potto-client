@@ -1,12 +1,15 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable no-script-url */
 import React, { FC, useState } from "react";
-import days from "../../../data/days.json";
+import days from "../../../../data/days.json";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { GET_CLASS_TIMETABLE } from "../../../queries/Timetable.query";
+import { GET_CLASS_TIMETABLE } from "../../../../queries/Timetable.query";
 import { toast } from "react-toastify";
-import { CleanMessage } from "../../../context/App";
-import LoadingState from "../../partials/loading";
-import { TIMETABLE_ATTENDANCE } from "../../../queries/attendance.query";
+import { CleanMessage } from "../../../../context/App";
+import LoadingState from "../../../partials/loading";
+import { TIMETABLE_ATTENDANCE } from "../../../../queries/attendance.query";
 import AttendanceDetails from "./AttendanceDetails";
+import { OrderTimetableByDay } from "../../../../context/App";
 
 interface IProps {
   level: any;
@@ -23,7 +26,10 @@ const DayTimetable: FC<IProps> = ({ level, _class }) => {
   const { loading, data } = useQuery(GET_CLASS_TIMETABLE, {
     variables: { _class: _class?.value },
     onError: (err) => toast.error(CleanMessage(err.message)),
-    onCompleted: (data) => SetActiveRecord(data?.GetClassTimetable.docs[0]),
+    onCompleted: (data) => {
+      const orderedRec = OrderTimetableByDay(data.GetClassTimetable.docs);
+      if (orderedRec) SetActiveRecord(orderedRec[0]);
+    },
     fetchPolicy: "network-only",
   });
 
@@ -52,12 +58,12 @@ const DayTimetable: FC<IProps> = ({ level, _class }) => {
                   <div className="col-md-4">
                     <div className="element-box no-bg bg-white">
                       <h6 className="element-header">Days</h6>
-                      {data.GetClassTimetable.docs.map(
+                      {OrderTimetableByDay(data.GetClassTimetable.docs)?.map(
                         (item: any, idx: number) => (
                           <a
                             key={idx}
                             className={`el-tablo att-date-crd ${
-                              activeRecord?.day === item.day
+                              activeRecord?.day === item?.day
                                 ? "active-att-date"
                                 : ""
                             }`}
@@ -73,7 +79,7 @@ const DayTimetable: FC<IProps> = ({ level, _class }) => {
                               <div className="col-10">
                                 <div className="text-primary">
                                   {days.days
-                                    .find((i: any) => i.value === item.day)
+                                    .find((i: any) => i.value === item?.day)
                                     ?.label.toUpperCase()}
                                 </div>
                               </div>

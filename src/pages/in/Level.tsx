@@ -11,7 +11,6 @@ import {
 import { IProps } from "../../models/IProps";
 import { authService } from "../../services/Auth.Service";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
 import IconInput from "../partials/IconInput";
 import { toast } from "react-toastify";
@@ -19,11 +18,6 @@ import { toast } from "react-toastify";
 const Level: FC<IProps> = ({ history }) => {
   const [level, SetLevel] = useState<any>();
   const [editLevel, SetEditLevel] = useState<any>({});
-
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
 
   // Get list of Levels
   const { data, loading } = useQuery(GET_LEVELS, {

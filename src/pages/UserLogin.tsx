@@ -3,19 +3,18 @@ import { Helmet } from "react-helmet";
 import { GetAppName, GET_LOGO } from "../context/App";
 import { NavLink } from "react-router-dom";
 import Input from "./partials/Input";
-import { IMessage } from "../models/IMessage";
-import AlertMessage from "./partials/AlertMessage";
 import LoadingState from "./partials/loading";
 import { authService } from "../services/Auth.Service";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { FIRST_USER, USER_LOGIN } from "../queries/User.query";
 import { HAS_SCHOOL } from "../queries/School.query";
 import { IProps } from "../models/IProps";
+import { toast } from "react-toastify";
+import { CleanMessage } from "./../context/App";
 
 const UserLogin: React.FC<IProps> = ({ history }) => {
     document.body.className = "auth-wrapper";
 
-    const [message, SetMessage] = useState<IMessage>();
     const [email, SetEmail] = useState<string>();
     const [password, SetPassword] = useState<string>();
 
@@ -43,11 +42,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
     });
 
     const [Login, { loading }] = useMutation(USER_LOGIN, {
-        onError: (err) =>
-            SetMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
             const { doc, token } = data.Login;
             authService.Login(doc, token);
@@ -73,7 +68,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                 <a href="/">
                                     <img alt="application-logo" width="48" src={GET_LOGO} />
                                 </a>
-                                <h6 className="mt-2">{GetAppName()}</h6>
+                                <h6 className="mt-1">{GetAppName()}</h6>
                             </div>
                             <h4 className="auth-header">Login</h4>
                             <form
@@ -81,7 +76,6 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                 onSubmit={async (e) => {
                                     e.preventDefault();
                                     // Reset Message
-                                    SetMessage(undefined);
                                     if (email && password) {
                                         // Login
                                         await Login({
@@ -93,10 +87,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                         if (authService.IsAuthenticated()) {
                                             document.location.href = "/in";
                                         } else {
-                                            SetMessage({
-                                                message: "Incorrect Username or Password!",
-                                                failed: true,
-                                            });
+                                            toast.error("Incorrect Username or Password!");
                                         }
                                     }
                                 }}
@@ -127,7 +118,6 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                     type="password"
                                 />
                                 <LoadingState loading={loading} />
-                                <AlertMessage message={message?.message} failed={message?.failed} />
                                 <div className="buttons-w pb-3">
                                     <button type="submit" className="btn btn-primary">
                                         Login
@@ -135,6 +125,12 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                     </button>
                                     <NavLink className="btn btn-link text-primary" to="#">
                                         Forgot password?
+                                    </NavLink>
+                                </div>
+
+                                <div className="text-center">
+                                    <NavLink className="btn btn-link text-primary text-center" to="/teacher-login">
+                                        Teacher's Corner
                                     </NavLink>
                                 </div>
                             </form>

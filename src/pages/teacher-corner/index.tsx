@@ -35,6 +35,7 @@ const TeacherCorner: FC<IProps> = ({ location }) => {
                         {/* Content */}
                         <div className="main-container">
                             <Switch>
+                                <Route exact path="/teacher/app/" component={TeacherProfile} />
                                 <Route exact path="/teacher/app/profile" component={TeacherProfile} />
                                 <Route exact path="/teacher/app/timetable" component={TeacherTimetable} />
                                 <Route exact path="/teacher/app/attendance" component={TeacherAttendance} />

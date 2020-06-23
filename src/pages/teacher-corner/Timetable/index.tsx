@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, CleanMessage } from "./../../../context/App";
 import { teacherAuthService } from "../../../services/teacher.auth.service";
@@ -10,10 +10,16 @@ import LoadingState from "../../partials/loading";
 
 const TeacherTimetable = () => {
     const teacher = teacherAuthService.GetTeacher();
+    const [timetable, setTimetable] = useState<Array<any>>([]);
 
     const { loading, data } = useQuery(GET_TEACHER_TIMETABLE_SINGLE, {
         onError: (e) => toast.error(CleanMessage(e.message)),
         variables: { teacher: teacher.id },
+        onCompleted: (d) => {
+            if (d) {
+                setTimetable(data.GetTeacherTimetables.docs);
+            }
+        },
     });
 
     return (
@@ -26,7 +32,7 @@ const TeacherTimetable = () => {
                     <div className="element-wrapper">
                         <h5 className="element-header">Timetable</h5>
                         <LoadingState loading={loading} />
-                        {!loading && <TeacherTimetableListing items={data.GetTeacherTimetables.docs} />}
+                        {!loading && <TeacherTimetableListing items={timetable} />}
                     </div>
                 </div>
             </div>

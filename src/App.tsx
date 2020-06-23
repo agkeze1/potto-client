@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import TeacherLogin from "./pages/teacher-corner/Login";
 import PrivateRouteTeacher from "./context/PrivateRouteTeacher";
 import TeacherCorner from "./pages/teacher-corner";
+import TeacherPasswordReset from "./pages/teacher-corner/PasswordReset";
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/in" component={In} />
                 <Route path="/teacher/login" component={TeacherLogin} />
                 <PrivateRouteTeacher path="/teacher/app" component={TeacherCorner} />
+                <Route path="/teacher/reset-password" component={TeacherPasswordReset} />
             </Switch>
             <ToastContainer position="top-center" />
         </>

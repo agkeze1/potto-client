@@ -170,3 +170,8 @@ export const UPDATE_PASSWORD_TEACHER = gql`
         }
     }
 `;
+export const PASSWORD_RESET = gql`
+    query TeacherPasswordReset($no: String!) {
+        PasswordReset(no: $no)
+    }
+`;

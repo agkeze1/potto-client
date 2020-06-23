@@ -37,7 +37,7 @@ const TeacherProfile = () => {
                             <h5 className="element-header">Your Profile</h5>
                             <div className="row">
                                 <div className="col-12 col-md-4">
-                                    <div className="element-box">
+                                    <div className="element-box bg-no bg-white">
                                         <div className="text-center">
                                             <Image src={teacher.image} alt={teacher.first_name} width={100} />
                                             <h2 className="up-header ">{teacher.name}</h2>

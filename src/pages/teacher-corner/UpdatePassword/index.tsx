@@ -19,6 +19,9 @@ const UpdateTeacherPassword = () => {
             toast.success(message);
             const teacher = teacherAuthService.GetTeacher();
             teacherAuthService.Login(teacher, token);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
         },
     });
 

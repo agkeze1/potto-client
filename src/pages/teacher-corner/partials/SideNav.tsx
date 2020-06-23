@@ -35,14 +35,6 @@ const SideNav: FC<SideProps> = ({ location }) => {
                     </NavLink>
                 </div>
                 <ul className="main-menu">
-                    <li className="selected">
-                        <NavLink to="/teacher/app/dashboard" onClick={() => scrollTop()}>
-                            <div className="icon-w">
-                                <div className="os-icon os-icon-pie-chart-3"></div>
-                            </div>
-                            <span>Dashboard</span>
-                        </NavLink>
-                    </li>
                     <li className="menu-link">
                         <NavLink to="/teacher/app/profile" onClick={() => scrollTop()}>
                             <div className="icon-w">

@@ -39,7 +39,7 @@ const TeacherLogin: React.FC<IProps> = ({ history }) => {
             <Helmet>
                 <title> Teacher Login | {GetAppName()}</title>
             </Helmet>
-            <div className="all-wrapper menu-side with-pattern">
+            <div className="all-wrapper menu-side with-pattern slide-in-elliptic-bottom-fwd">
                 <div className="auth-box-w">
                     <div className="logo-w">
                         <a href="/">
@@ -99,7 +99,7 @@ const TeacherLogin: React.FC<IProps> = ({ history }) => {
                                 {loading ? <span>Please wait</span> : <span>Login</span>}
                                 <div className="os-icon os-icon-arrow-right7"></div>
                             </button>
-                            <NavLink className="btn btn-link text-primary" to="#">
+                            <NavLink className="btn btn-link text-primary" to="/teacher/reset-password">
                                 Forgot password?
                             </NavLink>
                         </div>

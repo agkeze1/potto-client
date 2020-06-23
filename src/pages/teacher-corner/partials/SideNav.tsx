@@ -34,17 +34,6 @@ const SideNav: FC<SideProps> = ({ location }) => {
                         <div className="logo-label">{GetAppName()}</div>
                     </NavLink>
                 </div>
-                <div className="logged-user-w avatar-inline">
-                    <div className="logged-user-i">
-                        <Image alt={first_name} src={image} width={40} />
-
-                        <div className="logged-user-info-w">
-                            <div className="logged-user-name">{name}</div>
-                            <div className="logged-user-role">{phone}</div>
-                        </div>
-                    </div>
-                </div>
-
                 <ul className="main-menu">
                     <li className="selected">
                         <NavLink to="/teacher/app/dashboard" onClick={() => scrollTop()}>
@@ -102,6 +91,17 @@ const SideNav: FC<SideProps> = ({ location }) => {
                         </a>
                     </li>
                 </ul>
+                <span className="m-2">Teacher</span>
+                <div className="logged-user-w avatar-inline">
+                    <div className="logged-user-i">
+                        <Image alt={first_name} src={image} width={40} />
+
+                        <div className="logged-user-info-w">
+                            <div className="logged-user-name">{name}</div>
+                            <div className="logged-user-role">{phone}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     );

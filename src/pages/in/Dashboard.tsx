@@ -328,27 +328,30 @@ const Dashboard = () => {
                     <LoadingState loading={stuBirthdayLoading} />
                     {stuBirthdayData?.UpcomingStudentsBirthday && (
                       <table className="table table-padded">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>
-                              <div className="custom-control custom-checkbox text-center">
-                                <input
-                                  type="checkbox"
-                                  className="custom-control-input"
-                                  id="select-all-chk"
-                                />
-                                <label
-                                  className="custom-control-label"
-                                  htmlFor="select-all-chk"
-                                ></label>
-                              </div>
-                            </th>
-                            <th className="text-left">Student</th>
-                            <th className="text-left">Date</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
+                        {stuBirthdayData?.UpcomingStudentsBirthday?.length >
+                          0 && (
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>
+                                <div className="custom-control custom-checkbox text-center">
+                                  <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    id="select-all-chk"
+                                  />
+                                  <label
+                                    className="custom-control-label"
+                                    htmlFor="select-all-chk"
+                                  ></label>
+                                </div>
+                              </th>
+                              <th className="text-left">Student</th>
+                              <th className="text-left">Date</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                        )}
                         <tbody>
                           {stuBirthdayData?.UpcomingStudentsBirthday?.map(
                             (item: any, index: number) => (
@@ -377,7 +380,7 @@ const Dashboard = () => {
                                     }}
                                   ></span>
                                   <strong>
-                                    {" " + months[item.month - 1].abbreviation}
+                                    {" " + months[item.month].abbreviation}
                                   </strong>
                                 </td>
                                 <td>
@@ -391,7 +394,7 @@ const Dashboard = () => {
                           {stuBirthdayData?.UpcomingStudentsBirthday?.length ===
                             0 && (
                             <tr>
-                              <td className="text-danger" colSpan={4}>
+                              <td className="text-danger" colSpan={5}>
                                 No Upcoming Students birthday
                               </td>
                             </tr>
@@ -410,14 +413,17 @@ const Dashboard = () => {
                     <LoadingState loading={tchrBirthdayLoading} />
                     {tchrBirthdayData?.UpcomingTeachersBirthday && (
                       <table className="table table-padded">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th className="text-left">Teacher</th>
-                            <th className="text-left">Date</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
+                        {tchrBirthdayData?.UpcomingTeachersBirthday?.length >
+                          0 && (
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th className="text-left">Teacher</th>
+                              <th className="text-left">Date</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                        )}
                         <tbody>
                           {tchrBirthdayData?.UpcomingTeachersBirthday?.map(
                             (item: any, index: number) => (
@@ -433,7 +439,7 @@ const Dashboard = () => {
                                     }}
                                   ></span>
                                   <strong>
-                                    {" " + months[item.month - 1].abbreviation}
+                                    {" " + months[item.month].abbreviation}
                                   </strong>
                                 </td>
                                 <td>Msg</td>

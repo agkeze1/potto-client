@@ -104,6 +104,7 @@ export const GET_ALL_TEACHERS_SHORT = gql`
                 image
                 first_name
                 phone
+                gender
             }
         }
     }

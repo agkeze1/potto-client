@@ -1,45 +1,83 @@
 import React, { useState, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, CleanMessage } from "../../../context/App";
-import Select from "react-select";
-import TeacherAttendanceList from "./AttendanceItems";
-import { useLazyQuery, useQuery } from "@apollo/react-hooks";
-import { GET_ALL_TEACHERS_SHORT, GET_TEACHER_ATTENDANCE, GET_TEACHER_TIMETABLE } from "../../../queries/Teacher.query";
-import { toast } from "react-toastify";
+import { GetAppName, CleanMessage, toPrettyTime } from "../../../context/App";
+import TeacherAttendanceReportFilter from "./Filter";
 import LoadingState from "../../partials/loading";
-import DatePicker from "react-datepicker";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
+import { GET_TEACHER_TIMETABLE_SINGLE, COUNT_TIMETABLE_ATTENDANCE, GET_TARDINESS_ATTENDANCE, GET_ATTENDANCE_SUMMARY } from "../../../queries/Timetable.query";
+import { toast } from "react-toastify";
+import TimetableAttendance from "./TimetableAttendance";
+import TeacherAttendanceCount from "./TeacherAttendanceCount";
+import AttendanceTardiness from "./AttendanceTardiness";
+import TeacherAttendanceSummary from "./Summary";
 import { CountCard } from "../partials/CountCard";
 
 const TeacherAttendance = () => {
-    const title = "Teacher Attendance Report";
+    const title = "Teacher's Attendance Report";
+    const [teacher, setTeacher] = useState<any>();
+    const [timetables, setTimetables] = useState<any>([]);
+    const [summary, setSummary] = useState<any>([]);
 
-    const [teacher, setTeacher] = useState<string>("");
-    const [person, setPerson] = useState<any>(undefined);
-    const [teachers, setTeachers] = useState<Array<any>>([]);
-    const [from_filter, setFromFilter] = useState<any>(undefined);
-    const [to_filter, setToFilter] = useState<any>(undefined);
-    const [expected, setExpected] = useState<number>(0);
+    const [tardiness, setTardiness] = useState<any>([]);
+    const [week, setWeek] = useState<any>(undefined);
+    const [totalAttendance, setTotalAttendance] = useState(0);
+    const [totalMinutes, setTotalMinutes] = useState(0);
+    const [totalTimetable, setTotalTimetable] = useState(0);
 
-    const { loading } = useQuery(GET_ALL_TEACHERS_SHORT, {
+    const [fetchTimetableFunc, { loading }] = useLazyQuery(GET_TEACHER_TIMETABLE_SINGLE, {
         onError: (e) => toast.error(CleanMessage(e.message)),
+        fetchPolicy: "network-only",
         onCompleted: (d) => {
-            setTeachers(d.GetAllTeachers.docs);
+            setTimetables(d.GetTeacherTimetables.docs);
+            const _items = Array.from(d.GetTeacherTimetables.docs);
+            if (_items.length) {
+                const count = _items.map((g: any) => g.total).reduce((f: any, i: any) => f + i);
+                setTotalTimetable(count);
+            }
+        },
+    });
+    // COUNT_TIMETABLE_ATTENDANCE
+    const { loading: countLoading, data: countData } = useQuery(COUNT_TIMETABLE_ATTENDANCE, {
+        onError: (e) => toast.error(CleanMessage(e.message)),
+        fetchPolicy: "network-only",
+    });
+
+    // GET_TARDINESS_ATTENDANCE
+    const { loading: tardinessLoading } = useQuery(GET_TARDINESS_ATTENDANCE, {
+        onError: (e) => toast.error(CleanMessage(e.message)),
+        fetchPolicy: "network-only",
+        onCompleted: (d) => {
+            const items = Array.from(d.GetTeacherAttendanceTardiness);
+            setTardiness(items.sort((a: any, b: any) => b.totalMinutes - a.totalMinutes));
+        },
+    });
+    // GET_ATTENDANCE_SUMMARY
+    const [getSummaryFunc, { loading: summaryLoading }] = useLazyQuery(GET_ATTENDANCE_SUMMARY, {
+        onError: (e) => toast.error(CleanMessage(e.message)),
+        fetchPolicy: "network-only",
+        onCompleted: (d) => {
+            setSummary(d.GetTeacherAttendancesSummary);
+            const _items = Array.from(d.GetTeacherAttendancesSummary);
+            if (_items.length) {
+                const _total = _items.map((g: any) => g.totalAttendance).reduce((a: any, b: any) => a + b);
+                setTotalAttendance(_total);
+
+                let mins = _items
+                    .map((i: any) => i.classes)
+                    .flat()
+                    .map((r: any) => r.totalMinutes)
+                    .reduce((a: any, b: any) => a + b);
+                setTotalMinutes(mins);
+            }
         },
     });
 
-    const [getTeacherFunc, { loading: tLoading, data }] = useLazyQuery(GET_TEACHER_ATTENDANCE, {
-        onError: (e) => toast.error(CleanMessage(e.message)),
-    });
-
-    const [getTeacherTimetableFunc, { loading: exLoading }] = useLazyQuery(GET_TEACHER_TIMETABLE, {
-        onError: (e) => toast.error(CleanMessage(e.message)),
-        onCompleted: (d) => {
-            setExpected(d.GetTeacherTimetables.docs.map((a: any) => a.total).reduce((a: number, b: number) => a + b));
-        },
-    });
     useEffect(() => {
-        if (teacher && from_filter && to_filter) getTeacherFunc({ variables: { teacher, from: from_filter, to: to_filter } });
-    }, [teacher, getTeacherFunc, from_filter, to_filter]);
+        if (teacher) {
+            fetchTimetableFunc({ variables: { teacher: teacher.id } });
+            if (week) getSummaryFunc({ variables: { teacher: teacher.id, week: week.value } });
+        }
+    }, [teacher, fetchTimetableFunc, week, getSummaryFunc]);
 
     return (
         <>
@@ -51,91 +89,81 @@ const TeacherAttendance = () => {
             <div className="content-i">
                 <div className="content-box">
                     <div className="element-wrapper">
-                        <div className="row">
-                            <div className="col-md-12">
-                                <div className="element-box no-bg bg-white">
-                                    <h5 className="element-header">{title}</h5>
-                                    <div className="row">
-                                        <div className="col-12 col-md-6">
-                                            <label htmlFor="teacher">Select teacher to proceed</label>
-                                            <Select
-                                                options={teachers.map((i: any) => ({
-                                                    value: i.id,
-                                                    label: i.name,
-                                                }))}
-                                                isLoading={loading}
-                                                id="teacher"
-                                                isMulti={false}
-                                                isSearchable={true}
-                                                onChange={async (item: any) => {
-                                                    setTeacher(item.value);
-                                                    const _item = teachers.find((d) => d.id === item.value);
-                                                    setPerson(_item);
-                                                    await getTeacherTimetableFunc({ variables: { id: _item.id } });
-                                                }}
-                                            />
-                                        </div>
-                                        <div className="col-12 col-md-3">
-                                            <label htmlFor="from">Date Range (from)</label>
-                                            <DatePicker
-                                                placeholderText="select date .."
-                                                className="form-control"
-                                                required
-                                                dateFormat="dd MMMM, YYY"
-                                                selected={from_filter}
-                                                onChange={(date) => {
-                                                    setFromFilter(date);
-                                                }}
-                                            />
-                                        </div>
-                                        <div className="col-12 col-md-3">
-                                            <label htmlFor="from">Date Range (to)</label>
-                                            <DatePicker
-                                                placeholderText="select date .."
-                                                className="form-control"
-                                                required
-                                                minDate={from_filter}
-                                                dateFormat="dd MMMM, YYY"
-                                                selected={to_filter}
-                                                onChange={(date) => {
-                                                    setToFilter(date);
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="users-list-w">
-                                        {person && (
-                                            <div className="user-w with-status status-green fade-in">
-                                                <div className="user-avatar-w">
-                                                    <div className="user-avatar">
-                                                        <img alt={person.first_name} src={person.image} />
+                        <h5 className="element-header">{title}</h5>
+                        <TeacherAttendanceReportFilter
+                            onWeek={(week: any) => setWeek(week)}
+                            onTeacher={(teacher: any) => {
+                                setTeacher(teacher);
+                                setTimetables([]);
+                                setSummary([]);
+                                setTotalAttendance(0);
+                                setTotalMinutes(0);
+                                setTotalTimetable(0);
+                            }}
+                            activeTeacher={teacher}
+                        />
+                        {teacher && week && (
+                            <div className="row fade-in">
+                                <div className="col-12 col-md-4">
+                                    <LoadingState loading={loading} />
+                                    <TimetableAttendance items={timetables} onItem={(item: any) => {}} />
+                                </div>
+                                <div className="col-12 col-md-8">
+                                    <div className="element-box no-bg bg-white">
+                                        <div className="row">
+                                            <div className="col-12">
+                                                <div className="row">
+                                                    <div className="col-md-4 col-12">
+                                                        <CountCard loading={summaryLoading} cssClass="bg-light-green" title="Expected Attendance" value={Math.round(totalTimetable * week.value)} />
+                                                    </div>
+                                                    <div className="col-md-4 col-12">
+                                                        <CountCard loading={summaryLoading} cssClass="bg-darkseagreen" title="Total Attendance" value={totalAttendance} />
+                                                    </div>
+                                                    <div className="col-md-4 col-12">
+                                                        <CountCard loading={loading} cssClass="bg-light-blue" title="Total Timetable" value={totalTimetable} />
+                                                    </div>
+                                                    <div className="col-md-4 col-12">
+                                                        <CountCard loading={summaryLoading} cssClass="bg-lightcoral" title="Total Tardiness" value={toPrettyTime(totalMinutes)} />
+                                                    </div>
+                                                    <div className="col-md-4 col-12">
+                                                        <CountCard
+                                                            loading={summaryLoading}
+                                                            cssClass="bg-light-red"
+                                                            title="Missed Attendance"
+                                                            value={Math.round(totalTimetable * week.value - totalAttendance)}
+                                                        />
                                                     </div>
                                                 </div>
-                                                <div className="user-name">
-                                                    <h6 className="user-title">{person.name}</h6>
-                                                    <div className="user-role">Teacher</div>
-                                                </div>
                                             </div>
-                                        )}
+                                            <div className="col-12">
+                                                <TeacherAttendanceSummary items={summary} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <LoadingState loading={tLoading} />
-                                {data && (
-                                    <div className="row">
-                                        <div className="col-md-10 col-12">
-                                            <TeacherAttendanceList total={data.GetTeacherSubjectAttendance.total} items={data.GetTeacherSubjectAttendance.docs} />
-                                        </div>
-                                        <div className="col-12 col-md-2">
-                                            <div className="row">
-                                                <div className="col-12">
-                                                    <CountCard title="Total Students" loading={exLoading} value={expected} cssClass="bg-darkseagreen" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
-                        </div>
+                        )}
+                        {!teacher && !week && (
+                            <div className="row fade-in">
+                                <div className="col-12 col-md-6">
+                                    <h6 className="element-header">Teacher taken attendance in the last 7 days</h6>
+                                    <LoadingState loading={countLoading} />
+                                    {countData && <TeacherAttendanceCount items={countData.CountTimetableAttendance} />}
+                                </div>
+                                <div className="col-12 col-md-6">
+                                    <h6 className="element-header">Attendance Tardiness in the last 7 days</h6>
+                                    <LoadingState loading={tardinessLoading} />
+                                    {!tardinessLoading && (
+                                        <AttendanceTardiness
+                                            onTeacher={(_teacher: any) => {
+                                                setTeacher(_teacher);
+                                            }}
+                                            items={tardiness}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

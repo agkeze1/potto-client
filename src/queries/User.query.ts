@@ -42,8 +42,9 @@ export const USER_LOGIN = gql`
         school {
           id
           name
-          alias
         }
+        admin
+        superAdmin
       }
       token
     }
@@ -81,10 +82,11 @@ export const USER_SETUP = gql`
           name
           alias
         }
+        admin
+        superAdmin
       }
     }
   }
-
   ${USER_PROPS}
 `;
 

@@ -76,6 +76,7 @@ export const GetTimeDifference = (from: string, second: string): string => {
   const _date = new Date(diff);
   return `${_date.getHours()}H:${_date.getMinutes()}M`;
 };
+
 export const cleanDate = (date: string, onlyDate = false, short = true) =>
   onlyDate
     ? Intl.DateTimeFormat("en-GB", {
@@ -137,4 +138,15 @@ export const OrderTimetableByDay = (ttResult: Array<any>) => {
     return result;
   }
   return null;
+};
+
+/**
+ * Convert minute to hour and minutes
+ * @param minutes total minutes
+ */
+export const toPrettyTime = (minutes: number): string => {
+    if (minutes) {
+        return `${Math.floor(minutes / 60)}h : ${Math.floor(minutes % 60)}m`;
+    }
+    return "";
 };

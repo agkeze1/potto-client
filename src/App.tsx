@@ -10,6 +10,11 @@ import "react-datepicker/dist/react-datepicker.css";
 // import toast
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import TeacherLogin from "./pages/teacher-corner/Login";
+import PrivateRouteTeacher from "./context/PrivateRouteTeacher";
+import TeacherCorner from "./pages/teacher-corner";
+import TeacherPasswordReset from "./pages/teacher-corner/PasswordReset";
+import TeacherNewPassword from "./pages/teacher-corner/TeacherNewPassword";
 
 function App() {
     return (
@@ -20,6 +25,10 @@ function App() {
                 <Route path="/default_school" component={FirstSchool} />
                 <Route path="/signup" component={UserSignup} />
                 <Route path="/in" component={In} />
+                <Route path="/teacher/login" component={TeacherLogin} />
+                <PrivateRouteTeacher path="/teacher/app" component={TeacherCorner} />
+                <Route path="/teacher/reset-password" component={TeacherPasswordReset} />
+                <Route path="/teacher/new-password" component={TeacherNewPassword} />
             </Switch>
             <ToastContainer position="top-center" />
         </>

@@ -148,3 +148,43 @@ export const GET_TEACHER_TIMETABLE = gql`
         }
     }
 `;
+
+export const TEACHER_LOGIN = gql`
+    mutation TEACHER_LOGIN($email: String!, $password: String!) {
+        TeacherLogin(email: $email, password: $password) {
+            token
+            message
+            doc {
+                ...TEACHER_PROPS
+            }
+        }
+    }
+    ${TEACHER_PROPS}
+`;
+
+export const UPDATE_PASSWORD_TEACHER = gql`
+    mutation UpdateTeacherPassword($old: String!, $_new: String!) {
+        UpdateTeacherPassword(oldPassword: $old, newPassword: $_new) {
+            message
+            token
+        }
+    }
+`;
+export const PASSWORD_RESET = gql`
+    query TeacherPasswordReset($no: String!) {
+        PasswordReset(no: $no)
+    }
+`;
+
+export const CHANGE_TEACHER_PASSWORD = gql`
+    mutation ChangeTeacherPassword($email: String!, $newPassword: String!) {
+        ChangeTeacherPassword(email: $email, newPassword: $newPassword) {
+            token
+            message
+            doc {
+                ...TEACHER_PROPS
+            }
+        }
+    }
+    ${TEACHER_PROPS}
+`;

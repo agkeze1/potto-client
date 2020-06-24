@@ -614,7 +614,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                     <div className="col-12 fade-in">
                                         <div className="element-box">
                                             <Pagination
-                                                length={data?.SearchStudents?.totalDocs}
+                                                length={data?.SearchStudents.docs.length}
                                                 {...data?.SearchStudents}
                                                 onPageClicked={(page: number) => {
                                                     setPage(page);

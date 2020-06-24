@@ -754,3 +754,8 @@ h6,
 .h6 {
     font-size: 0.8rem;
 }
+.table .row-actions .os-icon {
+    border: solid 1px #c7c7c7;
+    padding: 5px;
+    border-radius: 1rem;
+}

@@ -231,15 +231,9 @@ const Dashboard = () => {
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>
-                                                                <div className="custom-control custom-checkbox text-center">
-                                                                    <input type="checkbox" className="custom-control-input" id="select-all-chk" />
-                                                                    <label className="custom-control-label" htmlFor="select-all-chk"></label>
-                                                                </div>
-                                                            </th>
+
                                                             <th className="text-left">Student</th>
                                                             <th className="text-left">Date</th>
-                                                            <th>Action</th>
                                                         </tr>
                                                     </thead>
                                                 )}
@@ -247,12 +241,7 @@ const Dashboard = () => {
                                                     {stuBirthdayData?.UpcomingStudentsBirthday?.map((item: any, index: number) => (
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            <td>
-                                                                <div className="custom-control custom-checkbox text-center">
-                                                                    <input type="checkbox" className="custom-control-input" id={`chk-${index}`} />
-                                                                    <label className="custom-control-label" htmlFor={`chk-${index}`}></label>
-                                                                </div>
-                                                            </td>
+
                                                             <td className="text-left">{item.student?.full_name}</td>
                                                             <td className="text-left">
                                                                 <span
@@ -260,12 +249,7 @@ const Dashboard = () => {
                                                                         __html: DayString(item.day),
                                                                     }}
                                                                 ></span>
-                                                                <strong>{" " + months[item.month].abbreviation}</strong>
-                                                            </td>
-                                                            <td>
-                                                                <a href="javascript:void(0)">
-                                                                    <i className="os-icon os-icon-mail-01"></i>
-                                                                </a>
+                                                                <strong>{" " + months[item.month - 1].name}</strong>
                                                             </td>
                                                         </tr>
                                                     ))}
@@ -296,7 +280,6 @@ const Dashboard = () => {
                                                             <th>#</th>
                                                             <th className="text-left">Teacher</th>
                                                             <th className="text-left">Date</th>
-                                                            <th>Action</th>
                                                         </tr>
                                                     </thead>
                                                 )}
@@ -311,9 +294,8 @@ const Dashboard = () => {
                                                                         __html: DayString(item.day),
                                                                     }}
                                                                 ></span>
-                                                                <strong>{" " + months[item.month].abbreviation}</strong>
+                                                                <strong>{" " + months[item.month - 1].name}</strong>
                                                             </td>
-                                                            <td>Msg</td>
                                                         </tr>
                                                     ))}
                                                     {tchrBirthdayData?.UpcomingTeachersBirthday?.length === 0 && (

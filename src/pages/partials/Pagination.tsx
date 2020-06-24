@@ -4,7 +4,7 @@ import { iPagination } from "../../models/Pagination.model";
 const Pagination: React.FC<iPagination> = (props) => {
     const maxPage = 5;
 
-    const { page, limit, totalDocs, totalPages, length, prevPage, nextPage, onPageClicked } = props;
+    const { page, limit = 25, totalDocs, totalPages, length = 0, prevPage, nextPage, onPageClicked } = props;
     // Get page number
     const getPageNumber = () => (page - 1) * limit + 1;
 

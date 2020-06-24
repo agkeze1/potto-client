@@ -259,7 +259,7 @@ const UserList: FC<IProps> = ({ history }) => {
                                         <div className="col-12 fade-in">
                                             <div className="element-box">
                                                 <Pagination
-                                                    length={data.GetUsers.totalDocs}
+                                                    length={data.GetUsers.docs.length}
                                                     {...data.GetUsers}
                                                     onPageClicked={(page: number) => {
                                                         SetPage(page);

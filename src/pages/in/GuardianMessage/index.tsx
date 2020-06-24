@@ -89,7 +89,7 @@ const GuardianMessage = () => {
                                     </div>
                                     {data.GetStudentMessageLog.docs.length > 0 && (
                                         <div className="element-box no-bg bg-white fade-in">
-                                            <Pagination length={data.GetStudentMessageLog.totalDocs} {...data.GetStudentMessageLog} onPageClicked={(page: number) => setPage(page)} />
+                                            <Pagination length={data.GetStudentMessageLog.docs.length} {...data.GetStudentMessageLog} onPageClicked={(page: number) => setPage(page)} />
                                         </div>
                                     )}
                                 </div>

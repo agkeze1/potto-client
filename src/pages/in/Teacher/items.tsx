@@ -70,7 +70,9 @@ const TeacherItems: FC<IProps> = ({ items, onRemove, onView }) => {
                             <tbody>
                                 {items.map((teacher: any, index: number) => (
                                     <tr key={index}>
-                                        <td>{index + 1}</td>
+                                        <td>
+                                            <strong>{index + 1}</strong>
+                                        </td>
                                         <td>
                                             <div onClick={() => setActive(teacher)} className="user-with-avatar clickable" data-target="#imageModal" data-toggle="modal">
                                                 <img src={teacher.image || "../avatar.png"} alt="passport" />

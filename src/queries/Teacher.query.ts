@@ -188,3 +188,14 @@ export const CHANGE_TEACHER_PASSWORD = gql`
     }
     ${TEACHER_PROPS}
 `;
+
+export const SEARCH_TEACHER = gql`
+    query SearchTeacher($keyword: String!) {
+        SearchTeacher(keyword: $keyword) {
+            docs {
+                ...TEACHER_PROPS
+            }
+        }
+    }
+    ${TEACHER_PROPS}
+`;

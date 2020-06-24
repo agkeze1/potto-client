@@ -32,11 +32,11 @@ const TeacherNewPassword = () => {
             <Helmet>
                 <title> Teacher New Password | {GetAppName()}</title>
             </Helmet>
-            <div className="all-wrapper menu-side with-pattern slide-in-elliptic-top-fwd">
+            <div className="all-wrapper menu-side with-pattern scale-in-bottom">
                 <div className="auth-box-w">
                     <div className="logo-w">
                         <a href="/">
-                            <img alt="application-logo" width="48" src={GET_LOGO} />
+                            <img alt="application-logo" width="80" src={GET_LOGO} />
                         </a>
                         <h6 className="mt-1">{GetAppName()}</h6>
                     </div>

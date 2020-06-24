@@ -34,10 +34,10 @@ const TeacherProfile = () => {
                 <div className="content-box">
                     <div className="element-wrapper">
                         <div>
-                            <h5 className="element-header">Your Profile</h5>
+                            <h5 className="element-header tracking-in-contract">Your Profile</h5>
                             <div className="row">
                                 <div className="col-12 col-md-4">
-                                    <div className="element-box bg-no bg-white">
+                                    <div className="element-box bg-no bg-white" style={{ minHeight: "80vh" }}>
                                         <div className="text-center">
                                             <Image src={teacher.image} alt={teacher.first_name} width={100} />
                                             <h2 className="up-header ">{teacher.name}</h2>
@@ -72,7 +72,7 @@ const TeacherProfile = () => {
                                     </div>
                                 </div>
                                 <div className="col-12 col-md-8">
-                                    <div className="element-box no-bg bg-white">
+                                    <div className="element-box no-bg bg-white" style={{ minHeight: "80vh" }}>
                                         <div className="element-info">
                                             <div className="element-info-with-icon">
                                                 <div className="element-info-icon">

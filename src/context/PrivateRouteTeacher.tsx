@@ -16,7 +16,7 @@ const PrivateRouteTeacher: React.FC<IProp> = ({ component: Component, ...rest })
             ) : (
                 <Redirect
                     to={{
-                        pathname: "/teacher-login",
+                        pathname: "/teacher/login",
                         state: { from: props.location },
                         search: `?redirect=${props.location.pathname}`,
                     }}

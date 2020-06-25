@@ -88,6 +88,7 @@ const TCHR_BIRTHDAY = gql`
     }
   }
 `;
+
 // Ratios
 
 const STU_CLASS_RATIO = gql`
@@ -139,6 +140,21 @@ const USER_GENDER_RATIO = gql`
   }
 `;
 
+// Attendances
+
+const WEEKLY_ROLLCAL_SUMMARY = gql`
+  query WEEKLY_ROLLCAL_SUMMARY {
+    GetWeeklyRollCallAttendanceRatio {
+      date
+      present
+      absent
+      exempted
+      manual
+      total
+    }
+  }
+`;
+
 export const DASHBOARD = {
   ACTIVE_TERM,
   TOTAL_SCHOOL,
@@ -159,4 +175,5 @@ export const DASHBOARD = {
   STU_STATE_RATIO,
   TCHR_GENDER_RATIO,
   USER_GENDER_RATIO,
+  WEEKLY_ROLLCAL_SUMMARY,
 };

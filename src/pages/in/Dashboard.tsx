@@ -2,7 +2,7 @@
 /* eslint-disable no-script-url */
 import React, { useState } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, DayString } from "../../context/App";
+import { GetAppName, DayString, cleanDate } from "../../context/App";
 import { Doughnut, Bar } from "react-chartjs-2";
 import { DASHBOARD } from "../../queries/Dashboard.query";
 import { useQuery } from "@apollo/react-hooks";
@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [stuLevelRatio, SetStuLevelRatio] = useState<any>();
   const [stuClassRatio, SetStuClassRatio] = useState<any>();
   const [stuStateRatio, SetStuStateRatio] = useState<any>();
+  const [weeklyRollcallStat, SetWeeklyRollcallStat] = useState<any>();
 
   const { loading: activeTermLoading, data: activeTermData } = useQuery(
     DASHBOARD.ACTIVE_TERM
@@ -57,7 +58,6 @@ const Dashboard = () => {
   const { loading: stuBirthdayLoading, data: stuBirthdayData } = useQuery(
     DASHBOARD.STU_BIRTHDAY
   );
-
   const { loading: tchrBirthdayLoading, data: tchrBirthdayData } = useQuery(
     DASHBOARD.TCHR_BIRTHDAY
   );
@@ -209,6 +209,14 @@ const Dashboard = () => {
       },
     }
   );
+  const { loading: weeklyRollcallLoading } = useQuery(
+    DASHBOARD.WEEKLY_ROLLCAL_SUMMARY,
+    {
+      onCompleted: (data) => {
+        if (data) SetWeeklyRollcallStat(data.GetWeeklyRollCallAttendanceRatio);
+      },
+    }
+  );
 
   return (
     <>
@@ -323,11 +331,11 @@ const Dashboard = () => {
               {/* Students Birthday */}
               <div className="col-md-6">
                 <h6 className="element-header">Upcoming Students Birthdays</h6>
-                <div className="text-center element-box-tp">
+                <div className="text-center element-box p-0 no-bg bg-white">
                   <div className="table-responsive">
                     <LoadingState loading={stuBirthdayLoading} />
                     {stuBirthdayData?.UpcomingStudentsBirthday && (
-                      <table className="table table-padded">
+                      <table className="table table-striped">
                         {stuBirthdayData?.UpcomingStudentsBirthday?.length >
                           0 && (
                           <thead>
@@ -378,11 +386,11 @@ const Dashboard = () => {
               {/* Teachers Birthday */}
               <div className="col-md-6">
                 <h6 className="element-header">Upcoming Teachers Birthdays</h6>
-                <div className="text-center element-box-tp">
+                <div className="text-center element-box p-0 no-bg bg-white">
                   <div className="table-responsive">
                     <LoadingState loading={tchrBirthdayLoading} />
                     {tchrBirthdayData?.UpcomingTeachersBirthday && (
-                      <table className="table table-padded">
+                      <table className="table table-striped">
                         {tchrBirthdayData?.UpcomingTeachersBirthday?.length >
                           0 && (
                           <thead>
@@ -509,39 +517,68 @@ const Dashboard = () => {
               <div className="col-12">
                 <div className="element-box no-bg bg-white">
                   <h6 className="element-header">
-                    DAILY ROLL CALL ATTENDANCE (IN ONE WEEK)
+                    DAILY ROLL CALL ATTENDANCE SUMMARY ( IN ONE WEEK )
                   </h6>
-                  <div className="table-responsive">
-                    <table className="table table-striped">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th className="text-left">Date</th>
-                          <th className="text-left">Total</th>
-                          <th className="text-left">Present</th>
-                          <th className="text-left">Absent</th>
-                          <th className="text-left">Exempted</th>
-                          <th className="text-left">Manual</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td className="text-left">15th May</td>
-                          <td className="text-left">430</td>
-                          <td className="text-left">410</td>
-                          <td className="text-left">20</td>
-                          <td className="text-left">45</td>
-                          <td className="text-left">45</td>
-                        </tr>
-                        <tr>
-                          <td className="text-danger text-center" colSpan={7}>
-                            No Roll call Attendance in the last week
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <LoadingState loading={weeklyRollcallLoading} />
+                  {weeklyRollcallStat?.length > 0 && (
+                    <div className="table-responsive">
+                      <table className="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th className="text-left">Date</th>
+                            <th className="text-left">Total</th>
+                            <th className="text-left">Present</th>
+                            <th className="text-left">Absent</th>
+                            <th className="text-left">Exempted</th>
+                            <th className="text-left">Manual</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {weeklyRollcallStat?.map((stat: any, idx: number) => (
+                            <tr>
+                              <td>{idx + 1}</td>
+                              <td className="text-left">
+                                {cleanDate(stat?.date)}
+                              </td>
+                              <td className="text-left">
+                                <span className="badge badge-success">
+                                  {stat?.total}
+                                </span>
+                              </td>
+                              <td className="text-left">
+                                <span className="badge badge-success-inverted">
+                                  {stat?.present}
+                                </span>
+                              </td>
+                              <td className="text-left">
+                                <span className="badge badge-danger-inverted">
+                                  {stat?.absent}
+                                </span>
+                              </td>
+                              <td className="text-left">
+                                <span className="badge badge-info-inverted">
+                                  {stat?.exempted || 0}
+                                </span>
+                              </td>
+                              <td className="text-left">
+                                <span className="badge badge-info-inverted">
+                                  {stat?.manual}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                  {weeklyRollcallStat?.length === 0 && (
+                    <div className="text-center">
+                      <h5 className="text-danger">
+                        No Rollcall Stat. available in the past week!
+                      </h5>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

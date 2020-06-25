@@ -787,6 +787,10 @@ h6,
   padding: 5px;
   border-radius: 1rem;
 }
+.table .row-actions .os-icon:hover {
+  background-color: rgb(235, 235, 235);
+}
+
 @media screen and (max-width: 1016px) {
   #header {
     display: none !important;

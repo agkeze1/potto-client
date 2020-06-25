@@ -10,7 +10,7 @@ import TeacherTimetable from "./Timetable";
 import TeacherAttendance from "./Attendance";
 import UpdateTeacherPassword from "./UpdatePassword";
 import SendFeedback from "../in/SendFeedback";
-import MobileMenu from "../partials/MobileMenu";
+import MobileMenu from "./partials/MobileMenu";
 
 const TeacherCorner: FC<IProps> = ({ location }) => {
   const { name } = teacherAuthService.GetTeacher();

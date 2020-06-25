@@ -25,6 +25,11 @@ const SchoolList: FC<IProps> = ({ history }) => {
     name: "Undefined",
   });
 
+  // Check if user is authenticated
+  if (!authService.IsAuthenticated()) {
+    history.push("/login");
+  }
+
   // Get  School of logged in user
   const { school } = authService.GetUser();
   console.log("Active School: ", school);
@@ -177,7 +182,7 @@ const SchoolList: FC<IProps> = ({ history }) => {
                                         });
                                       }}
                                     >
-                                      <i className="os-icon os-icon-check-square"></i>
+                                      <i className="os-icon os-icon-check-square text-primary"></i>
                                     </a>
                                   )}
                                   <a href="#" title="Edit">

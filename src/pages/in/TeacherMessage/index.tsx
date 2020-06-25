@@ -55,7 +55,7 @@ const TeacherMessage = () => {
                                     </div>
                                     <div className="col-12 fade-in">
                                         <div className="element-box no-bg bg-white">
-                                            <Pagination length={data.GetTeacherMessageLog.totalDocs} {...data.GetTeacherMessageLog} onPageClicked={(page: number) => setPage(page)} />
+                                            <Pagination length={data.GetTeacherMessageLog.docs.length} {...data.GetTeacherMessageLog} onPageClicked={(page: number) => setPage(page)} />
                                         </div>
                                     </div>
                                 </>

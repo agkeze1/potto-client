@@ -84,7 +84,7 @@ const Feedback = () => {
                                         </div>
                                         {data && data.GetFeedbacks.totalDocs > 0 && (
                                             <div className="element-box fade-in">
-                                                <Pagination onPageClicked={(page: number) => setPage(page)} {...data.GetFeedbacks} length={data.GetFeedbacks.totalDocs} />
+                                                <Pagination onPageClicked={(page: number) => setPage(page)} {...data.GetFeedbacks} length={data.GetFeedbacks.docs.length} />
                                             </div>
                                         )}
                                     </div>

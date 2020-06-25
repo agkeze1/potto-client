@@ -76,11 +76,11 @@ const TeacherAttendance = () => {
             <div className="content-i">
                 <div className="content-box">
                     <div className="element-wrapper">
-                        <h5 className="element-header">Attendance</h5>
+                        <h5 className="element-header tracking-in-contract">Attendance</h5>
                         <LoadingState loading={loading} />
                         <div className="element-box no-bg bg-white">
                             <div className="row">
-                                <h6 className="element-header">Last Week Attendance</h6>
+                                <h6 className="element-header ">Last Week Attendance</h6>
                                 <div className="col-12">
                                     <div className="row">
                                         <div className="col-md-3 col-12">

@@ -30,7 +30,7 @@ const TeacherTimetable = () => {
             <div className="content-i">
                 <div className="content-box">
                     <div className="element-wrapper">
-                        <h5 className="element-header">Timetable</h5>
+                        <h5 className="element-header tracking-in-contract">Timetable</h5>
                         <LoadingState loading={loading} />
                         {!loading && <TeacherTimetableListing items={timetable} />}
                     </div>

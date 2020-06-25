@@ -37,7 +37,7 @@ const UpdateTeacherPassword = () => {
                         <div className="row justify-content-center">
                             <div className="col-md-5 col-12">
                                 <div className="element-box no-bg bg-white mt-5" style={{ minHeight: "50vh" }}>
-                                    <h5 className="element-header">Update Password</h5>
+                                    <h5 className="element-header tracking-in-contract">Update Password</h5>
 
                                     <form
                                         onSubmit={async (event) => {

@@ -1,18 +1,12 @@
 import React, { FC, useState } from "react";
-import { IProps } from "../../../models/IProps";
-import { authService } from "../../../services/Auth.Service";
-import { GetAppName } from "../../../context/App";
+import { IProps } from "../../../../models/IProps";
+import { GetAppName } from "../../../../context/App";
 import Helmet from "react-helmet";
-import SwitchInput from "../../partials/SwitchInput";
+import SwitchInput from "../../../partials/SwitchInput";
 import AttendanceResult from "./AttendanceResult";
 
 const ClassAttendance: FC<IProps> = ({ history }) => {
   const [showFilter, SetShowFilter] = useState<boolean>(true);
-
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
 
   return (
     <>

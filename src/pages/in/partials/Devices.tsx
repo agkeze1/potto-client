@@ -49,6 +49,7 @@ export const Devices: FC<IProps> = ({
                     title="View On history"
                     data-target="#PowerHistoryModal"
                     data-toggle="modal"
+                    onClick={SetActiveDevice(dev)}
                   >
                     <i className="os-icon os-icon-power"></i>
                   </a>

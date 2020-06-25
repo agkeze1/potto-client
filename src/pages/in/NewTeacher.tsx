@@ -4,7 +4,6 @@ import { IProps } from "../../models/IProps";
 import { GetAppName } from "../../context/App";
 import IconInput from "../partials/IconInput";
 import ImageUpload from "../partials/ImageUpload";
-import Dropdown from "../partials/Dropdown";
 import { IMessage } from "../../models/IMessage";
 import { authService } from "../../services/Auth.Service";
 import { useMutation } from "@apollo/react-hooks";
@@ -13,6 +12,7 @@ import gender from "../../data/gender.json";
 import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
 import DatePicker from "react-datepicker";
+import Select from "react-select";
 
 const NewTeacher: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
@@ -21,11 +21,6 @@ const NewTeacher: FC<IProps> = ({ history }) => {
   // For comfirm password
   const [bdrClass, SetBdrClass] = useState<string>();
   const [cPassword, SetCPassword] = useState<string>();
-
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
 
   const scrollTop = () => {
     document.body.scrollTop = 0;
@@ -186,15 +181,16 @@ const NewTeacher: FC<IProps> = ({ history }) => {
                   <div className="row">
                     {/* Gender input */}
                     <div className="col-sm-6">
-                      <Dropdown
-                        items={gender.gender}
-                        onSelect={(item: any) => {
+                      <label>Gender </label>
+                      <br />
+                      <Select
+                        options={gender.gender}
+                        onChange={(item: any) => {
                           SetRecord({
                             ...record,
                             gender: item.label,
                           });
                         }}
-                        label="Gender"
                       />
                     </div>
                     <div className="col-sm-6 mb-3">

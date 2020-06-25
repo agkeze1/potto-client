@@ -114,6 +114,7 @@ const LevelClassDateRange: FC<IProps> = ({
       }}
     >
       <div className="row">
+        {/* Leve */}
         <div className="col-lg-3 col-md-6 col-sm-12">
           {/* Level input */}
           <label>
@@ -150,6 +151,7 @@ const LevelClassDateRange: FC<IProps> = ({
           )}
           <LoadingState loading={lLoading || llLoading} />
         </div>
+        {/* Class */}
         <div className="col-lg-3 col-md-6 col-sm-12">
           {/* Class Input */}
           <label>
@@ -173,6 +175,7 @@ const LevelClassDateRange: FC<IProps> = ({
           />
           <LoadingState loading={cLoading} />
         </div>
+        {/* From Day */}
         <div className="col-lg-3 col-md-6 col-sm-12">
           {/* From Date*/}
           <label>From </label>
@@ -191,6 +194,7 @@ const LevelClassDateRange: FC<IProps> = ({
             dateFormat="d, MMMM yyyy"
           />
         </div>
+        {/* To Day */}
         <div className="col-lg-3 col-md-6 col-sm-12">
           {/* To Date */}
           <label>To </label>

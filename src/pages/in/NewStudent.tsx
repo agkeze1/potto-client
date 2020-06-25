@@ -45,11 +45,6 @@ const NewStudent: FC<IProps> = ({ history }) => {
   const [guardianPhone, SetGuardianPhone] = useState<string>();
   const [returnedGuard, SetReturnedGuard] = useState<any>({});
 
-  // Check if user is authenticated
-  if (!authService.IsAuthenticated()) {
-    history.push("/login");
-  }
-
   // Get  School of logged in user
   const { school } = authService.GetUser();
 

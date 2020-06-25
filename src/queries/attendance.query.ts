@@ -18,6 +18,8 @@ export const ROLL_CALL = gql`
           student {
             id
             full_name
+            gender
+            passport
           }
         }
         stats {
@@ -56,6 +58,56 @@ export const TIMETABLE_ATTENDANCE = gql`
             gender
             reg_no
           }
+          present
+          exempted
+          manual
+        }
+      }
+    }
+  }
+`;
+
+export const STU_ROLL_CALL_ATT = gql`
+  query STU_ROLL_CALL_ATT($student: ID!) {
+    GetStudentRollCallAttendances(student: $student) {
+      message
+      docs {
+        total
+      }
+    }
+  }
+`;
+
+export const STU_SUB_ATT = gql`
+  query STU_SUB_ATT($student: ID!) {
+    GetSubjectAttendanceByStudent(student: $student) {
+      message
+      docs {
+        total
+        timetable {
+          id
+          period {
+            from
+            to
+          }
+          day
+          teacher {
+            id
+            name
+          }
+          subject {
+            id
+            title
+            code
+          }
+        }
+        device {
+          id
+          name
+        }
+        attendances {
+          id
+          date
           present
           exempted
           manual

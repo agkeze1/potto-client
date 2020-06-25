@@ -1,23 +1,21 @@
 import React, { FC, useState } from "react";
 import Helmet from "react-helmet";
 import { IProps } from "../../models/IProps";
-import { GetAppName } from "../../context/App";
+import { GetAppName, CleanMessage } from "../../context/App";
 import IconInput from "../partials/IconInput";
 import ImageUpload from "../partials/ImageUpload";
-import { IMessage } from "../../models/IMessage";
 import { useMutation } from "@apollo/react-hooks";
 import { NEW_TEACHER } from "../../queries/Teacher.query";
 import gender from "../../data/gender.json";
-import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
+import { toast } from "react-toastify";
 
 const NewTeacher: FC<IProps> = ({ history }) => {
   const [record, SetRecord] = useState<any>();
-  const [message, SetMessage] = useState<IMessage>();
 
-  // For comfirm password
+  // For confirm password
   const [bdrClass, SetBdrClass] = useState<string>();
   const [cPassword, SetCPassword] = useState<string>();
 
@@ -28,11 +26,7 @@ const NewTeacher: FC<IProps> = ({ history }) => {
 
   // New Teacher Mutation
   const [NewTeacher, { loading }] = useMutation(NEW_TEACHER, {
-    onError: (err) =>
-      SetMessage({
-        message: err.message,
-        failed: true,
-      }),
+    onError: (err) => toast.error(CleanMessage(err.message)),
     onCompleted: () => {
       history.push("/in/teacher-list");
     },
@@ -51,10 +45,6 @@ const NewTeacher: FC<IProps> = ({ history }) => {
             <div className="row justify-content-center element-box">
               <div className="col-lg-10 pt-5">
                 <h5 className="element-header">Basic Information</h5>
-                <AlertMessage
-                  message={message?.message}
-                  failed={message?.failed}
-                />
                 <LoadingState loading={loading} />
                 <form
                   onSubmit={async (e) => {

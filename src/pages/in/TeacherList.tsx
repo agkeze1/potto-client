@@ -52,7 +52,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
     const [searchFunc, { loading: searching }] = useLazyQuery(SEARCH_TEACHER, {
         onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (d) => {
-            const _res = Array.from(d.SearchTeacher.docs);
+            const _res = Array.from(d?.SearchTeacher.docs);
             setTeachers(_res);
         },
     });

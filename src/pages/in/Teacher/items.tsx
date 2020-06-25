@@ -29,6 +29,7 @@ const TeacherItems: FC<IProps> = ({ items, onRemove, onView }) => {
         onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
             toast.success(data.UpdateTeacher.message);
+            document.getElementById("btnModal")?.click();
         },
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
@@ -312,7 +313,7 @@ const TeacherItems: FC<IProps> = ({ items, onRemove, onView }) => {
             </>
         );
     return (
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexFlow: "column", minHeight: "450px" }}>
+        <div className="element-box no-bg bg-white" style={{ display: "flex", justifyContent: "center", alignItems: "center", flexFlow: "column", minHeight: "450px" }}>
             <h4 className="text-danger">No Teacher found!</h4>
             <p>Teacher not available try creating a new teacher.</p>
         </div>

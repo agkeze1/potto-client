@@ -2,7 +2,6 @@
 import React, { FC, useState } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, CleanMessage } from "../../context/App";
-// import Select from "react-select";
 import IconInput from "../partials/IconInput";
 import {
   NEW_ROLE,

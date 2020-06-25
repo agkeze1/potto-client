@@ -377,7 +377,7 @@ const MobileMenu = () => {
                 <div className="icon-w">
                   <div className="os-icon os-icon-email-forward"></div>
                 </div>
-                <span>Commination</span>
+                <span>Communication</span>
               </NavLink>
               <div className="sub-menu-w">
                 <div className="sub-menu-i">

@@ -9,7 +9,6 @@ import {
   REMOVE_LEVEL,
 } from "../../queries/Level.query";
 import { IProps } from "../../models/IProps";
-import { authService } from "../../services/Auth.Service";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import LoadingState from "../partials/loading";
 import IconInput from "../partials/IconInput";

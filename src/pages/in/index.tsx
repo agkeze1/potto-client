@@ -39,6 +39,7 @@ import TeacherAttendance from "./TeacherAttendance";
 import TeacherMessage from "./TeacherMessage";
 import SendTeacherMessage from "./TeacherMessage/NewMessage";
 import GuardianMessage from "./GuardianMessage/index";
+import MobileMenu from "../partials/MobileMenu";
 
 const Home: FC<IProps> = ({ location }) => {
   document.body.className =
@@ -52,16 +53,15 @@ const Home: FC<IProps> = ({ location }) => {
       </Helmet>
       <div className="all-wrapper with-side-panel solid-bg-all">
         <div className="layout-w">
+          {/* Mobile Navigation */}
+          <MobileMenu />
+
           {/* Main sidebar */}
           <SideNav location={location} />
 
           <div className="content-w">
             {/* Header */}
-            <Header location={location} />
-            <div className="content-panel-toggler">
-              <i className="os-icon os-icon-grid-squares-22"></i>
-              <span>Sidebar</span>
-            </div>
+            <Header />
 
             {/* Content */}
             <div className="main-container">

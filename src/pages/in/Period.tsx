@@ -16,7 +16,6 @@ import {
 import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { authService } from "../../services/Auth.Service";
 
 const Period: FC<IProps> = ({ history }) => {
   const [showNewPeriod, SetShowNewPeriod] = useState<boolean>(true);

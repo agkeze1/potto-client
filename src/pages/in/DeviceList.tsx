@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, CleanMessage, cleanDate } from "../../context/App";
 import SwitchInput from "../partials/SwitchInput";

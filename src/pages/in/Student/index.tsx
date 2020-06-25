@@ -9,7 +9,6 @@ import {
   CleanMessage,
   ToggleExpansion,
 } from "../../../context/App";
-import { NavLink } from "react-router-dom";
 import ImageModal from "../../partials/ImageModal";
 import SwitchInput from "../../partials/SwitchInput";
 import ImageUpload from "../../partials/ImageUpload";

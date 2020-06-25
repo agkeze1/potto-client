@@ -5,7 +5,6 @@ import { GetAppName } from "../../context/App";
 import IconInput from "../partials/IconInput";
 import ImageUpload from "../partials/ImageUpload";
 import { useMutation } from "@apollo/react-hooks";
-import { authService } from "../../services/Auth.Service";
 import { NEW_SCHOOL } from "../../queries/School.query";
 import { IMessage } from "../../models/IMessage";
 import AlertMessage from "../partials/AlertMessage";

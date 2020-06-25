@@ -2,7 +2,6 @@
 import React, { FC, useState } from "react";
 import Helmet from "react-helmet";
 import { GetAppName } from "../../context/App";
-import { authService } from "../../services/Auth.Service";
 import { IProps } from "../../models/IProps";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import {

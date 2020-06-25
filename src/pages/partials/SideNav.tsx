@@ -3,7 +3,6 @@ import React, { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { GetAppName, GET_LOGO } from "../../context/App";
 import { authService } from "../../services/Auth.Service";
-import Image from "./Image";
 
 interface SideProps {
   location?: any;
@@ -34,16 +33,6 @@ const SideNav: FC<SideProps> = ({ location }) => {
             <div className="logo-label">{GetAppName()}</div>
           </NavLink>
         </div>
-        <div className="logged-user-w avatar-inline">
-          <div className="logged-user-i">
-            <Image alt={user.name} src={user.image} width={40} />
-
-            <div className="logged-user-info-w">
-              <div className="logged-user-name">{user?.name}</div>
-              <div className="logged-user-role">{user?.email}</div>
-            </div>
-          </div>
-        </div>
         <div className="element-search autosuggest-search-activator">
           <input placeholder="Start typing to search..." />
         </div>
@@ -64,7 +53,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
                 <span>School Mgt</span>
               </li>
               <li className="has-sub-menu">
-                <NavLink to="#" onClick={() => scrollTop()}>
+                <NavLink to="#">
                   <div className="icon-w">
                     <div className="os-icon os-icon-home"></div>
                   </div>
@@ -103,7 +92,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
 
           {user.admin && (
             <li className="has-sub-menu">
-              <NavLink to="#" onClick={() => scrollTop()}>
+              <NavLink to="#">
                 <div className="icon-w">
                   <div className="os-icon os-icon-settings"></div>
                 </div>
@@ -199,7 +188,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
             </li>
           )}
           <li className="has-sub-menu">
-            <NavLink to="#" onClick={() => scrollTop()}>
+            <NavLink to="#">
               <div className="icon-w">
                 <div className="os-icon os-icon-user"></div>
               </div>
@@ -227,7 +216,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
             </div>
           </li>
           <li className="has-sub-menu">
-            <NavLink to="#" onClick={() => scrollTop()}>
+            <NavLink to="#">
               <div className="icon-w">
                 <div className="os-icon os-icon-ui-90"></div>
               </div>
@@ -250,20 +239,12 @@ const SideNav: FC<SideProps> = ({ location }) => {
                       List
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink
-                      to="/in/teacher-attendance"
-                      onClick={() => scrollTop()}
-                    >
-                      Attendance Report
-                    </NavLink>
-                  </li>
                 </ul>
               </div>
             </div>
           </li>
           <li className="has-sub-menu">
-            <NavLink to="#" onClick={() => scrollTop()}>
+            <NavLink to="#">
               <div className="icon-w">
                 <div className="os-icon os-icon-user-male-circle2"></div>
               </div>
@@ -299,12 +280,12 @@ const SideNav: FC<SideProps> = ({ location }) => {
             </div>
           </li>
 
-          {/* Attendance Mgt */}
+          {/* Report Mgt */}
           <li className="sub-header">
             <span>Report</span>
           </li>
           <li className="has-sub-menu">
-            <NavLink to="#" onClick={() => scrollTop()}>
+            <NavLink to="#">
               <div className="icon-w">
                 <div className="os-icon os-icon-calendar-time"></div>
               </div>
@@ -338,6 +319,14 @@ const SideNav: FC<SideProps> = ({ location }) => {
                       Subject Attendance
                     </NavLink>
                   </li>
+                  <li>
+                    <NavLink
+                      to="/in/teacher-attendance"
+                      onClick={() => scrollTop()}
+                    >
+                      Teacher Attendance
+                    </NavLink>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -349,7 +338,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
                 <span>Navigation Mgt</span>
               </li>
               <li className="has-sub-menu">
-                <NavLink to="#" onClick={() => scrollTop()}>
+                <NavLink to="#">
                   <div className="icon-w">
                     <div className="os-icon os-icon-list"></div>
                   </div>
@@ -388,7 +377,7 @@ const SideNav: FC<SideProps> = ({ location }) => {
                 <span>Feedback Mgt</span>
               </li>
               <li className="has-sub-menu">
-                <NavLink to="#" onClick={() => scrollTop()}>
+                <NavLink to="#">
                   <div className="icon-w">
                     <div className="os-icon os-icon-common-07"></div>
                   </div>
@@ -424,11 +413,11 @@ const SideNav: FC<SideProps> = ({ location }) => {
             <span>MORE</span>
           </li>
           <li className="has-sub-menu">
-            <NavLink to="#" onClick={() => scrollTop()}>
+            <NavLink to="#">
               <div className="icon-w">
                 <div className="os-icon os-icon-email-forward"></div>
               </div>
-              <span>Commination</span>
+              <span>Communication</span>
             </NavLink>
             <div className="sub-menu-w">
               <div className="sub-menu-header">Feedback & SMS</div>

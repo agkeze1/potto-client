@@ -18,7 +18,6 @@ import IconInput from "../partials/IconInput";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
-import { CountCard } from "./partials/CountCard";
 
 const Term: FC<IProps> = ({ history }) => {
   const [newTerm, SetNewTerm] = useState<string>();

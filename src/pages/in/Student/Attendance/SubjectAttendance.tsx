@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { STU_SUB_ATT } from "../../../../queries/attendance.query";
@@ -127,6 +128,12 @@ const SubjectAttendance: FC<IProps> = ({ studentId }) => {
             {showResult && activeTimetableAtt && (
               <div className="col-md-8">
                 <div className="table-responsive element-box no-bg no-shadow bdr">
+                  <h6 className="element-header">
+                    Attendance Result{" "}
+                    <b className="text-primary">
+                      ( {activeTimetableAtt?.timetable?.subject?.title} )
+                    </b>{" "}
+                  </h6>
                   <table className="table table-striped">
                     <thead>
                       <tr>

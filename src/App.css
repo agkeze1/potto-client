@@ -708,80 +708,87 @@ a.btn-icon > i:hover {
   }
 }
 .scale-in-bottom {
-    -webkit-animation: scale-in-bottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-    animation: scale-in-bottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  -webkit-animation: scale-in-bottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    both;
+  animation: scale-in-bottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 @-webkit-keyframes scale-in-bottom {
-    0% {
-        -webkit-transform: scale(0);
-        transform: scale(0);
-        -webkit-transform-origin: 50% 100%;
-        transform-origin: 50% 100%;
-        opacity: 1;
-    }
-    100% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-        -webkit-transform-origin: 50% 100%;
-        transform-origin: 50% 100%;
-        opacity: 1;
-    }
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
 }
 @keyframes scale-in-bottom {
-    0% {
-        -webkit-transform: scale(0);
-        transform: scale(0);
-        -webkit-transform-origin: 50% 100%;
-        transform-origin: 50% 100%;
-        opacity: 1;
-    }
-    100% {
-        -webkit-transform: scale(1);
-        transform: scale(1);
-        -webkit-transform-origin: 50% 100%;
-        transform-origin: 50% 100%;
-        opacity: 1;
-    }
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    opacity: 1;
+  }
 }
 
 .tracking-in-contract {
-    -webkit-animation: tracking-in-contract 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
-    animation: tracking-in-contract 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  -webkit-animation: tracking-in-contract 0.8s
+    cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  animation: tracking-in-contract 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
 }
 
 @-webkit-keyframes tracking-in-contract {
-    0% {
-        letter-spacing: 1em;
-        opacity: 0;
-    }
-    40% {
-        opacity: 0.6;
-    }
-    100% {
-        letter-spacing: normal;
-        opacity: 1;
-    }
+  0% {
+    letter-spacing: 1em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    letter-spacing: normal;
+    opacity: 1;
+  }
 }
 @keyframes tracking-in-contract {
-    0% {
-        letter-spacing: 1em;
-        opacity: 0;
-    }
-    40% {
-        opacity: 0.6;
-    }
-    100% {
-        letter-spacing: normal;
-        opacity: 1;
-    }
+  0% {
+    letter-spacing: 1em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    letter-spacing: normal;
+    opacity: 1;
+  }
 }
 h6,
 .h6 {
-    font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 .table .row-actions .os-icon {
-    border: solid 1px #c7c7c7;
-    padding: 5px;
-    border-radius: 1rem;
+  border: solid 1px #c7c7c7;
+  padding: 5px;
+  border-radius: 1rem;
+}
+@media screen and (max-width: 1016px) {
+  #header {
+    display: none !important;
+  }
 }

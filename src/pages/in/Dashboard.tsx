@@ -557,12 +557,12 @@ const Dashboard = () => {
                                 </span>
                               </td>
                               <td className="text-left">
-                                <span className="badge badge-info-inverted">
+                                <span className="badge badge-success-inverted">
                                   {stat?.exempted || 0}
                                 </span>
                               </td>
                               <td className="text-left">
-                                <span className="badge badge-info-inverted">
+                                <span className="badge badge-success-inverted">
                                   {stat?.manual}
                                 </span>
                               </td>

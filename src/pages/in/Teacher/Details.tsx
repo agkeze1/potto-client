@@ -57,7 +57,7 @@ const TeacherDetails: FC<IProps> = ({ match }) => {
                                 </div>
                                 <div className="text-center mb-5">
                                     <img
-                                        className="avatar mb-3"
+                                        className="avatar mb-3 no-scale"
                                         alt="Passport"
                                         src={teacher.image || "/avatar.png"}
                                         style={{

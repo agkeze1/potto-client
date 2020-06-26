@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/react-hooks";
 import LoadingState from "../partials/loading";
 import { CountCard } from "./partials/CountCard";
 import months from "../../data/month.json";
+import TotalSchool from "../partials/Dashboard/TotalSchool";
 
 const Dashboard = () => {
     const [stuGenderRatio, SetStuGenderRatio] = useState<any>();
@@ -20,7 +21,6 @@ const Dashboard = () => {
     const [weeklyRollcallStat, SetWeeklyRollcallStat] = useState<any>();
 
     const { loading: activeTermLoading, data: activeTermData } = useQuery(DASHBOARD.ACTIVE_TERM);
-    const { loading: totalSchoolLoading, data: totalSchoolData } = useQuery(DASHBOARD.TOTAL_SCHOOL);
     const { loading: totalStudentsLoading, data: totalStudentsData } = useQuery(DASHBOARD.TOTAL_STUDENTS);
     const { loading: totalTeachersLoading, data: totalTeachersData } = useQuery(DASHBOARD.TOTAL_TEACHERS);
     const { loading: totalUserLoading, data: totalUserData } = useQuery(DASHBOARD.TOTAL_USERS);
@@ -212,7 +212,7 @@ const Dashboard = () => {
                             </div>
                             {/* Other Counts */}
                             <div className="col-md-3">
-                                <CountCard title="Total Schools" loading={totalSchoolLoading} value={totalSchoolData?.TotalSchools} cssClass="bg-white bg-gainsboro" />
+                                <TotalSchool />
                                 <CountCard title="Active Term" loading={activeTermLoading} value={activeTermData?.GetActiveTerm?.doc?.term?.name} cssClass="bg-white bg-azure" />
 
                                 <CountCard title="Total Period" loading={totalPeriodLoading} value={totalPeriodData?.TotalPeriod} />

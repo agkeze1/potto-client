@@ -9,6 +9,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { UPDATE_TEACHER, TEACHER_LIST } from "../../../queries/Teacher.query";
 import { toast } from "react-toastify";
 import { CleanMessage } from "../../../context/App";
+import { NavLink } from "react-router-dom";
 
 interface IProps {
     items: Array<any>;
@@ -79,14 +80,27 @@ const TeacherItems: FC<IProps> = ({ items, onRemove, onView }) => {
                                                 <img src={teacher.image || "../avatar.png"} alt="passport" />
                                             </div>
                                         </td>
-                                        <td>{teacher.name}</td>
+                                        <td>
+                                            <NavLink
+                                                to={{
+                                                    pathname: `/in/teacher/${teacher.id}`,
+                                                }}
+                                            >
+                                                {teacher.name}
+                                            </NavLink>
+                                        </td>
                                         <td>{teacher.gender}</td>
                                         <td>{teacher.email}</td>
                                         <td>{teacher.phone}</td>
                                         <td className="row-actions text-center">
-                                            <a href="#" title="View profile" onClick={() => onView(teacher)}>
+                                            <NavLink
+                                                to={{
+                                                    pathname: `/in/teacher/${teacher.id}`,
+                                                }}
+                                                title="View profile"
+                                            >
                                                 <i className="os-icon os-icon-eye"></i>
-                                            </a>
+                                            </NavLink>
                                             <a
                                                 href="#"
                                                 title="Edit"

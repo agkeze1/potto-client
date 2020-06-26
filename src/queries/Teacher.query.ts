@@ -199,3 +199,13 @@ export const SEARCH_TEACHER = gql`
     }
     ${TEACHER_PROPS}
 `;
+export const GET_TEACHER = gql`
+    query GET_TEACHER($id: ID!) {
+        GetTeacher(id: $id) {
+            doc {
+                ...TEACHER_PROPS
+            }
+        }
+    }
+    ${TEACHER_PROPS}
+`;

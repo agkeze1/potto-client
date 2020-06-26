@@ -41,6 +41,7 @@ import SendTeacherMessage from "./TeacherMessage/NewMessage";
 import GuardianMessage from "./GuardianMessage/index";
 import MobileMenu from "../partials/MobileMenu";
 import AppSearch from "./Search";
+import TeacherDetails from "./Teacher/Details";
 
 const Home: FC<IProps> = ({ location, history }) => {
     document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
@@ -100,6 +101,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                                 <Route path="/in/messaging/teachers/new" component={SendTeacherMessage} />
                                 <Route path="/in/messaging/guardian" component={GuardianMessage} />
                                 <Route path="/in/app-search" component={AppSearch} />
+                                <Route path="/in/teacher/:id" exact component={TeacherDetails} />
                             </Switch>
                         </div>
                     </div>

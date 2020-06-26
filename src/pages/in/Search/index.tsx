@@ -32,7 +32,7 @@ const AppSearch = () => {
         <>
             <Helmet>
                 <title>
-                    {keyword} | {GetAppName()}
+                    {keyword || "Application Search"} | {GetAppName()}
                 </title>
             </Helmet>
 
@@ -70,7 +70,8 @@ const AppSearch = () => {
                                             className="fade-in text-center pb-5"
                                             style={{ minHeight: "60vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}
                                         >
-                                            <h3 className="text-info">No Record found</h3>
+                                            <img style={{ width: "34em" }} className="no-scale" src="/images/3.png" alt="404" />
+                                            <h3 className="text-info mb-4">No Record found</h3>
                                             <div className="text-left">
                                                 <p>You can search with the following:</p>
                                                 <ul>

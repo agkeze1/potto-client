@@ -1,18 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { GetAppName, GET_LOGO } from "../../context/App";
 import { authService } from "../../services/Auth.Service";
 
 interface SideProps {
-    location?: any;
+    history?: any;
 }
 
-const SideNav: FC<SideProps> = ({ location }) => {
+const SideNav: FC<SideProps> = ({ history }) => {
     const scrollTop = () => {
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     };
+    const [keyword, setKeyword] = useState<string>();
 
     // Logged in User
     const user = authService.GetUser();
@@ -34,7 +35,14 @@ const SideNav: FC<SideProps> = ({ location }) => {
                     </NavLink>
                 </div>
                 <div className="element-search autosuggest-search-activator">
-                    <input placeholder="Start typing to search..." />
+                    <form
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            if (keyword) history.push(`/in/app-search?q=${keyword}`);
+                        }}
+                    >
+                        <input onChange={({ currentTarget: { value } }) => setKeyword(value)} placeholder="Start typing to search..." />
+                    </form>
                 </div>
                 <ul className="main-menu">
                     <li className="selected">

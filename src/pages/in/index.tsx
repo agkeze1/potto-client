@@ -57,7 +57,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                     <MobileMenu />
 
                     {/* Main sidebar */}
-                    <SideNav location={location} />
+                    <SideNav history={history} />
 
                     <div className="content-w">
                         {/* Header */}

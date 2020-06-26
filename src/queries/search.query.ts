@@ -10,6 +10,7 @@ export const ALL_SEARCH = gql`
                 reg_no
                 gender
                 state
+                dob
                 current_class {
                     id
                     name
@@ -19,9 +20,10 @@ export const ALL_SEARCH = gql`
                     title
                     full_name
                 }
+                passport
             }
         }
-        SearchTeacher(keyword: $keyword) {
+        SearchTeacher(keyword: $search) {
             docs {
                 id
                 first_name
@@ -31,6 +33,20 @@ export const ALL_SEARCH = gql`
                 dob
                 image
                 doj
+            }
+        }
+        SearchGuardian(keyword: $search) {
+            docs {
+                id
+                name
+                phone
+                state
+                full_name
+                gender
+                type {
+                    id
+                    name
+                }
             }
         }
     }

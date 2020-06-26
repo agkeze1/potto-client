@@ -41,8 +41,10 @@ const TeacherAttendanceReportFilter: FC<iProp> = ({ onTeacher, onWeek, activeTea
         onError: (e) => toast.error(CleanMessage(e.message)),
         onCompleted: (d) => {
             const items = Array.from(d.CountTimetableAttendance);
-            const sum = items.map((item: any) => item.total).reduce((a: number, b: number) => a + b);
-            setWeeklyCount(sum);
+            if (items.length) {
+                const sum = items.map((item: any) => item.total).reduce((a: number, b: number) => a + b);
+                setWeeklyCount(sum);
+            }
         },
     });
     const date = new Date();

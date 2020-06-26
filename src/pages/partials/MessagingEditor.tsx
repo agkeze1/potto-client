@@ -8,7 +8,7 @@ interface iProp {
 }
 
 const MessageEditor: FC<iProp> = ({ onSubmit, total }) => {
-    const perPage = 140;
+    const perPage = 160;
     const [word, setWord] = useState<number>(0);
     const [character, setCharacter] = useState<number>(0);
     const [message, setMessage] = useState<string>();

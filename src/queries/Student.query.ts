@@ -206,3 +206,14 @@ export const GRADUATE_STUDENTS = gql`
         }
     }
 `;
+
+export const FIND_STUDENTS = gql`
+    query FindStudents($search: String!) {
+        StudentSearch(keyword: $search) {
+            docs {
+                ...STU_PROPS
+            }
+        }
+    }
+    ${STU_PROPS}
+`;

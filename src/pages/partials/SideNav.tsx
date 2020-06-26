@@ -271,14 +271,14 @@ const SideNav: FC<SideProps> = ({ history }) => {
 
                     {/* Report Mgt */}
                     <li className="sub-header">
-                        <span>Report</span>
+                        <span>Reports</span>
                     </li>
                     <li className="has-sub-menu">
                         <NavLink to="#">
                             <div className="icon-w">
                                 <div className="os-icon os-icon-calendar-time"></div>
                             </div>
-                            <span>Report</span>
+                            <span>Reports</span>
                         </NavLink>
                         <div className="sub-menu-w">
                             <div className="sub-menu-header">Report</div>
@@ -288,13 +288,13 @@ const SideNav: FC<SideProps> = ({ history }) => {
                             <div className="sub-menu-i">
                                 <ul className="sub-menu">
                                     <li>
-                                        <NavLink to="/in/school-attendance" onClick={() => scrollTop()}>
-                                            School Attendance
+                                        <NavLink to="/in/roll-call" onClick={() => scrollTop()}>
+                                            Roll Call
                                         </NavLink>
                                     </li>
                                     <li>
-                                        <NavLink to="/in/roll-call" onClick={() => scrollTop()}>
-                                            Roll Call
+                                        <NavLink to="/in/school-attendance" onClick={() => scrollTop()}>
+                                            School Attendance
                                         </NavLink>
                                     </li>
                                     <li>

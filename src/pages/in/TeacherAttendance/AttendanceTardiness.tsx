@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import Image from "./../../partials/Image";
 import { toPrettyTime } from "../../../context/App";
+import { NavLink } from "react-router-dom";
 
 interface iProp {
     items: Array<any>;
@@ -32,7 +33,9 @@ const AttendanceTardiness: FC<iProp> = ({ items, onTeacher }) => {
                                             <div className="user-w with-status status-green fade-in ">
                                                 <Image alt={item.teacher.first_name} src={item.teacher.image} width={40} />
                                                 <div className="user-name">
-                                                    <h6 className="user-title">{item.teacher.name}</h6>
+                                                    <h6 className="user-title">
+                                                        <NavLink to={{ pathname: `/in/teacher/${item.teacher.id}` }}>{item.teacher.name}</NavLink>
+                                                    </h6>
                                                     <div className="user-role">
                                                         <strong>{item.teacher.phone}</strong> |{" "}
                                                         <span className="text-primary">

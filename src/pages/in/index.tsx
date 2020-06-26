@@ -105,7 +105,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                     </div>
                 </div>
                 <hr />
-                <a className="font-sm text-center footer mb-2" href="http://potto.com">
+                <a className="font-sm text-center footer py-2" href="http://potto.com">
                     <img src="/avatar.png" alt="app logo" className="logo-footer mr-2" />
                     Powered by Potto
                 </a>

@@ -1,15 +1,26 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { FC, useState } from "react";
 import { authService } from "../../services/Auth.Service";
 import Image from "./Image";
+import { IProps } from "./../../models/IProps";
 
-const Header = () => {
+const Header: FC<IProps> = ({ history }) => {
+    const [keyword, setKeyword] = useState<string>();
+
     const user = authService.GetUser();
+
     return (
         <div id="header" className="top-bar color-scheme-transparent">
             <div className="top-menu-controls">
                 <div className="element-search autosuggest-search-activator">
-                    <input placeholder="Search..." />
+                    <form
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            if (keyword) history.push(`/in/app-search?q=${keyword}`);
+                        }}
+                    >
+                        <input onChange={({ currentTarget: { value } }) => setKeyword(value)} placeholder="Search..." />
+                    </form>
                 </div>
                 <div className="logged-user-w avatar-inline">
                     <div className="logged-user-i">

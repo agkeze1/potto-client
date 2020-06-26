@@ -58,7 +58,7 @@ const AttendanceTardiness: FC<iProp> = ({ items, onTeacher }) => {
         );
 
     return (
-        <div className="text-center pb-5" style={{ minHeight: "60vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+        <div className="element-box text-center pb-5" style={{ minHeight: "60vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
             <h3 className="text-info">No Record</h3>
             <p>Select teacher to view the attendance report</p>
         </div>

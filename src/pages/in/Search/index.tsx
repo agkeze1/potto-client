@@ -9,6 +9,7 @@ import { ALL_SEARCH } from "../../../queries/search.query";
 import TeachersSearchResult from "./TeachersResult";
 import GuardianResult from "./GuardianResult";
 import mark from "mark.js";
+import "./search.css";
 
 const AppSearch = () => {
     const _search = GetParamFromQuery("q");
@@ -48,12 +49,14 @@ const AppSearch = () => {
                                         if (keyword) setStart(true);
                                     }}
                                 >
-                                    <div className="element-box no-bg bg-white rounded">
+                                    <div className="search-in ci mb-3 scale-in-bottom">
+                                        <i className="os-icon os-icon-search p-4"></i>
                                         <input
                                             defaultValue={keyword}
-                                            onChange={({ currentTarget: { value } }) => setKeyword(value)}
-                                            className="form-control w-100 text-search rounded"
+                                            type="search"
                                             placeholder="Start typing to search..."
+                                            className="form-control"
+                                            onChange={({ currentTarget: { value } }) => setKeyword(value)}
                                         />
                                     </div>
                                 </form>

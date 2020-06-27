@@ -766,7 +766,7 @@ h6,
     border-radius: 1rem;
 }
 .table .row-actions .os-icon:hover {
-  background-color: rgb(235, 235, 235);
+    background-color: rgb(235, 235, 235);
 }
 
 @media screen and (max-width: 1016px) {
@@ -789,29 +789,41 @@ h6,
     background: #f0f0f0;
 }
 .footer {
-  border-top: 1px solid;
+    border-top: 1px solid;
 }
 .main-container {
-  height: 100vh;
-  overflow: hidden scroll;
+    height: 100vh;
+    overflow: hidden scroll;
 }
 /* Scrollbar styles begins */
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+    background: #f1f1f1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+    background: #888;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+    background: #555;
 }
 /* Scrollbar styles ends */
+
+.Toastify__toast {
+    border-radius: 2em !important;
+    padding: 1rem !important;
+}
+.Toastify__toast--error {
+    background: #e82c19 !important;
+}
+
+.btn-primary {
+    border-radius: 2em !important;
+}

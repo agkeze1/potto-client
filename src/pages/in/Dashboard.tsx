@@ -221,7 +221,7 @@ const Dashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Class Attendance | {GetAppName()}</title>
+        <title>Dashboard | {GetAppName()}</title>
       </Helmet>
       <div className="content-i">
         <div className="content-box">

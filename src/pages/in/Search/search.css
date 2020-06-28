@@ -1,0 +1,38 @@
+.search-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-content: center;
+    background: #ffffff;
+    transition: all ease-in 500ms;
+}
+
+.search-in > input {
+    min-height: 54px !important;
+    flex-flow: 2;
+    border-radius: 2em !important;
+    font-size: 1.4em;
+    font-weight: 200;
+    padding-left: 1em;
+    padding-right: 1em;
+    border: none;
+    background-color: transparent;
+}
+.search-in > i {
+    font-size: 1.4em;
+    color: #d3d3d3;
+}
+
+.search-in > input:hover,
+.search-in > input:active,
+.search-in > input:focus {
+    background-color: transparent;
+}
+
+.search-in:hover {
+    box-shadow: 0px 0px 6px rgba(102, 102, 102, 0.4);
+}
+
+.ci {
+    border-radius: 2em !important;
+}

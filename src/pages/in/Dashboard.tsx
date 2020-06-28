@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/react-hooks";
 import LoadingState from "../partials/loading";
 import { CountCard } from "./partials/CountCard";
 import months from "../../data/month.json";
+import TotalSchool from "../partials/Dashboard/TotalSchool";
 
 const Dashboard = () => {
   const [stuGenderRatio, SetStuGenderRatio] = useState<any>();
@@ -21,9 +22,6 @@ const Dashboard = () => {
 
   const { loading: activeTermLoading, data: activeTermData } = useQuery(
     DASHBOARD.ACTIVE_TERM
-  );
-  const { loading: totalSchoolLoading, data: totalSchoolData } = useQuery(
-    DASHBOARD.TOTAL_SCHOOL
   );
   const { loading: totalStudentsLoading, data: totalStudentsData } = useQuery(
     DASHBOARD.TOTAL_STUDENTS
@@ -299,12 +297,7 @@ const Dashboard = () => {
               </div>
               {/* Other Counts */}
               <div className="col-md-3">
-                <CountCard
-                  title="Total Schools"
-                  loading={totalSchoolLoading}
-                  value={totalSchoolData?.TotalSchools}
-                  cssClass="bg-white bg-gainsboro"
-                />
+                <TotalSchool />
                 <CountCard
                   title="Active Term"
                   loading={activeTermLoading}
@@ -527,11 +520,11 @@ const Dashboard = () => {
                           <tr>
                             <th>#</th>
                             <th className="text-left">Date</th>
-                            <th className="text-left">Total</th>
-                            <th className="text-left">Present</th>
-                            <th className="text-left">Absent</th>
-                            <th className="text-left">Exempted</th>
-                            <th className="text-left">Manual</th>
+                            <th className="text-center">Total</th>
+                            <th className="text-center">Present</th>
+                            <th className="text-center">Absent</th>
+                            <th className="text-center">Exempted</th>
+                            <th className="text-center">Manual</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -541,28 +534,28 @@ const Dashboard = () => {
                               <td className="text-left">
                                 {cleanDate(stat?.date)}
                               </td>
-                              <td className="text-left">
-                                <span className="badge badge-success">
+                              <td className="text-center">
+                                <span className="badge badge-dark">
                                   {stat?.total}
                                 </span>
                               </td>
-                              <td className="text-left">
-                                <span className="badge badge-success-inverted">
+                              <td className="text-center">
+                                <span className="badge badge-success">
                                   {stat?.present}
                                 </span>
                               </td>
-                              <td className="text-left">
-                                <span className="badge badge-danger-inverted">
+                              <td className="text-center">
+                                <span className="badge badge-danger">
                                   {stat?.absent}
                                 </span>
                               </td>
-                              <td className="text-left">
-                                <span className="badge badge-success-inverted">
+                              <td className="text-center">
+                                <span className="badge badge-info">
                                   {stat?.exempted || 0}
                                 </span>
                               </td>
-                              <td className="text-left">
-                                <span className="badge badge-success-inverted">
+                              <td className="text-center">
+                                <span className="badge badge-warning">
                                   {stat?.manual}
                                 </span>
                               </td>

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { CleanMessage } from "../../../context/App";
 import { CountCard } from "../partials/CountCard";
 import { COUNT_SUBJECT_ATTENDANCE, COUNT_TIMETABLE_ATTENDANCE } from "../../../queries/Timetable.query";
+import { NavLink } from "react-router-dom";
 
 interface iProp {
     onTeacher: any;
@@ -41,8 +42,10 @@ const TeacherAttendanceReportFilter: FC<iProp> = ({ onTeacher, onWeek, activeTea
         onError: (e) => toast.error(CleanMessage(e.message)),
         onCompleted: (d) => {
             const items = Array.from(d.CountTimetableAttendance);
-            const sum = items.map((item: any) => item.total).reduce((a: number, b: number) => a + b);
-            setWeeklyCount(sum);
+            if (items.length) {
+                const sum = items.map((item: any) => item.total).reduce((a: number, b: number) => a + b);
+                setWeeklyCount(sum);
+            }
         },
     });
     const date = new Date();
@@ -84,7 +87,9 @@ const TeacherAttendanceReportFilter: FC<iProp> = ({ onTeacher, onWeek, activeTea
                                 <Image alt={activeTeacher?.first_name} src={activeTeacher?.image} width={50} />
 
                                 <div className="user-name">
-                                    <h6 className="user-title">{activeTeacher?.name}</h6>
+                                    <h6 className="user-title">
+                                        <NavLink to={{ pathname: `/in/teacher/${activeTeacher.id}` }}> {activeTeacher?.name}</NavLink>
+                                    </h6>
                                     <div className="user-role">
                                         <strong>{activeTeacher?.phone}</strong>
                                     </div>

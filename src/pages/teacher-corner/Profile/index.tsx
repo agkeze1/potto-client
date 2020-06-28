@@ -9,15 +9,19 @@ import { UPDATE_TEACHER } from "../../../queries/Teacher.query";
 import LoadingState from "../../partials/loading";
 
 const TeacherProfile = () => {
-    const teacher = teacherAuthService.GetTeacher();
+    const _teacher = teacherAuthService.GetTeacher();
 
-    const [editTeacher, setEditTeacher] = useState(teacher);
+    const [editTeacher, setEditTeacher] = useState(_teacher);
+    const [teacher, setTeacher] = useState(_teacher);
 
     const [updateTeacherFunc, { loading }] = useMutation(UPDATE_TEACHER, {
         onError: (e) => toast.error(CleanMessage(e.message)),
         onCompleted: (d) => {
             if (d) {
-                const { message } = d.UpdateTeacher;
+                const { message, doc } = d.UpdateTeacher;
+                const token = teacherAuthService.GetToken();
+                teacherAuthService.Login(doc, token); //
+                setTeacher(doc);
                 toast.success(message, {
                     position: "bottom-right",
                 });
@@ -80,7 +84,7 @@ const TeacherProfile = () => {
                                                 </div>
                                                 <div className="element-info-text">
                                                     <h5 className="element-inner-header">Profile Settings</h5>
-                                                    <div className="element-inner-desc">Date of joining cannot be modified</div>
+                                                    <div className="element-inner-desc">Date of joining and phone number cannot be modified</div>
                                                 </div>
                                             </div>
                                         </div>

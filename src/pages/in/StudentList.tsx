@@ -142,6 +142,7 @@ const StudentList: FC<IProps> = ({ history }) => {
     // Get Students
     const [SearchStudents, { loading, data, fetchMore }] = useLazyQuery(SEARCH_STUDENTS, {
         onError: (err) => toast.error(CleanMessage(err.message)),
+        notifyOnNetworkStatusChange: true,
     });
 
     // Get Guardian Types for input
@@ -611,17 +612,19 @@ const StudentList: FC<IProps> = ({ history }) => {
                                     </div>
 
                                     {/* Pagination */}
-                                    <div className="col-12 fade-in">
-                                        <div className="element-box">
-                                            <Pagination
-                                                length={data?.SearchStudents.docs.length}
-                                                {...data?.SearchStudents}
-                                                onPageClicked={(page: number) => {
-                                                    setPage(page);
-                                                }}
-                                            />
+                                    {data && (
+                                        <div className="col-12 fade-in">
+                                            <div className="element-box">
+                                                <Pagination
+                                                    {...data.SearchStudents}
+                                                    length={data.SearchStudents.docs.length}
+                                                    onPageClicked={(page: number) => {
+                                                        setPage(page);
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </>
                             )}
 

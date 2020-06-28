@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import Image from "./../../partials/Image";
+import { NavLink } from "react-router-dom";
 
 interface iProp {
     items: Array<any>;
@@ -29,7 +30,9 @@ const TeacherAttendanceCount: FC<iProp> = ({ items }) => {
                                             <div className="user-w with-status status-green fade-in ">
                                                 <Image alt={item.teacher.first_name} src={item.teacher.image} width={50} />
                                                 <div className="user-name">
-                                                    <h6 className="user-title">{item.teacher.name}</h6>
+                                                    <h6 className="user-title">
+                                                        <NavLink to={{ pathname: `/in/teacher/${item.teacher.id}` }}>{item.teacher.name}</NavLink>
+                                                    </h6>
                                                     <div className="user-role">
                                                         <strong>{item.teacher.phone}</strong> |{" "}
                                                         <span className="text-primary">
@@ -51,7 +54,7 @@ const TeacherAttendanceCount: FC<iProp> = ({ items }) => {
             </div>
         );
     return (
-        <div className="text-center pb-5" style={{ minHeight: "60vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+        <div className="element-box text-center pb-5" style={{ minHeight: "60vh", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
             <h3 className="text-info">No Record</h3>
             <p>Select teacher to view the attendance report</p>
         </div>

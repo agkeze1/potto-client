@@ -12,6 +12,9 @@ import { toast } from "react-toastify";
 import { CleanMessage } from "./../../context/App";
 import { useLazyQuery } from "@apollo/react-hooks";
 import TeacherItems from "./Teacher/items";
+import NotifyProvider from "../../events/event-resolver";
+import { ACTION_EVENT } from "./../../events/index";
+import { EventEmitter } from "../../events/EventEmitter";
 
 const TeacherList: FC<IProps> = ({ history }) => {
     const [activeTeacher, SetActiveTeacher] = useState<any>(undefined);
@@ -61,25 +64,16 @@ const TeacherList: FC<IProps> = ({ history }) => {
     // Remove Teacher
     const [RemoveTeacher, { loading: rLoading }] = useMutation(REMOVE_TEACHER, {
         onError: (err) => toast.error(CleanMessage(err.message)),
-        update: (cache, { data }) => {
-            const q: any = cache.readQuery({
-                query: TEACHER_LIST,
-                variables: { page, limit },
-            });
-
-            const index = q.GetTeachers.docs.findIndex((i: any) => i.id === data.RemoveTeacher.doc.id);
-
-            q.GetTeachers.docs.splice(index, 1);
-
-            //update
-            cache.writeQuery({
-                query: TEACHER_LIST,
-                variables: { page, limit },
-                data: { GetTeachers: q.GetTeachers },
+        onCompleted: (data) => {
+            NotifyProvider.NotifyAll({
+                content: data.RemoveTeacher.doc.id,
+                action: ACTION_EVENT.TEACHER.REMOVED,
             });
         },
     });
-
+    EventEmitter.subscribe(ACTION_EVENT.TEACHER.CREATED, async () => refetch());
+    EventEmitter.subscribe(ACTION_EVENT.TEACHER.REMOVED, async () => refetch());
+    EventEmitter.subscribe(ACTION_EVENT.TEACHER.UPDATED, async () => refetch());
     return (
         <>
             <Helmet>

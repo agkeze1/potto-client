@@ -27,6 +27,9 @@ import { NEW_GUARDIAN } from "../../queries/Guardian.query";
 import { GET_SUB_BY_LEVEL } from "../../queries/Subject.query";
 import { SubjectList } from "./partials/SubjectList";
 import { toast } from "react-toastify";
+import NotifyProvider from "../../events/event-resolver";
+import { ACTION_EVENT } from "./../../events/index";
+import { EventEmitter } from "../../events/EventEmitter";
 
 const StudentList: FC<IProps> = ({ history }) => {
     const [activeImg, SetActiveImg] = useState<IImageProp>({
@@ -140,7 +143,7 @@ const StudentList: FC<IProps> = ({ history }) => {
     });
 
     // Get Students
-    const [SearchStudents, { loading, data, fetchMore }] = useLazyQuery(SEARCH_STUDENTS, {
+    const [SearchStudents, { loading, data, fetchMore, refetch }] = useLazyQuery(SEARCH_STUDENTS, {
         onError: (err) => toast.error(CleanMessage(err.message)),
         notifyOnNetworkStatusChange: true,
     });
@@ -188,35 +191,10 @@ const StudentList: FC<IProps> = ({ history }) => {
     // Remove Student
     const [RemoveStudent, { loading: rLoading }] = useMutation(REMOVE_STUDENT, {
         onError: (err) => toast.error(CleanMessage(err.message)),
-        update: (cache, { data }) => {
-            const q: any = cache.readQuery({
-                query: SEARCH_STUDENTS,
-                variables: {
-                    variables: {
-                        regNo: searchInput?.regNo,
-                        level: searchInput?.level?.id,
-                        _class: searchInput?._class?.id,
-                        page,
-                        limit,
-                    },
-                },
-            });
-
-            const index = q.SearchStudents.docs.findIndex((i: any) => i.id === data.RemoveStudent.doc.id);
-
-            q.SearchStudents.docs.splice(index, 1);
-
-            //update
-            cache.writeQuery({
-                query: SEARCH_STUDENTS,
-                variables: {
-                    regNo: searchInput?.regNo,
-                    level: searchInput?.level?.id,
-                    _class: searchInput?._class?.id,
-                    page,
-                    limit,
-                },
-                data: { SearchStudents: q.SearchStudents },
+        onCompleted: (d) => {
+            NotifyProvider.NotifyAll({
+                content: d.RemoveStudent.doc.id,
+                action: ACTION_EVENT.STUDENT.REMOVED,
             });
         },
     });
@@ -226,6 +204,10 @@ const StudentList: FC<IProps> = ({ history }) => {
         onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
             toast.success(data.UpdateStudent.message);
+            NotifyProvider.NotifyAll({
+                action: ACTION_EVENT.STUDENT.UPDATED,
+                content: data.UpdateStudent.doc.id,
+            });
         },
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
@@ -240,22 +222,23 @@ const StudentList: FC<IProps> = ({ history }) => {
             });
 
             const index = q.SearchStudents.docs.findIndex((i: any) => i.id === data.UpdateStudent.doc.id);
+            if (index !== -1) {
+                q.SearchStudents.docs.unshift(data.UpdateStudent.doc);
+                q.SearchStudents.docs.splice(index, 1);
 
-            q.SearchStudents.docs.splice(index, 1);
-            q.SearchStudents.docs.unshift(data.UpdateStudent.doc);
-
-            //update
-            cache.writeQuery({
-                query: SEARCH_STUDENTS,
-                variables: {
-                    regNo: searchInput?.regNo,
-                    level: searchInput?.level?.id,
-                    _class: searchInput?._class?.id,
-                    page,
-                    limit,
-                },
-                data: { SearchStudents: q.SearchStudents },
-            });
+                //update
+                cache.writeQuery({
+                    query: SEARCH_STUDENTS,
+                    variables: {
+                        regNo: searchInput?.regNo,
+                        level: searchInput?.level?.id,
+                        _class: searchInput?._class?.id,
+                        page,
+                        limit,
+                    },
+                    data: { SearchStudents: q.SearchStudents },
+                });
+            }
         },
     });
 
@@ -321,6 +304,10 @@ const StudentList: FC<IProps> = ({ history }) => {
             toast.error(CleanMessage(err.message));
         },
     });
+
+    EventEmitter.subscribe(ACTION_EVENT.STUDENT.CREATED, async () => await refetch());
+    EventEmitter.subscribe(ACTION_EVENT.STUDENT.REMOVED, async () => await refetch());
+    EventEmitter.subscribe(ACTION_EVENT.STUDENT.UPDATED, async () => await refetch());
 
     return (
         <>

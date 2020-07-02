@@ -9,6 +9,8 @@ import { NEW_SCHOOL } from "../../queries/School.query";
 import { IMessage } from "../../models/IMessage";
 import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
+import NotifyProvider from "../../events/event-resolver";
+import { ACTION_EVENT } from "./../../events/index";
 
 const NewSchool: FC<IProps> = ({ history }) => {
     const [record, SetRecord] = useState<any>();
@@ -26,7 +28,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                     message: data.NewSchool.message,
                     failed: false,
                 });
-
+                NotifyProvider.NotifyAll({ action: ACTION_EVENT.SCHOOL.CREATED, content: data.NewSchool.doc.id });
                 // Redirect to login
                 history.push("/in/school-list");
             }
@@ -59,7 +61,7 @@ const NewSchool: FC<IProps> = ({ history }) => {
                                         });
                                     }}
                                 >
-                                    {/* Fullname input */}
+                                    {/* Full-name input */}
                                     <IconInput
                                         placeholder="Enter school name"
                                         label="Full Name"

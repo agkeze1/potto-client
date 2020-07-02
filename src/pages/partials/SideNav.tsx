@@ -95,6 +95,14 @@ const SideNav: FC<SideProps> = ({ history }) => {
                                     </div>
                                 </div>
                             </li>
+                            <li className="menu-link">
+                                <NavLink to="/in/app/plan" onClick={() => scrollTop()}>
+                                    <div className="icon-w">
+                                        <div className="os-icon os-icon-layers"></div>
+                                    </div>
+                                    <span>Service Plan</span>
+                                </NavLink>
+                            </li>
                         </>
                     )}
 

@@ -47,6 +47,7 @@ import { PubNubConsumer, PubNubProvider } from "pubnub-react";
 import NotifyProvider, { handleNewData } from "../../events/event-resolver";
 import { authService } from "../../services/Auth.Service";
 import PubNub from "pubnub";
+import ServicePlan from "./ServicePlan/index";
 
 const Home: FC<IProps> = ({ history }) => {
     document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
@@ -131,6 +132,7 @@ const Home: FC<IProps> = ({ history }) => {
                                     <Route path="/in/messaging/guardian" component={GuardianMessage} />
                                     <Route path="/in/app-search" component={AppSearch} />
                                     <Route path="/in/teacher/:id" exact component={TeacherDetails} />
+                                    <Route path="/in/app/plan" exact component={ServicePlan} />
                                     <Route component={NotFound} />
                                 </Switch>
                             </div>

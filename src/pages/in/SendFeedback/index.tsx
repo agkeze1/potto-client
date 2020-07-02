@@ -7,6 +7,8 @@ import { GET_FEEDBACK_TYPES } from "../../../queries/feedback.type.query";
 import { toast } from "react-toastify";
 import LoadingState from "../../partials/loading";
 import { SEND_FEEDBACK } from "../../../queries/feedback.query";
+import NotifyProvider from "../../../events/event-resolver";
+import { ACTION_EVENT } from "./../../../events/index";
 
 const SendFeedback = () => {
     const title = "Send Feedback";
@@ -30,6 +32,10 @@ const SendFeedback = () => {
         onCompleted: (d) => {
             toast.success(d.NewFeedback.message);
             setModel({ content: "", type: "", subject: "" });
+            NotifyProvider.NotifyAll({
+                content: { id: d.NewFeedback.doc.id },
+                action: ACTION_EVENT.FEEDBACK.CREATED,
+            });
         },
     });
 

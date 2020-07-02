@@ -18,25 +18,22 @@ import TeacherPasswordReset from "./pages/teacher-corner/PasswordReset";
 import TeacherNewPassword from "./pages/teacher-corner/TeacherNewPassword";
 
 function App() {
-  return (
-    <>
-      <Switch>
-        <Route exact path="/" component={UserLogin} />
-        <Route exact path="/login" component={UserLogin} />
-        <Route path="/default_school" component={FirstSchool} />
-        <Route path="/signup" component={UserSignup} />
-        <SecuredRoute path="/in" component={In} />
-        <Route path="/teacher/login" component={TeacherLogin} />
-        <PrivateRouteTeacher path="/teacher/app" component={TeacherCorner} />
-        <Route
-          path="/teacher/reset-password"
-          component={TeacherPasswordReset}
-        />
-        <Route path="/teacher/new-password" component={TeacherNewPassword} />
-      </Switch>
-      <ToastContainer position="top-center" />
-    </>
-  );
+    return (
+        <>
+            <Switch>
+                <Route exact path="/" component={UserLogin} />
+                <Route exact path="/login" component={UserLogin} />
+                <Route path="/default_school" component={FirstSchool} />
+                <Route path="/signup" component={UserSignup} />
+                <SecuredRoute path="/in" component={In} />
+                <Route path="/teacher/login" component={TeacherLogin} />
+                <PrivateRouteTeacher path="/teacher/app" component={TeacherCorner} />
+                <Route path="/teacher/reset-password" component={TeacherPasswordReset} />
+                <Route path="/teacher/new-password" component={TeacherNewPassword} />
+            </Switch>
+            <ToastContainer position="top-center" />
+        </>
+    );
 }
 
 export default App;

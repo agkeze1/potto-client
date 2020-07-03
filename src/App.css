@@ -810,9 +810,6 @@ h6,
 .text-search:focus {
   background: #f0f0f0;
 }
-.footer {
-  border-top: 1px solid;
-}
 .main-container {
   height: 100vh;
   overflow: hidden scroll;
@@ -853,4 +850,10 @@ h6,
 
 .btn-primary {
   border-radius: 2em !important;
+}
+.bg-light-red > div.value,
+.bg-light-red .label,
+.bg-light-blue > div.value,
+.bg-light-blue .label {
+  color: #fff !important;
 }

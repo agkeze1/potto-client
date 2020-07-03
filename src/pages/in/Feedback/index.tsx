@@ -10,6 +10,9 @@ import { toast } from "react-toastify";
 import LoadingState from "../../partials/loading";
 import Pagination from "../../partials/Pagination";
 import { useMutation } from "@apollo/react-hooks";
+import { EventEmitter } from "../../../events/EventEmitter";
+import { ACTION_EVENT } from "../../../events";
+import NotifyProvider from "../../../events/event-resolver";
 
 const Feedback = () => {
     const [types, setTypes] = useState([]);
@@ -24,19 +27,26 @@ const Feedback = () => {
         onCompleted: (d) => {
             setTypes(d.GetFeedbackTypes.docs.map((item: any) => ({ value: item.id, label: item.name })));
         },
+        notifyOnNetworkStatusChange: true,
     });
 
     const [resolveFunc, { loading: rLoading }] = useMutation(RESOLVE_FEEDBACK, {
         onError: (e) => toast.error(CleanMessage(e.message)),
         onCompleted: async (d) => {
             toast.success(d.ResolveFeedback.message);
-            await refetch();
+            NotifyProvider.NotifyAll({
+                content: { id: d.ResolveFeedback.doc.id },
+                action: ACTION_EVENT.FEEDBACK.UPDATED,
+            });
         },
     });
 
     useEffect(() => {
         fetchFunc({ variables: { type, page, limit } });
     }, [type, fetchFunc, page, limit]);
+
+    EventEmitter.subscribe(ACTION_EVENT.FEEDBACK.CREATED, async () => await refetch());
+    EventEmitter.subscribe(ACTION_EVENT.FEEDBACK.UPDATED, async () => await refetch());
     return (
         <>
             <Helmet>

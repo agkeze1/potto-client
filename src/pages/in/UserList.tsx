@@ -14,6 +14,9 @@ import Select from "react-select";
 import gender from "../../data/gender.json";
 import Pagination from "../partials/Pagination";
 import { toast } from "react-toastify";
+import NotifyProvider from "../../events/event-resolver";
+import { EventEmitter } from "../../events/EventEmitter";
+import { ACTION_EVENT } from "./../../events/index";
 
 const UserList: FC<IProps> = ({ history }) => {
     const [activeUserId, SetActiveUserId] = useState<string>();
@@ -40,9 +43,10 @@ const UserList: FC<IProps> = ({ history }) => {
     };
 
     // Fetch List of Users
-    const { loading, data, fetchMore } = useQuery(USER_LIST, {
+    const { loading, data, fetchMore, refetch } = useQuery(USER_LIST, {
         variables: { page, limit },
         onError: (err) => toast.error(CleanMessage(err.message)),
+        notifyOnNetworkStatusChange: true,
     });
 
     useEffect(() => {
@@ -67,14 +71,21 @@ const UserList: FC<IProps> = ({ history }) => {
             });
 
             const index = q.GetUsers.docs.findIndex((i: any) => i.id === data.RemoveUser.doc.id);
+            if (index !== -1) {
+                q.GetUsers.docs.splice(index, 1);
 
-            q.GetUsers.docs.splice(index, 1);
-
-            //update
-            cache.writeQuery({
-                query: USER_LIST,
-                variables: { page, limit },
-                data: { GetUsers: q.GetUsers },
+                //update
+                cache.writeQuery({
+                    query: USER_LIST,
+                    variables: { page, limit },
+                    data: { GetUsers: q.GetUsers },
+                });
+            }
+        },
+        onCompleted: (d) => {
+            NotifyProvider.NotifyAll({
+                content: d.RemoveUser.doc.id,
+                action: ACTION_EVENT.USER.REMOVED,
             });
         },
     });
@@ -103,6 +114,9 @@ const UserList: FC<IProps> = ({ history }) => {
         },
     });
 
+    EventEmitter.subscribe(ACTION_EVENT.USER.CREATED, async () => await refetch());
+    EventEmitter.subscribe(ACTION_EVENT.USER.UPDATED, async () => await refetch());
+    EventEmitter.subscribe(ACTION_EVENT.USER.REMOVED, async () => await refetch());
     return (
         <>
             <Helmet>

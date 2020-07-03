@@ -12,6 +12,8 @@ import Select from "react-select";
 import { GET_CLASS_TIMETABLE } from "../../queries/Timetable.query";
 import TimetableList from "./partials/TimetableList";
 import { toast } from "react-toastify";
+import { EventEmitter } from "../../events/EventEmitter";
+import { ACTION_EVENT } from "./../../events/index";
 
 const ViewTimetable: FC<IProps> = ({ history }) => {
     const [ShowTimetable, SetShowTimetable] = useState<boolean>(false);
@@ -76,7 +78,7 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
         }
     }, [activeLevel, SetClasses, GetClasses]);
 
-    const [GetTimetable, { loading: tTLoading, data: tTData }] = useLazyQuery(GET_CLASS_TIMETABLE, {
+    const [GetTimetable, { loading: tTLoading, data: tTData, refetch: refetchFunc }] = useLazyQuery(GET_CLASS_TIMETABLE, {
         onError: (err) => toast.error(CleanMessage(err.message)),
     });
 
@@ -103,6 +105,8 @@ const ViewTimetable: FC<IProps> = ({ history }) => {
             }
         }
     };
+
+    EventEmitter.subscribe(ACTION_EVENT.TIMETABLE.CREATED, async () => await refetchFunc());
 
     return (
         <>

@@ -382,6 +382,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                         }
                       }}
                     >
+                      <i className="os-icon os-icon-search mr-2"></i>
                       Search record
                     </button>
                   </div>

@@ -1,26 +1,26 @@
 import React, { FC, useState, useEffect } from "react";
 import Helmet from "react-helmet";
-import { IProps } from "../../models/IProps";
-import { GetAppName } from "../../context/App";
-import IconInput from "../partials/IconInput";
-import ImageUpload from "../partials/ImageUpload";
-import Dropdown from "../partials/Dropdown";
-import { authService } from "../../services/Auth.Service";
+import { IProps } from "../../../models/IProps";
+import { GetAppName } from "../../../context/App";
+import IconInput from "../../partials/IconInput";
+import ImageUpload from "../../partials/ImageUpload";
+import Dropdown from "../../partials/Dropdown";
+import { authService } from "../../../services/Auth.Service";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { NEW_STUDENT, ADD_GUARDIAN } from "../../queries/Student.query";
+import { NEW_STUDENT, ADD_GUARDIAN } from "../../../queries/Student.query";
 import {
   GET_GUARDIAN_TYPES,
   GET_GUARDIAN_BY_MOBILE,
-} from "../../queries/Guardian.query";
-import { IMessage } from "../../models/IMessage";
-import AlertMessage from "../partials/AlertMessage";
-import LoadingState from "../partials/loading";
-import state from "../../data/state.json";
-import { GET_CLASSES } from "../../queries/Class.query";
-import { GET_LEVELS } from "../../queries/Level.query";
-import { NEW_GUARDIAN } from "../../queries/Guardian.query";
-import gender from "../../data/gender.json";
-import titles from "../../data/title.json";
+} from "../../../queries/Guardian.query";
+import { IMessage } from "../../../models/IMessage";
+import AlertMessage from "../../partials/AlertMessage";
+import LoadingState from "../../partials/loading";
+import state from "../../../data/state.json";
+import { GET_CLASSES } from "../../../queries/Class.query";
+import { GET_LEVELS } from "../../../queries/Level.query";
+import { NEW_GUARDIAN } from "../../../queries/Guardian.query";
+import gender from "../../../data/gender.json";
+import titles from "../../../data/title.json";
 import DatePicker from "react-datepicker";
 
 const NewStudent: FC<IProps> = ({ history }) => {
@@ -54,7 +54,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
   };
 
   // Get Levels for level input
-  const { loading: lLoading } = useQuery(GET_LEVELS, {
+  const { loading: lLoading, refetch: refetchLevels } = useQuery(GET_LEVELS, {
     variables: {
       school: school.id,
     },
@@ -76,31 +76,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
         SetShowLevelsRefresh(false);
       }
     },
-  });
-
-  // Get Levels on Reload level button click
-  const [GetLevels, { loading: llLoading }] = useLazyQuery(GET_LEVELS, {
-    variables: {
-      school: school.id,
-    },
-    onError: (err) => {
-      SetLMessage({
-        message: err.message,
-        failed: true,
-      });
-      SetShowLevelsRefresh(true);
-    },
-    onCompleted: (data) => {
-      if (data && data.GetLevels) {
-        SetLevel(
-          data.GetLevels.docs.map((level: any) => ({
-            label: level.name,
-            value: level.id,
-          }))
-        );
-        SetShowLevelsRefresh(false);
-      }
-    },
+    notifyOnNetworkStatusChange: true,
   });
 
   // Get classes for class input
@@ -122,29 +98,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
   });
 
   // Get Guardian Types for GuardianTypes input
-  const { loading: gTypeLoading } = useQuery(GET_GUARDIAN_TYPES, {
-    onError: (err) => {
-      SetGTypeMessage({
-        message: err.message,
-        failed: true,
-      });
-      SetShowGTypeRefresh(true);
-    },
-    onCompleted: (data) => {
-      if (data && data.GetGuardianTypes) {
-        SetGuardianTypes(
-          data.GetGuardianTypes.docs.map((type: any) => ({
-            label: type.name,
-            value: type.id,
-          }))
-        );
-        SetShowGTypeRefresh(false);
-      }
-    },
-  });
-
-  // Get Guardian Types on Reload GuardianTypes button click
-  const [GetGuardianTypes, { loading: ggTypeLoading }] = useLazyQuery(
+  const { loading: gTypeLoading, refetch: refetchGType } = useQuery(
     GET_GUARDIAN_TYPES,
     {
       onError: (err) => {
@@ -157,14 +111,15 @@ const NewStudent: FC<IProps> = ({ history }) => {
       onCompleted: (data) => {
         if (data && data.GetGuardianTypes) {
           SetGuardianTypes(
-            data.GetGuardianTypes.docs.map((level: any) => ({
-              label: level.name,
-              value: level.id,
+            data.GetGuardianTypes.docs.map((type: any) => ({
+              label: type.name,
+              value: type.id,
             }))
           );
           SetShowGTypeRefresh(false);
         }
       },
+      notifyOnNetworkStatusChange: true,
     }
   );
 
@@ -359,7 +314,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                             onClick={() => {
                               SetShowGTypeRefresh(false);
                               SetGTypeMessage(undefined);
-                              GetGuardianTypes();
+                              refetchGType();
                             }}
                             className="btn btn-primary btn-sm px-1 mb-2"
                             type="submit"
@@ -367,7 +322,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                             Reload Type
                           </button>
                         )}
-                        <LoadingState loading={gTypeLoading || ggTypeLoading} />
+                        <LoadingState loading={gTypeLoading} />
                         <AlertMessage
                           message={gTypeMessage?.message}
                           failed={gTypeMessage?.failed}
@@ -704,7 +659,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                             onClick={() => {
                               SetShowLevelsRefresh(false);
                               SetLMessage(undefined);
-                              GetLevels();
+                              refetchLevels();
                             }}
                             className="btn btn-primary btn-sm px-1 mb-2"
                             type="submit"
@@ -712,7 +667,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                             Reload Level
                           </button>
                         )}
-                        <LoadingState loading={lLoading || llLoading} />
+                        <LoadingState loading={lLoading} />
                         <AlertMessage
                           message={lMessage?.message}
                           failed={lMessage?.failed}

@@ -16,7 +16,7 @@ import Level from "./Level";
 import Class from "./Class";
 import Term from "./Term";
 import Subjects from "./Subjects";
-import NewStudent from "./NewStudent";
+import NewStudent from "./Student/NewStudent";
 import StudentList from "./Student";
 import NewTeacher from "./NewTeacher";
 import TeacherList from "./TeacherList";
@@ -43,6 +43,7 @@ import MobileMenu from "../partials/MobileMenu";
 import AppSearch from "./Search";
 import TeacherDetails from "./Teacher/Details";
 import NotFound from "./404";
+import StudentProfile from "./Student/profile";
 
 const Home: FC<IProps> = ({ location, history }) => {
   document.body.className =
@@ -129,6 +130,7 @@ const Home: FC<IProps> = ({ location, history }) => {
                   exact
                   component={TeacherDetails}
                 />
+                <Route path="/in/student/:id" component={StudentProfile} />
                 <Route component={NotFound} />
               </Switch>
             </div>

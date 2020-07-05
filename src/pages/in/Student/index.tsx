@@ -198,7 +198,7 @@ const StudentList: FC<IProps> = ({ history }) => {
     });
 
     // Get List of subjects of Student level
-    const [GetSubByLevel, { loading: sLoading, data: sData }] = useLazyQuery(GET_SUB_BY_LEVEL, {
+    const [GetSubByLevel] = useLazyQuery(GET_SUB_BY_LEVEL, {
         onError: (err) => {
             toast.error(CleanMessage(err.message));
         },

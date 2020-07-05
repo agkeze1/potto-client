@@ -134,6 +134,7 @@ const Home: FC<IProps> = ({ history }) => {
                                     <Route path="/in/app-search" component={AppSearch} />
                                     <Route path="/in/teacher/:id" exact component={TeacherDetails} />
                                     <Route path="/in/student/:id" component={StudentProfile} />
+                                    <Route path="/in/app/plan" component={ServicePlan} />
                                     <Route component={NotFound} />
                                 </Switch>
                             </div>

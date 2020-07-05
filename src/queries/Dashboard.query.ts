@@ -72,6 +72,7 @@ const STU_BIRTHDAY = gql`
             day
             month
             student {
+                id
                 full_name
             }
         }
@@ -83,6 +84,7 @@ const TCHR_BIRTHDAY = gql`
             day
             month
             teacher {
+                id
                 name
             }
         }

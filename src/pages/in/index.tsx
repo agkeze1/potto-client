@@ -49,6 +49,7 @@ import NotifyProvider, { handleNewData } from "../../events/event-resolver";
 import { authService } from "../../services/Auth.Service";
 import PubNub from "pubnub";
 import ServicePlan from "./ServicePlan/index";
+import Exemption from "./Exemption";
 
 const Home: FC<IProps> = ({ history }) => {
     document.body.className = "full-screen with-content-panel menu-position-side menu-side-left bodyBefore";
@@ -135,6 +136,7 @@ const Home: FC<IProps> = ({ history }) => {
                                     <Route path="/in/teacher/:id" exact component={TeacherDetails} />
                                     <Route path="/in/student/:id" component={StudentProfile} />
                                     <Route path="/in/app/plan" component={ServicePlan} />
+                                    <Route path="/in/attendance/exemption" component={Exemption} />
                                     <Route component={NotFound} />
                                 </Switch>
                             </div>

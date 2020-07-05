@@ -1,3 +1,6 @@
+/* eslint-disable no-script-url */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
 import React, { useState, FC } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, ToggleExpansion, CleanMessage } from "../../../../context/App";
@@ -12,12 +15,11 @@ import BasicInfo from "./BasicInfo";
 import Guardian from "./Guardian";
 import SubjectAttendance from "./Attendance/SubjectAttendance";
 import Image from "../../../partials/Image";
-import { NavLink } from "react-router-dom";
 
 const StudentProfile: FC<IProps> = ({ match, history }) => {
     const [activeStudent, SetActiveStudent] = useState<any>();
 
-    //   Student Id from location object passed
+    //   student Id from location object passed
     const { id } = match.params;
 
     //   Get student with id passed

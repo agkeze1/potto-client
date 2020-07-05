@@ -2,11 +2,11 @@
 /* eslint-disable no-script-url */
 import React, { FC, useState } from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { STU_SUB_ATT } from "../../../../queries/attendance.query";
+import { STU_SUB_ATT } from "../../../../../queries/attendance.query";
 import { toast } from "react-toastify";
-import { CleanMessage, cleanDate } from "../../../../context/App";
-import LoadingState from "../../../partials/loading";
-import days from "../../../../data/days.json";
+import { CleanMessage, cleanDate } from "../../../../../context/App";
+import LoadingState from "../../../../partials/loading";
+import days from "../../../../../data/days.json";
 
 interface IProps {
   studentId: string;

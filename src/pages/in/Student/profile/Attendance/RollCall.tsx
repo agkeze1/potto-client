@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/react-hooks";
 
 const RollCall = () => {
   // const {loading,data} = useQuery()

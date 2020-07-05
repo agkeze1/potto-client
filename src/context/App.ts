@@ -132,10 +132,10 @@ export const OrderTimetableByDay = (ttResult: Array<any>) => {
  * @param minutes total minutes
  */
 export const toPrettyTime = (minutes: number): string => {
-  if (minutes) {
-    return `${Math.floor(minutes / 60)}h : ${Math.floor(minutes % 60)}m`;
-  }
-  return "";
+    if (minutes) {
+        return `${Math.floor(minutes / 60)}h : ${Math.floor(minutes % 60)}m`;
+    }
+    return "";
 };
 
 /**
@@ -144,17 +144,17 @@ export const toPrettyTime = (minutes: number): string => {
  * @param url path
  */
 export const GetParamFromQuery = (name: string, url?: string): string => {
-  if (!url) {
-    url = window.location.href;
-  }
-  name = name.replace(/[[\]]/g, "\\$&");
-  const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-    results = regex.exec(url);
-  if (!results) {
-    return "";
-  }
-  if (!results[2]) {
-    return "";
-  }
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
+    if (!url) {
+        url = window.location.href;
+    }
+    name = name.replace(/[[\]]/g, "\\$&");
+    const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) {
+        return "";
+    }
+    if (!results[2]) {
+        return "";
+    }
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 };

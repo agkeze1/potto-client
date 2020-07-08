@@ -1,19 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FC, useState, useEffect } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, CLEAN_DATE } from "../../context/App";
-import { IProps } from "../../models/IProps";
+import { GetAppName, CLEAN_DATE } from "../../../context/App";
+import { IProps } from "../../../models/IProps";
 import { NavLink } from "react-router-dom";
-import ImageModal from "../partials/ImageModal";
-import { authService } from "../../services/Auth.Service";
+import ImageModal from "../../partials/ImageModal";
+import { authService } from "../../../services/Auth.Service";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { GET_SCHOOL_LIST, MAKE_PRIMARY } from "../../queries/School.query";
-import { IMessage } from "../../models/IMessage";
-import Pagination from "../partials/Pagination";
-import LoadingState from "../partials/loading";
-import AlertMessage from "../partials/AlertMessage";
-import { School } from "../../models/School.model";
-import { IImageProp } from "../../models/IImageProp";
+import { GET_SCHOOL_LIST, MAKE_PRIMARY } from "../../../queries/School.query";
+import { IMessage } from "../../../models/IMessage";
+import Pagination from "../../partials/Pagination";
+import LoadingState from "../../partials/loading";
+import AlertMessage from "../../partials/AlertMessage";
+import { School } from "../../../models/School.model";
+import { IImageProp } from "../../../models/IImageProp";
 
 const SchoolList: FC<IProps> = ({ history }) => {
   const [message, SetMessage] = useState<IMessage>();
@@ -185,12 +185,17 @@ const SchoolList: FC<IProps> = ({ history }) => {
                                       <i className="os-icon os-icon-check-square text-primary"></i>
                                     </a>
                                   )}
+                                  <NavLink
+                                    title="View Profile"
+                                    to={{
+                                      pathname: `/in/school/${rec.id}`,
+                                    }}
+                                  >
+                                    <i className="os-icon os-icon-eye"></i>
+                                  </NavLink>
                                   <a href="#" title="Edit">
                                     <i className="os-icon os-icon-edit"></i>
                                   </a>
-                                  <NavLink title="View contact info" to="#">
-                                    <i className="os-icon os-icon-eye"></i>
-                                  </NavLink>
                                   <a className="danger" href="#" title="Delete">
                                     <i className="os-icon os-icon-ui-15"></i>
                                   </a>

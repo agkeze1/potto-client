@@ -39,6 +39,17 @@ export const GET_SCHOOL_LIST = gql`
   ${SCHOOL_PROPS}
 `;
 
+export const GET_SCHOOL = gql`
+  query GET_SCHOOL($id: ID!) {
+    GetSchool(id: $id) {
+      doc {
+        ...SCHOOL_PROPS
+      }
+    }
+  }
+  ${SCHOOL_PROPS}
+`;
+
 // Mutation Section
 export const NEW_SCHOOL = gql`
   mutation NEW_SCHOOL($model: SchoolInput!) {

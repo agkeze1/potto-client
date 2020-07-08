@@ -102,6 +102,32 @@ export const SEARCH_STUDENTS = gql`
   ${STU_PROPS}
 `;
 
+export const GET_GUARDIAN = gql`
+  query GET_GUARDIAN($id: ID!) {
+    GetGuardian(id: $id) {
+      message
+      doc {
+        id
+        title
+        full_name
+        type {
+          id
+          name
+        }
+        address
+        state
+        lga
+        hometown
+        phone
+        email
+        gender
+        image
+        created_at
+      }
+    }
+  }
+`;
+
 // Mutation Section
 export const NEW_STUDENT = gql`
   mutation NEW_STUDENT($model: StudentInput!) {

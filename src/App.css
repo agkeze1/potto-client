@@ -29,10 +29,6 @@ body:before {
   max-width: 620px;
 }
 
-/* .auth-box-w .auth-header {
-  margin-bottom: 1em;
-} */
-
 .btn-primary:hover,
 .all-wrapper .fc-button.fc-state-active:hover,
 .btn-primary:active {
@@ -560,6 +556,11 @@ a.btn-icon > i:hover {
   height: 50px;
   border-radius: 50%;
 }
+.img-lg {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
 .box-parent {
   display: flex;
   flex-wrap: wrap;
@@ -811,7 +812,7 @@ h6,
   background: #f0f0f0;
 }
 .main-container {
-  height: 100vh;
+  height: 118vh;
   overflow: hidden scroll;
 }
 #sideNav {
@@ -848,7 +849,7 @@ h6,
   background: #e82c19 !important;
 }
 
-.btn-primary {
+.btn {
   border-radius: 2em !important;
 }
 .bg-light-red > div.value,
@@ -856,4 +857,7 @@ h6,
 .bg-light-blue > div.value,
 .bg-light-blue .label {
   color: #fff !important;
+}
+.footer-in {
+  padding-bottom: 12px;
 }

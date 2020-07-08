@@ -7,8 +7,8 @@ import { IProps } from "../../models/IProps";
 //Route Pages
 import Header from "../partials/Header";
 import SideNav from "../partials/SideNav";
-import NewSchool from "./NewSchool";
-import SchoolList from "./SchoolList";
+import NewSchool from "./School/NewSchool";
+import SchoolList from "./School";
 import NewUser from "./NewUser";
 import UserList from "./UserList";
 import SuperAdmin from "./SuperAdmin";
@@ -43,7 +43,9 @@ import MobileMenu from "../partials/MobileMenu";
 import AppSearch from "./Search";
 import TeacherDetails from "./Teacher/Details";
 import NotFound from "./404";
-import StudentProfile from "./Student/profile";
+import StudentProfile from "./Student/Profile";
+import GuardianProfile from "./Guardian/Profile";
+import SchoolProfile from "./School/Profile";
 import { PubNubConsumer, PubNubProvider } from "pubnub-react";
 import NotifyProvider, { handleNewData } from "../../events/event-resolver";
 import { authService } from "../../services/Auth.Service";
@@ -160,23 +162,24 @@ const Home: FC<IProps> = ({ history }) => {
                     component={TeacherDetails}
                   />
                   <Route path="/in/student/:id" component={StudentProfile} />
+                  <Route path="/in/guardian/:id" component={GuardianProfile} />
+                  <Route path="/in/school/:id" component={SchoolProfile} />
                   <Route component={NotFound} />
                 </Switch>
+                <hr />
+                <div className="footer-in text-center">
+                  <a className="font-sm" href="http://potto.com">
+                    <img
+                      src="/avatar.png"
+                      alt="app logo"
+                      className="logo-footer mr-2"
+                    />
+                    Powered by Potto
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-          <hr />
-          <a
-            className="font-sm text-center footer py-2"
-            href="http://potto.com"
-          >
-            <img
-              src="/avatar.png"
-              alt="app logo"
-              className="logo-footer mr-2"
-            />
-            Powered by Potto
-          </a>
         </div>
       </PubNubProvider>
     </>

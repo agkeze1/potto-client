@@ -15,6 +15,7 @@ import Select from "react-select";
 import LoadingState from "../../../partials/loading";
 import IconInput from "../../../partials/IconInput";
 import ImageUpload from "../../../partials/ImageUpload";
+import { NavLink } from "react-router-dom";
 
 interface IProp {
   student: any;
@@ -151,7 +152,14 @@ const Guardian: FC<IProp> = ({ student }) => {
                           }}
                         />
                         <hr />
-                        <label>{guard.full_name}</label>
+                        <NavLink
+                          title="View Profile"
+                          to={{
+                            pathname: `/in/guardian/${guard.id}`,
+                          }}
+                        >
+                          <label>{guard.full_name}</label>
+                        </NavLink>
                       </div>
                     </div>
                   ))}

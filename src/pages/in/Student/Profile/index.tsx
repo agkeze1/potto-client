@@ -15,11 +15,12 @@ import LoadingState from "../../../partials/loading";
 import BasicInfo from "./BasicInfo";
 import Guardian from "./Guardian";
 import SubjectAttendance from "./Attendance/SubjectAttendance";
+import LargeImage from "../../partials/LargeImage";
 
-const StudentProfile: FC<IProps> = ({ match }) => {
+const StudentProfile: FC<IProps> = ({ history, match }) => {
   const [activeStudent, SetActiveStudent] = useState<any>();
 
-  //   Student Id from location object passed
+  //   Student Id from match object passed
   const { id } = match.params;
 
   //   Get student with id passed
@@ -77,29 +78,20 @@ const StudentProfile: FC<IProps> = ({ match }) => {
                       href="javascript:void(0)"
                       title="Back"
                       className="icon-lg m-3 float-left"
-                      onClick={() => {}}
+                      onClick={() => {
+                        history.goBack();
+                      }}
                     >
                       <i className="os-icon os-icon-arrow-left6"></i>
                     </a>
                   </div>
                   <div className="text-center mb-5 mt-3">
-                    <img
-                      className="avatar mb-3"
-                      alt="Passport"
-                      src={activeStudent.passport}
-                      style={{
-                        width: "150px",
-                        height: "150px",
-                      }}
-                    />
+                    {/* Profile Picture */}
+                    <LargeImage imgPath={activeStudent.passport} />
 
-                    <h2 className="up-header ">
-                      {activeStudent.first_name +
-                        " " +
-                        activeStudent.middle_name +
-                        " " +
-                        activeStudent.surname}
-                    </h2>
+                    <h4 className="up-header text-uppercase mt-3">
+                      {activeStudent.full_name}
+                    </h4>
                     <h6 className="up-sub-header text-uppercase">
                       {activeStudent.reg_no}
                     </h6>

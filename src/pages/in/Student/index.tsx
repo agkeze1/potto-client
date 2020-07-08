@@ -502,13 +502,7 @@ const StudentList: FC<IProps> = ({ history }) => {
                                     title="Delete"
                                     onClick={async () => {
                                       let del = window.confirm(
-                                        `Are you sure you want to delete "${
-                                          stu.firstname +
-                                          " " +
-                                          stu.middlename +
-                                          " " +
-                                          stu.surname
-                                        }"?`
+                                        `Are you sure you want to delete "${stu.full_name}"?`
                                       );
                                       if (del) {
                                         await RemoveStudent({

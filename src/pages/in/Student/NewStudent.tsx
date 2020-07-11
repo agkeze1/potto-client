@@ -241,13 +241,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                           height: "150px",
                         }}
                       />
-                      <h5>
-                        {returnedStu.first_name +
-                          " " +
-                          returnedStu.middle_name +
-                          " " +
-                          returnedStu.surname}
-                      </h5>
+                      <h5>{returnedStu.full_name}</h5>
                       <label>{returnedStu.reg_no}</label>
                     </div>
                   </div>
@@ -816,13 +810,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                             height: "150px",
                           }}
                         />
-                        <h5>
-                          {returnedStu.first_name +
-                            " " +
-                            returnedStu.middle_name +
-                            " " +
-                            returnedStu.surname}
-                        </h5>
+                        <h5>{returnedStu.full_name}</h5>
                         <label>{returnedStu.reg_no}</label>
                         <hr />
                       </div>

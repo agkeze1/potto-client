@@ -31,6 +31,7 @@ export const STU_PROPS = gql`
     guardians {
       id
       title
+      name
       full_name
       address
       image
@@ -58,6 +59,31 @@ export const STU_MIN_PROPS = gql`
       }
     }
   }
+`;
+export const GUARDIAN_PROPS = gql`
+  fragment GUARDIAN_PROPS on Guardian {
+    id
+    title
+    name
+    full_name
+    type {
+      id
+      name
+    }
+    address
+    state
+    lga
+    hometown
+    phone
+    email
+    gender
+    image
+    created_at
+    student {
+      ...STU_PROPS
+    }
+  }
+  ${STU_PROPS}
 `;
 
 // Query Section
@@ -107,25 +133,11 @@ export const GET_GUARDIAN = gql`
     GetGuardian(id: $id) {
       message
       doc {
-        id
-        title
-        full_name
-        type {
-          id
-          name
-        }
-        address
-        state
-        lga
-        hometown
-        phone
-        email
-        gender
-        image
-        created_at
+        ...GUARDIAN_PROPS
       }
     }
   }
+  ${GUARDIAN_PROPS}
 `;
 
 // Mutation Section
@@ -212,4 +224,38 @@ export const FIND_STUDENTS = gql`
     }
   }
   ${STU_PROPS}
+`;
+
+export const GET_STUDENT_REG = gql`
+  query GetStudentByRegNo($reg: String!) {
+    GetStudentByRegNo(id: $reg) {
+      doc {
+        id
+        first_name
+        middle_name
+        surname
+        full_name
+        reg_no
+        gender
+        dob
+        passport
+        current_class {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const UPDATE_GUARDIAN = gql`
+  mutation UPDATE_GUARDIAN($id: ID, $model: GuardianUpdateInput!) {
+    UpdateGuardian(id: $id, model: $model) {
+      message
+      doc {
+        ...GUARDIAN_PROPS
+      }
+    }
+  }
+  ${GUARDIAN_PROPS}
 `;

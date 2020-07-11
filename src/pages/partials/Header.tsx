@@ -28,13 +28,6 @@ const Header: FC<IProps> = ({ history }) => {
         <div className="logged-user-w avatar-inline">
           <div className="logged-user-i">
             <Image alt={user.name} src={user.image} width={40} />
-            <div
-              className="logged-user-info-w"
-              style={{ display: "inline-block" }}
-            >
-              <div className="logged-user-name">{user?.name}</div>
-              <div className="logged-user-role">{user?.email}</div>
-            </div>
 
             <div className="logged-user-menu color-style-bright">
               <div className="logged-user-avatar-info">

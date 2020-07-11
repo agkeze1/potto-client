@@ -23,6 +23,13 @@ const BasicInfo: FC<IProp> = ({ school }) => {
         <li>
           <span>Date Created</span> | <b>{CLEAN_DATE(school.created_at)}</b>
         </li>
+        <li>
+          <span>Primary Color</span> | <b>{school.primary_color}</b>
+        </li>
+
+        <li>
+          <span>Secondary Color</span> | <b>{school.secondary_color}</b>
+        </li>
       </ul>
     </div>
   );

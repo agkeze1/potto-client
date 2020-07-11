@@ -212,14 +212,11 @@ const StudentList: FC<IProps> = ({ history }) => {
   });
 
   // Get List of subjects of Student level
-  const [GetSubByLevel, { loading: sLoading, data: sData }] = useLazyQuery(
-    GET_SUB_BY_LEVEL,
-    {
-      onError: (err) => {
-        toast.error(CleanMessage(err.message));
-      },
-    }
-  );
+  const [GetSubByLevel] = useLazyQuery(GET_SUB_BY_LEVEL, {
+    onError: (err) => {
+      toast.error(CleanMessage(err.message));
+    },
+  });
 
   return (
     <>
@@ -449,7 +446,15 @@ const StudentList: FC<IProps> = ({ history }) => {
                                     />
                                   </div>
                                 </td>
-                                <td>{stu.full_name}</td>
+                                <td>
+                                  <NavLink
+                                    to={{
+                                      pathname: `/in/student/${stu.id}`,
+                                    }}
+                                  >
+                                    {stu.full_name}
+                                  </NavLink>
+                                </td>
                                 <td>{stu.reg_no}</td>
                                 <td>{stu.current_class?.name}</td>
                                 <td>{stu.gender}</td>
@@ -470,39 +475,18 @@ const StudentList: FC<IProps> = ({ history }) => {
                                     <i className="os-icon os-icon-eye"></i>
                                   </NavLink>
                                   <a
-                                    href="#"
-                                    title="Edit"
-                                    onClick={() => {
-                                      SetActiveStudentId(stu.id);
-                                      SetEditStudent({
-                                        firstname: stu.first_name,
-                                        middlename: stu.middle_name,
-                                        surname: stu.surname,
-                                        regNo: stu.reg_no,
-                                        gender: stu.gender,
-                                        address: stu.address,
-                                        dob: stu.dob,
-                                        state: stu.state,
-                                        lga: stu.lga,
-                                      });
-                                      if (editStudent) {
-                                        setTimeout(() => {
-                                          document
-                                            .getElementById("btnModal")
-                                            ?.click();
-                                        }, 0);
-                                      }
-                                    }}
-                                  >
-                                    <i className="os-icon os-icon-edit"></i>
-                                  </a>
-                                  <a
                                     className="danger"
                                     href="#"
                                     title="Delete"
                                     onClick={async () => {
                                       let del = window.confirm(
-                                        `Are you sure you want to delete "${stu.full_name}"?`
+                                        `Are you sure you want to delete "${
+                                          stu.firstname +
+                                          " " +
+                                          stu.middlename +
+                                          " " +
+                                          stu.surname
+                                        }"?`
                                       );
                                       if (del) {
                                         await RemoveStudent({
@@ -522,14 +506,6 @@ const StudentList: FC<IProps> = ({ history }) => {
                         </tbody>
                       </table>
                     </div>
-                    {/* Hidden button to lunch edit modal */}
-                    <button
-                      type="button"
-                      id="btnModal"
-                      data-target="#editModal"
-                      data-toggle="modal"
-                      style={{ display: "none" }}
-                    ></button>
                   </div>
                 </div>
 
@@ -559,230 +535,6 @@ const StudentList: FC<IProps> = ({ history }) => {
 
       {/* Image Modal */}
       <ImageModal image={activeImg?.image} name={activeImg?.name} />
-
-      {/* Edit Student Modal */}
-      {editStudent.dob && (
-        <div
-          aria-hidden="true"
-          className="modal fade"
-          id="editModal"
-          role="dialog"
-        >
-          <div className="modal-dialog modal-lg" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Edit Student's Info <hr />
-                </h5>
-                <button className="close" data-dismiss="modal" type="button">
-                  <span aria-hidden="true"> &times;</span>
-                </button>
-              </div>
-              <div className="modal-body element-box pb-2">
-                <LoadingState loading={uLoading} />
-                <form
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    // Scroll to top of page
-                    scrollTop();
-                    UpdateStudent({
-                      variables: {
-                        id: activeStudentId,
-                        model: editStudent,
-                      },
-                    });
-                  }}
-                >
-                  <div className="row">
-                    {/* First Name input */}
-                    <div className="col-sm-6">
-                      <IconInput
-                        placeholder="Enter first name"
-                        label="First Name"
-                        icon="os-icon-email-2-at2"
-                        required={true}
-                        type="text"
-                        initVal={editStudent.firstname}
-                        onChange={(firstname: string) => {
-                          SetEditStudent({
-                            ...editStudent,
-                            firstname,
-                          });
-                        }}
-                      />
-                    </div>
-                    {/* Middle Name input */}
-                    <div className="col-sm-6">
-                      <IconInput
-                        placeholder="Enter middle name"
-                        label="Middle Name"
-                        icon="os-icon-phone"
-                        required={true}
-                        type="text"
-                        initVal={editStudent.middlename}
-                        onChange={(middlename: string) => {
-                          SetEditStudent({
-                            ...editStudent,
-                            middlename,
-                          });
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="row">
-                    {/* Last Name input */}
-                    <div className="col-sm-6">
-                      <IconInput
-                        placeholder="Enter last name"
-                        label="Last Name"
-                        icon="os-icon-phone"
-                        required={true}
-                        type="text"
-                        initVal={editStudent.surname}
-                        onChange={(surname: string) => {
-                          SetEditStudent({
-                            ...editStudent,
-                            surname,
-                          });
-                        }}
-                      />
-                    </div>
-                    {/* Reg. Number input */}
-                    <div className="col-sm-6">
-                      <IconInput
-                        placeholder="Enter Reg. umber"
-                        label="Reg. Number"
-                        icon="os-icon-email-2-at2"
-                        required={true}
-                        type="text"
-                        initVal={editStudent.regNo}
-                        onChange={(regNo: string) => {
-                          SetEditStudent({
-                            ...editStudent,
-                            regNo,
-                          });
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6">
-                      {/* Gender input */}
-                      <div className="form-group">
-                        <label htmlFor="departmental">Gender</label>
-                        <Select
-                          options={gender.gender}
-                          value={{
-                            label: editStudent.gender,
-                            value: editStudent.gender,
-                          }}
-                          onChange={(item: any) => {
-                            SetEditStudent({
-                              ...editStudent,
-                              gender: item.label,
-                            });
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <label htmlFor="">Date of Birth </label>
-                      <br />
-                      <DatePicker
-                        selected={new Date(editStudent.dob)}
-                        onChange={(date) =>
-                          SetEditStudent({
-                            ...editStudent,
-                            dob: date,
-                          })
-                        }
-                        className="form-control"
-                        dateFormat="d, MMMM yyyy"
-                      />
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-sm-6">
-                      <div className="form-group">
-                        <label htmlFor="departmental">State</label>
-                        {/* State of Origin input */}
-                        <Select
-                          options={state.map((item: any, index: number) => ({
-                            label: item.state.name,
-                            value: index + "",
-                          }))}
-                          value={{
-                            label: editStudent.state,
-                            value: editStudent.state,
-                          }}
-                          onChange={(item: any) => {
-                            SetEditStudent({
-                              ...editStudent,
-                              state: item.label,
-                            });
-                            SetLocals(
-                              state[item.value].state.locals.map(
-                                (item: any) => ({
-                                  value: item.name,
-                                  label: item.name,
-                                })
-                              )
-                            );
-                          }}
-                          label="State of Origin"
-                          icon="phone"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="form-group">
-                        <label htmlFor="departmental">LGA</label>
-                        {/* LGA input */}
-                        <Select
-                          options={locals}
-                          value={{
-                            label: editStudent.lga,
-                            value: editStudent.lga,
-                          }}
-                          onChange={(item: any) =>
-                            SetEditStudent({
-                              ...editStudent,
-                              lga: item.label,
-                            })
-                          }
-                          label="LGA"
-                          icon="phone"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Address Input */}
-                  <IconInput
-                    placeholder="Enter address"
-                    label="Address"
-                    icon="os-icon-ui-09"
-                    required={true}
-                    type="text"
-                    initVal={editStudent.address}
-                    onChange={(address: string) => {
-                      SetEditStudent({
-                        ...editStudent,
-                        address,
-                      });
-                    }}
-                  />
-                  <div className="buttons-w mt-3 mb-5">
-                    <button className="btn btn-primary px-5 mt-3" type="submit">
-                      Update Student
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

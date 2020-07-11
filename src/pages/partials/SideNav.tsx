@@ -140,13 +140,182 @@ const SideNav: FC<SideProps> = ({ history }) => {
                       </NavLink>
                     </li>
 
-                    <li>
-                      <NavLink
-                        to="/in/guardian-type"
-                        onClick={() => scrollTop()}
-                      >
-                        <span>Guardian Type</span>
-                      </NavLink>
+                    {user.superAdmin && (
+                      <>
+                        {/* School Mgt */}
+                        <li className="sub-header">
+                          <span>School Mgt</span>
+                        </li>
+                        <li className="has-sub-menu">
+                          <NavLink to="#">
+                            <div className="icon-w">
+                              <div className="os-icon os-icon-home"></div>
+                            </div>
+                            <span>School</span>
+                          </NavLink>
+                          <div className="sub-menu-w">
+                            <div className="sub-menu-header">School</div>
+                            <div className="sub-menu-icon">
+                              <i className="os-icon os-icon-layout"></i>
+                            </div>
+                            <div className="sub-menu-i">
+                              <ul className="sub-menu">
+                                <li>
+                                  <NavLink
+                                    to="/in/new-school"
+                                    onClick={() => scrollTop()}
+                                    className=""
+                                  >
+                                    New
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/in/school-list"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    List
+                                  </NavLink>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </li>
+                        <li className="menu-link">
+                          <NavLink
+                            to="/in/app/plan"
+                            onClick={() => scrollTop()}
+                          >
+                            <div className="icon-w">
+                              <div className="os-icon os-icon-layers"></div>
+                            </div>
+                            <span>Service Plan</span>
+                          </NavLink>
+                        </li>
+                      </>
+                    )}
+
+                    {user.admin && (
+                      <>
+                        <li className="menu-link">
+                          <NavLink
+                            to="/in/attendance/exemption"
+                            onClick={() => scrollTop()}
+                          >
+                            <div className="icon-w">
+                              <div className="os-icon os-icon-watch"></div>
+                            </div>
+                            <span>Exemption</span>
+                          </NavLink>
+                        </li>
+
+                        <li className="has-sub-menu">
+                          <NavLink to="#">
+                            <div className="icon-w">
+                              <div className="os-icon os-icon-settings"></div>
+                            </div>
+                            <span>Setup</span>
+                          </NavLink>
+                          <div className="sub-menu-w">
+                            <div className="sub-menu-header">Setup</div>
+                            <div className="sub-menu-icon">
+                              <i className="os-icon os-icon-layout"></i>
+                            </div>
+                            <div className="sub-menu-i">
+                              <ul className="sub-menu">
+                                <li>
+                                  <NavLink
+                                    to="/in/term"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>Term</span>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/in/level"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>Level</span>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/in/class"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>Class</span>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/in/subjects"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>Subjects</span>
+                                  </NavLink>
+                                </li>
+
+                                <li>
+                                  <NavLink
+                                    to="/in/guardian-type"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>Guardian Type</span>
+                                  </NavLink>
+                                </li>
+                              </ul>
+                              <ul className="sub-menu">
+                                <li>
+                                  <NavLink
+                                    to="/in/period"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>Period</span>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/in/new-timetable"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>New Timetable</span>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/in/view-timetable"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>View Timetable</span>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/in/device-list"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>Device List</span>
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/in/role"
+                                    onClick={() => scrollTop()}
+                                  >
+                                    <span>Role</span>
+                                  </NavLink>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </li>
+                      </>
+                    )}
+
+                    {/* User Mgt */}
+                    <li className="sub-header">
+                      <span>User Mgt</span>
                     </li>
                   </ul>
                   <ul className="sub-menu">

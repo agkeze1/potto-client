@@ -158,7 +158,7 @@ const Guardian: FC<IProp> = ({ student }) => {
                             pathname: `/in/guardian/${guard.id}`,
                           }}
                         >
-                          <label>{guard.full_name}</label>
+                          {guard.full_name.toUpperCase()}
                         </NavLink>
                       </div>
                     </div>

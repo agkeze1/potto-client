@@ -12,6 +12,8 @@ export const SCHOOL_PROPS = gql`
     contact_phone
     address
     created_at
+    primary_color
+    secondary_color
   }
 `;
 
@@ -74,4 +76,16 @@ export const MAKE_PRIMARY = gql`
     }
   }
   ${USER_PROPS}
+`;
+
+export const UPDATE_SCHOOL = gql`
+  mutation UPDATE_SCHOOL($id: ID, $update: SchoolInput!) {
+    UpdateSchool(id: $id, update: $update) {
+      message
+      doc {
+        ...SCHOOL_PROPS
+      }
+    }
+  }
+  ${SCHOOL_PROPS}
 `;

@@ -10,14 +10,11 @@ import { IImageProp } from "../../../models/IImageProp";
 import { authService } from "../../../services/Auth.Service";
 import { IProps } from "../../../models/IProps";
 import { GET_LEVELS } from "../../../queries/Level.query";
-import gender from "../../../data/gender.json";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { GET_CLASSES } from "../../../queries/Class.query";
 import LoadingState from "../../partials/loading";
-import state from "../../../data/state.json";
 import Select from "react-select";
 import Pagination from "../../partials/Pagination";
-import DatePicker from "react-datepicker";
 import {
   SEARCH_STUDENTS,
   REMOVE_STUDENT,
@@ -26,6 +23,9 @@ import {
 import { GET_SUB_BY_LEVEL } from "../../../queries/Subject.query";
 import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
+import { EventEmitter } from "../../../events/EventEmitter";
+import { ACTION_EVENT } from "../../../events";
+import NotifyProvider from "../../../events/event-resolver";
 
 const StudentList: FC<IProps> = ({ history }) => {
   const [activeImg, SetActiveImg] = useState<IImageProp>({
@@ -34,13 +34,6 @@ const StudentList: FC<IProps> = ({ history }) => {
   });
 
   const [showFilter, SetShowFilter] = useState<boolean>(true);
-
-  // For lga under a state
-  const [locals, SetLocals] = useState<any>([]);
-
-  const [activeStudentId, SetActiveStudentId] = useState<string>();
-  const [editStudent, SetEditStudent] = useState<any>({});
-
   const [showLevelsRefresh, SetShowLevelsRefresh] = useState<boolean>(false);
   const [showClassesRefresh, SetShowClassesRefresh] = useState<boolean>(false);
   const [levels, SetLevel] = useState<any>([]);
@@ -104,12 +97,13 @@ const StudentList: FC<IProps> = ({ history }) => {
   });
 
   // Get Students
-  const [SearchStudents, { loading, data, fetchMore }] = useLazyQuery(
-    SEARCH_STUDENTS,
-    {
-      onError: (err) => toast.error(CleanMessage(err.message)),
-    }
-  );
+  const [
+    SearchStudents,
+    { loading, data, fetchMore, refetch: refetchStudents },
+  ] = useLazyQuery(SEARCH_STUDENTS, {
+    onError: (err) => toast.error(CleanMessage(err.message)),
+    notifyOnNetworkStatusChange: true,
+  });
 
   // Fetch More students on Page change
   useEffect(() => {
@@ -136,77 +130,10 @@ const StudentList: FC<IProps> = ({ history }) => {
   // Remove Student
   const [RemoveStudent, { loading: rLoading }] = useMutation(REMOVE_STUDENT, {
     onError: (err) => toast.error(CleanMessage(err.message)),
-    update: (cache, { data }) => {
-      const q: any = cache.readQuery({
-        query: SEARCH_STUDENTS,
-        variables: {
-          variables: {
-            regNo: searchInput?.regNo,
-            level: searchInput?.level?.id,
-            _class: searchInput?._class?.id,
-            page,
-            limit,
-          },
-        },
-      });
-
-      const index = q.SearchStudents.docs.findIndex(
-        (i: any) => i.id === data.RemoveStudent.doc.id
-      );
-
-      q.SearchStudents.docs.splice(index, 1);
-
-      //update
-      cache.writeQuery({
-        query: SEARCH_STUDENTS,
-        variables: {
-          regNo: searchInput?.regNo,
-          level: searchInput?.level?.id,
-          _class: searchInput?._class?.id,
-          page,
-          limit,
-        },
-        data: { SearchStudents: q.SearchStudents },
-      });
-    },
-  });
-
-  // Update Student
-  const [UpdateStudent, { loading: uLoading }] = useMutation(UPDATE_STUDENT, {
-    onError: (err) => toast.error(CleanMessage(err.message)),
-    onCompleted: (data) => {
-      toast.success(data.UpdateStudent.message);
-    },
-    update: (cache, { data }) => {
-      const q: any = cache.readQuery({
-        query: SEARCH_STUDENTS,
-        variables: {
-          regNo: searchInput?.regNo,
-          level: searchInput?.level?.id,
-          _class: searchInput?._class?.id,
-          page,
-          limit,
-        },
-      });
-
-      const index = q.SearchStudents.docs.findIndex(
-        (i: any) => i.id === data.UpdateStudent.doc.id
-      );
-
-      q.SearchStudents.docs.splice(index, 1);
-      q.SearchStudents.docs.unshift(data.UpdateStudent.doc);
-
-      //update
-      cache.writeQuery({
-        query: SEARCH_STUDENTS,
-        variables: {
-          regNo: searchInput?.regNo,
-          level: searchInput?.level?.id,
-          _class: searchInput?._class?.id,
-          page,
-          limit,
-        },
-        data: { SearchStudents: q.SearchStudents },
+    onCompleted: () => {
+      NotifyProvider.NotifyAll({
+        content: "",
+        action: ACTION_EVENT.STUDENT.REMOVED,
       });
     },
   });
@@ -218,6 +145,13 @@ const StudentList: FC<IProps> = ({ history }) => {
     },
   });
 
+  EventEmitter.subscribe(ACTION_EVENT.STUDENT.CREATED, async () => {
+    if (refetchStudents) await refetchStudents();
+  });
+
+  EventEmitter.subscribe(ACTION_EVENT.STUDENT.REMOVED, async () => {
+    if (refetchStudents) await refetchStudents();
+  });
   return (
     <>
       <Helmet>

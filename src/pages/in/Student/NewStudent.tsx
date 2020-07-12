@@ -22,6 +22,8 @@ import { NEW_GUARDIAN } from "../../../queries/Guardian.query";
 import gender from "../../../data/gender.json";
 import titles from "../../../data/title.json";
 import DatePicker from "react-datepicker";
+import NotifyProvider from "../../../events/event-resolver";
+import { ACTION_EVENT } from "../../../events";
 
 const NewStudent: FC<IProps> = ({ history }) => {
   const [lMessage, SetLMessage] = useState<IMessage>();
@@ -133,6 +135,10 @@ const NewStudent: FC<IProps> = ({ history }) => {
     onCompleted: (data) => {
       if (data) {
         SetReturnedStu(data.NewStudent.doc);
+        NotifyProvider.NotifyAll({
+          content: data.NewStudent.doc.id,
+          action: ACTION_EVENT.STUDENT.CREATED,
+        });
         document.getElementById("btnGuardModal")?.click();
       }
     },
@@ -171,7 +177,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
     GET_GUARDIAN_BY_MOBILE,
     {
       onError: (err) => {
-        if (err.message.includes("Guardian not found.")) {
+        if (err.message.includes("Guardian not found!")) {
           document.getElementById("btnGuardModal")?.click();
           SetGuardianExists(false);
           SetShowGuardian(true);

@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable no-script-url */
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import Select from "react-select";
 import { CLEAN_DATE } from "../../../../context/App";
 import SmallImage from "../../partials/SmallImage";
 import { IImageProp } from "../../../../models/IImageProp";
 import ImageModal from "../../../partials/ImageModal";
+import attSort from "../../../../data/attSort.json";
 
 interface IProps {
   attData: any;
@@ -14,28 +15,26 @@ interface IProps {
 
 const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
   const [activeAtt, SetActiveAtt] = useState<any>(attData[0]);
+  const [activeAttAttendances, SetActiveAttAttendances] = useState<any>();
   const [showSummary, SetShowSummary] = useState<boolean>(true);
+  const [activeAttSort, SetActiveAttSort] = useState<number>(1);
   const [activeImg, SetActiveImg] = useState<IImageProp>({
     image: "/avatar.png",
     name: "Undefined",
   });
-  // const [activeAttSort, SetActiveAttSort] = useState<number>();
 
-  // Attendance Sort criteria
-  const attSort = [
-    {
-      label: "All",
-      value: 1,
-    },
-    {
-      label: "Present",
-      value: 2,
-    },
-    {
-      label: "Absent",
-      value: 3,
-    },
-  ];
+  useEffect(() => {
+    let record: any[] = [];
+    if (activeAtt) {
+      if (activeAttSort === 1) record = activeAtt?.students;
+      else if (activeAttSort === 2)
+        record = activeAtt?.students?.filter((r: any) => r.present === true);
+      else if (activeAttSort === 3)
+        record = activeAtt?.students?.filter((r: any) => r.present === false);
+
+      SetActiveAttAttendances([...record]);
+    }
+  }, [activeAttSort]);
 
   return (
     <div className="row">
@@ -188,7 +187,7 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
                     <Select
                       options={attSort}
                       onChange={(item: any) => {
-                        // SetActiveAttSort(item?.value || 1);
+                        SetActiveAttSort(item?.value);
                       }}
                     />
                   </div>
@@ -204,36 +203,40 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {activeAtt.students.map((stu: any, index: number) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td className="text-left">
-                              <SmallImage
-                                imgPath={stu.student?.passport}
-                                onClick={() =>
-                                  SetActiveImg({
-                                    image: stu.student?.passport,
-                                    name: stu.student?.full_name,
-                                  })
-                                }
-                              />{" "}
-                              &nbsp;
-                              {stu.student?.full_name}
-                            </td>
-                            <td className="text-left">{stu.student?.gender}</td>
-                            <td>
-                              <label
-                                className={`badge ${
-                                  stu.present
-                                    ? "badge-success-inverted"
-                                    : "badge-danger-inverted"
-                                }`}
-                              >
-                                {stu.present ? "Present" : "Absent"}
-                              </label>
-                            </td>
-                          </tr>
-                        ))}
+                        {activeAttAttendances?.map(
+                          (stu: any, index: number) => (
+                            <tr key={index}>
+                              <td>{index + 1}</td>
+                              <td className="text-left">
+                                <SmallImage
+                                  imgPath={stu.student?.passport}
+                                  onClick={() =>
+                                    SetActiveImg({
+                                      image: stu.student?.passport,
+                                      name: stu.student?.full_name,
+                                    })
+                                  }
+                                />{" "}
+                                &nbsp;
+                                {stu.student?.full_name}
+                              </td>
+                              <td className="text-left">
+                                {stu.student?.gender}
+                              </td>
+                              <td>
+                                <label
+                                  className={`badge ${
+                                    stu.present
+                                      ? "badge-success-inverted"
+                                      : "badge-danger-inverted"
+                                  }`}
+                                >
+                                  {stu.present ? "Present" : "Absent"}
+                                </label>
+                              </td>
+                            </tr>
+                          )
+                        )}
                       </tbody>
                     </table>
                   </div>

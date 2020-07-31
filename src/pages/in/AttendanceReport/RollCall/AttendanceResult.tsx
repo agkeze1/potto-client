@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable no-script-url */
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import Select from "react-select";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { toast } from "react-toastify";
@@ -28,8 +28,9 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
   const [showLevelClass, SetShowLevelClass] = useState<boolean>(true);
   const [showAttendanceInfo, SetShowAttendanceInfo] = useState<boolean>();
   const [attendanceInput, SetAttendanceInput] = useState<any>();
-  // const [activeAttSort, SetActiveAttSort] = useState<number>();
+  const [activeAttSort, SetActiveAttSort] = useState<number>(1);
   const [activeRecord, SetActiveRecord] = useState<any>();
+  const [activeRecordAttendances, SetActiveRecordAttendances] = useState<any>();
   const [activeImg, SetActiveImg] = useState<IImageProp>({
     image: "/avatar.png",
     name: "Undefined",
@@ -43,10 +44,31 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
     ROLL_CALL,
     {
       onError: (err) => toast.error(err.message),
-      onCompleted: (data) =>
-        SetActiveRecord(data?.GetClassRollCallAttendances.docs[0]),
+      onCompleted: (data) => {
+        SetActiveRecord(data?.GetClassRollCallAttendances.docs[0]);
+        SetActiveRecordAttendances(
+          data?.GetClassRollCallAttendances.docs[0]?.attendances
+        );
+      },
     }
   );
+
+  useEffect(() => {
+    let record: any[] = [];
+    if (activeRecord) {
+      if (activeAttSort === 1) record = activeRecord?.attendances;
+      else if (activeAttSort === 2)
+        record = activeRecord?.attendances?.filter(
+          (r: any) => r.present === true
+        );
+      else if (activeAttSort === 3)
+        record = activeRecord?.attendances?.filter(
+          (r: any) => r.present === false
+        );
+
+      SetActiveRecordAttendances([...record]);
+    }
+  }, [activeAttSort]);
 
   // Get Class
   const [GetClass, { loading: cLoading, data: cData }] = useLazyQuery(
@@ -94,7 +116,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                 });
               }}
               onSubmit={(item: any) => {
-                if (item?._class && item?.fromDate && item?.toDate) {
+                if (item?._class?.value && item?.fromDate && item?.toDate) {
                   GetClass({
                     variables: {
                       id: attendanceInput?.current_class?.id,
@@ -165,7 +187,9 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                     <br />
                     <label htmlFor="">
                       Class |{" "}
-                      <b>{attendanceInput?.current_class.name || "No Class"}</b>
+                      <b>
+                        {attendanceInput?.current_class?.name || "No Class"}
+                      </b>
                     </label>
                   </div>
                   <div className="col-sm-2 mt-3">
@@ -221,6 +245,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                               SetActiveRecord(undefined);
                               setTimeout(() => {
                                 SetActiveRecord(rec);
+                                SetActiveRecordAttendances(rec?.attendances);
                               }, 0);
                             }}
                           >
@@ -330,9 +355,9 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                 href="#"
                               >
                                 <div className="label">Device Used</div>
-                                <div className="value">
+                                <h5 className="text-primary">
                                   {activeRecord.device?.name}
-                                </div>
+                                </h5>
                               </a>
                             </div>
                           </div>
@@ -348,7 +373,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                             <Select
                               options={attSort}
                               onChange={(item: any) => {
-                                // SetActiveAttSort(item?.value || 1);
+                                SetActiveAttSort(item?.value);
                               }}
                             />
                           </div>
@@ -364,7 +389,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                 </tr>
                               </thead>
                               <tbody>
-                                {activeRecord.attendances.map(
+                                {activeRecordAttendances?.map(
                                   (att: any, index: number) => (
                                     <tr key={index}>
                                       <td>{index + 1}</td>

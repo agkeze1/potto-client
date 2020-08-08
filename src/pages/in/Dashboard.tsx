@@ -2,7 +2,7 @@
 /* eslint-disable no-script-url */
 import React, { useState } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, DayString, cleanDate } from "../../context/App";
+import { GetAppName, DayString, cleanDate, LocalDate } from "../../context/App";
 import { Doughnut, Bar } from "react-chartjs-2";
 import { DASHBOARD } from "../../queries/Dashboard.query";
 import { useQuery } from "@apollo/react-hooks";
@@ -406,7 +406,9 @@ const Dashboard = () => {
                                                     {weeklyRollcallStat?.map((stat: any, idx: number) => (
                                                         <tr>
                                                             <td>{idx + 1}</td>
-                                                            <td className="text-left">{cleanDate(stat?.date)}</td>
+                                                            <td className="text-left">
+                                                                {LocalDate(stat?.date)}
+                                                            </td>
                                                             <td className="text-center">
                                                                 <span className="badge badge-dark">{stat?.total}</span>
                                                             </td>

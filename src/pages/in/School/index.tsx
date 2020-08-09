@@ -8,7 +8,6 @@ import ImageModal from "../../partials/ImageModal";
 import { authService } from "../../../services/Auth.Service";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { GET_SCHOOL_LIST, MAKE_PRIMARY } from "../../../queries/School.query";
-import { IMessage } from "../../../models/IMessage";
 import Pagination from "../../partials/Pagination";
 import LoadingState from "../../partials/loading";
 import { School } from "../../../models/School.model";

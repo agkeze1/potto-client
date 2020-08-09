@@ -12,6 +12,7 @@ interface IProps {
   onClassChange?: any;
   onSubmit?: any;
   schoolId: string;
+  btnText?: string;
 }
 
 const LevelClass: FC<IProps> = ({
@@ -19,6 +20,7 @@ const LevelClass: FC<IProps> = ({
   onClassChange,
   onSubmit,
   schoolId,
+  btnText,
 }) => {
   const [levels, SetLevel] = useState<any>([]);
   const [classes, SetClasses] = useState<any>([]);
@@ -166,7 +168,7 @@ const LevelClass: FC<IProps> = ({
           <div className="col-12 my-3">
             <div className="buttons-w">
               <button className="btn btn-primary px-3" type="submit">
-                Proceed
+                {btnText || "Proceed"}
               </button>
             </div>
           </div>

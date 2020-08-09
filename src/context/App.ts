@@ -24,6 +24,21 @@ export const CLEAN_DATE = (date: string): string => {
   return "";
 };
 
+export const CLEAN_DATE_TIME = (date: string): string => {
+  if (date)
+    return Intl.DateTimeFormat("en-GB", {
+      month: "short",
+      year: "numeric",
+      day: "2-digit",
+      weekday: "short",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    }).format(new Date(date));
+  return "";
+};
+
 export const CleanMessage = (message: string) =>
   message.replace("GraphQL error:", "").replace("Network error:", "");
 

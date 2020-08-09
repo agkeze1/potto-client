@@ -2,7 +2,7 @@
 /* eslint-disable no-script-url */
 import React, { FC, useState, useEffect } from "react";
 import Select from "react-select";
-import { CLEAN_DATE } from "../../../../context/App";
+import { CLEAN_DATE_TIME } from "../../../../context/App";
 import SmallImage from "../../partials/SmallImage";
 import { IImageProp } from "../../../../models/IImageProp";
 import ImageModal from "../../../partials/ImageModal";
@@ -72,7 +72,7 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
                   <div className="row">
                     <div className="col-10">
                       <div className="text-primary">
-                        {CLEAN_DATE(rec.date).toUpperCase()}
+                        {CLEAN_DATE_TIME(rec.date).toUpperCase()}
                       </div>
                     </div>
                   </div>
@@ -107,7 +107,10 @@ const AttendanceDetails: FC<IProps> = ({ attData, onBackClick }) => {
                   }}
                 >
                   Summary ({" "}
-                  <b className="text-primary">{CLEAN_DATE(activeAtt.date)}</b> )
+                  <b className="text-primary">
+                    {CLEAN_DATE_TIME(activeAtt.date)}
+                  </b>{" "}
+                  )
                 </h6>
                 {showSummary && (
                   <div className="row">

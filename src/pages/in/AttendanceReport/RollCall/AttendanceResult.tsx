@@ -79,62 +79,64 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
     <>
       {/* Level, Class and Date Range Input */}
       {showLevelClass && (
-        <div className="col-lg-12">
-          <div className="element-box">
-            <LevelClassDateRange
-              schoolId={school.id}
-              buttonText="View Attendance"
-              onLevelChange={(level: any) => {
-                SetActiveLevel({
-                  name: level?.label,
-                  id: level?.value,
-                });
-                SetAttendanceInput({
-                  ...attendanceInput,
-                  current_class: undefined,
-                });
-              }}
-              onClassChange={(_class: any) => {
-                SetAttendanceInput({
-                  ...attendanceInput,
-                  current_class: {
-                    name: _class.label,
-                    id: _class.value,
-                  },
-                });
-              }}
-              onFromChange={(fromDate: any) => {
-                SetAttendanceInput({
-                  ...attendanceInput,
-                  fromDate,
-                });
-              }}
-              onToChange={(toDate: any) => {
-                SetAttendanceInput({
-                  ...attendanceInput,
-                  toDate,
-                });
-              }}
-              onSubmit={(item: any) => {
-                if (item?._class?.value && item?.fromDate && item?.toDate) {
-                  GetClass({
-                    variables: {
-                      id: attendanceInput?.current_class?.id,
+        <div className="content-box px-0">
+          <div className="row justify-content-center">
+            <div className="col-lg-10">
+              <LevelClassDateRange
+                schoolId={school.id}
+                buttonText="View Attendance"
+                onLevelChange={(level: any) => {
+                  SetActiveLevel({
+                    name: level?.label,
+                    id: level?.value,
+                  });
+                  SetAttendanceInput({
+                    ...attendanceInput,
+                    current_class: undefined,
+                  });
+                }}
+                onClassChange={(_class: any) => {
+                  SetAttendanceInput({
+                    ...attendanceInput,
+                    current_class: {
+                      name: _class.label,
+                      id: _class.value,
                     },
                   });
-                  GetRollCall({
-                    variables: {
-                      _class: attendanceInput.current_class?.id,
-                      start: attendanceInput.fromDate,
-                      end: attendanceInput.toDate,
-                    },
+                }}
+                onFromChange={(fromDate: any) => {
+                  SetAttendanceInput({
+                    ...attendanceInput,
+                    fromDate,
                   });
-                  SetShowAttendanceResult(true);
-                  SetShowAttendanceInfo(true);
-                  SetShowLevelClass(false);
-                }
-              }}
-            />
+                }}
+                onToChange={(toDate: any) => {
+                  SetAttendanceInput({
+                    ...attendanceInput,
+                    toDate,
+                  });
+                }}
+                onSubmit={(item: any) => {
+                  if (item?._class?.value && item?.fromDate && item?.toDate) {
+                    GetClass({
+                      variables: {
+                        id: attendanceInput?.current_class?.id,
+                      },
+                    });
+                    GetRollCall({
+                      variables: {
+                        _class: attendanceInput.current_class?.id,
+                        start: attendanceInput.fromDate,
+                        end: attendanceInput.toDate,
+                      },
+                    });
+                    SetShowAttendanceResult(true);
+                    SetShowAttendanceInfo(true);
+                    SetShowLevelClass(false);
+                  }
+                }}
+              />
+            </div>
           </div>
         </div>
       )}

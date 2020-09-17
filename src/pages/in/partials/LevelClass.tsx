@@ -12,6 +12,7 @@ interface IProps {
   onClassChange?: any;
   onSubmit?: any;
   schoolId: string;
+  btnText?: string;
 }
 
 const LevelClass: FC<IProps> = ({
@@ -19,6 +20,7 @@ const LevelClass: FC<IProps> = ({
   onClassChange,
   onSubmit,
   schoolId,
+  btnText,
 }) => {
   const [levels, SetLevel] = useState<any>([]);
   const [classes, SetClasses] = useState<any>([]);
@@ -101,71 +103,74 @@ const LevelClass: FC<IProps> = ({
         if (onSubmit) onSubmit();
       }}
     >
-      <div className="row">
-        <div className="col-md-6">
-          {/* Level input */}
-          <label>
-            Level <br />
-          </label>
-          <Select
-            options={levels}
-            value={{
-              label: activeLevel?.name || (
-                <span className="text-gray">Select...</span>
-              ),
-              value: activeLevel?.id,
-            }}
-            onChange={(item: any) => {
-              SetActiveLevel({
-                name: item?.label,
-                id: item?.value,
-              });
-              SetActiveClass(undefined);
-              if (onLevelChange) onLevelChange(item);
-            }}
-          />
-          {showLevelsRefresh && (
-            <button
-              onClick={() => {
-                SetShowLevelsRefresh(false);
-                GetLevels();
+      <div className="element-box px-5">
+        <h5 className="element-header">Inputs</h5>
+        <div className="row">
+          <div className="col-12">
+            {/* Level input */}
+            <label>
+              Level <br />
+            </label>
+            <Select
+              options={levels}
+              value={{
+                label: activeLevel?.name || (
+                  <span className="text-gray">Select...</span>
+                ),
+                value: activeLevel?.id,
               }}
-              className="btn btn-primary btn-sm px-1 my-2"
-              type="submit"
-            >
-              Reload Level
-            </button>
-          )}
-          <LoadingState loading={lLoading || llLoading} />
-        </div>
-        <div className="col-md-6">
-          {/* Class Input */}
-          <label>
-            Class <br />
-          </label>
-          <Select
-            options={classes}
-            value={{
-              label: activeClass?.label || (
-                <span className="text-gray">Select...</span>
-              ),
-              value: activeClass?.value,
-            }}
-            onChange={(item: any) => {
-              SetActiveClass({
-                label: item.label,
-                value: item.value,
-              });
-              if (onClassChange) onClassChange(item);
-            }}
-          />
-          <LoadingState loading={cLoading} />
-        </div>
-        <div className="col-12 mt-3">
-          <div className="buttons-w">
-            <button className="btn btn-primary px-3" type="submit">
-              Proceed
-            </button>
+              onChange={(item: any) => {
+                SetActiveLevel({
+                  name: item?.label,
+                  id: item?.value,
+                });
+                SetActiveClass(undefined);
+                if (onLevelChange) onLevelChange(item);
+              }}
+            />
+            {showLevelsRefresh && (
+              <button
+                onClick={() => {
+                  SetShowLevelsRefresh(false);
+                  GetLevels();
+                }}
+                className="btn btn-primary btn-sm px-1 my-2"
+                type="submit"
+              >
+                Reload Level
+              </button>
+            )}
+            <LoadingState loading={lLoading || llLoading} />
+          </div>
+          <div className="col-12 mt-3">
+            {/* Class Input */}
+            <label>
+              Class <br />
+            </label>
+            <Select
+              options={classes}
+              value={{
+                label: activeClass?.label || (
+                  <span className="text-gray">Select...</span>
+                ),
+                value: activeClass?.value,
+              }}
+              onChange={(item: any) => {
+                SetActiveClass({
+                  label: item.label,
+                  value: item.value,
+                });
+                if (onClassChange) onClassChange(item);
+              }}
+            />
+            <LoadingState loading={cLoading} />
+          </div>
+          <div className="col-12 my-3">
+            <div className="buttons-w">
+              <button className="btn btn-primary px-3" type="submit">
+                {btnText || "Proceed"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

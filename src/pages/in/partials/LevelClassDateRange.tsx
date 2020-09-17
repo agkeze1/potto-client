@@ -113,112 +113,115 @@ const LevelClassDateRange: FC<IProps> = ({
         });
       }}
     >
-      <div className="row">
-        {/* Leve */}
-        <div className="col-lg-3 col-md-6 col-sm-12">
-          {/* Level input */}
-          <label>
-            Level <br />
-          </label>
-          <Select
-            options={levels}
-            value={{
-              label: activeLevel?.name || (
-                <span className="text-gray">Select...</span>
-              ),
-              value: activeLevel?.id,
-            }}
-            onChange={(item: any) => {
-              SetActiveLevel({
-                name: item?.label,
-                id: item?.value,
-              });
-              SetActiveClass(undefined);
-              onLevelChange(item);
-            }}
-          />
-          {showLevelsRefresh && (
-            <button
-              onClick={() => {
-                SetShowLevelsRefresh(false);
-                GetLevels();
+      <div className="element-box">
+        <h5 className="element-header">Inputs</h5>
+        <div className="row">
+          {/* Level */}
+          <div className="col-md-12 col-lg-6 mt-3">
+            {/* Level input */}
+            <label>
+              Level <br />
+            </label>
+            <Select
+              options={levels}
+              value={{
+                label: activeLevel?.name || (
+                  <span className="text-gray">Select...</span>
+                ),
+                value: activeLevel?.id,
               }}
-              className="btn btn-primary btn-sm px-1 my-2"
-              type="submit"
-            >
-              Reload Level
-            </button>
-          )}
-          <LoadingState loading={lLoading || llLoading} />
-        </div>
-        {/* Class */}
-        <div className="col-lg-3 col-md-6 col-sm-12">
-          {/* Class Input */}
-          <label>
-            Class <br />
-          </label>
-          <Select
-            options={classes}
-            value={{
-              label: activeClass?.label || (
-                <span className="text-gray">Select...</span>
-              ),
-              value: activeClass?.value,
-            }}
-            onChange={(item: any) => {
-              SetActiveClass({
-                label: item.label,
-                value: item.value,
-              });
-              onClassChange(item);
-            }}
-          />
-          <LoadingState loading={cLoading} />
-        </div>
-        {/* From Day */}
-        <div className="col-lg-3 col-md-6 col-sm-12">
-          {/* From Date*/}
-          <label>From </label>
-          <br />
-          <DatePicker
-            placeholderText="day, month year"
-            selected={data?.fromDate}
-            onChange={(date) => {
-              SetData({
-                ...data,
-                fromDate: date,
-              });
-              onFromChange(date);
-            }}
-            className="form-control"
-            dateFormat="d, MMMM yyyy"
-          />
-        </div>
-        {/* To Day */}
-        <div className="col-lg-3 col-md-6 col-sm-12">
-          {/* To Date */}
-          <label>To </label>
-          <br />
-          <DatePicker
-            placeholderText="day, month year"
-            selected={data?.toDate}
-            onChange={(date) => {
-              SetData({
-                ...data,
-                toDate: date,
-              });
-              onToChange(date);
-            }}
-            className="form-control"
-            dateFormat="d, MMMM yyyy"
-          />
-        </div>
+              onChange={(item: any) => {
+                SetActiveLevel({
+                  name: item?.label,
+                  id: item?.value,
+                });
+                SetActiveClass(undefined);
+                onLevelChange(item);
+              }}
+            />
+            {showLevelsRefresh && (
+              <button
+                onClick={() => {
+                  SetShowLevelsRefresh(false);
+                  GetLevels();
+                }}
+                className="btn btn-primary btn-sm px-1 my-2"
+                type="submit"
+              >
+                Reload Level
+              </button>
+            )}
+            <LoadingState loading={lLoading || llLoading} />
+          </div>
+          {/* Class */}
+          <div className="col-md-12 col-lg-6 mt-3">
+            {/* Class Input */}
+            <label>
+              Class <br />
+            </label>
+            <Select
+              options={classes}
+              value={{
+                label: activeClass?.label || (
+                  <span className="text-gray">Select...</span>
+                ),
+                value: activeClass?.value,
+              }}
+              onChange={(item: any) => {
+                SetActiveClass({
+                  label: item.label,
+                  value: item.value,
+                });
+                onClassChange(item);
+              }}
+            />
+            <LoadingState loading={cLoading} />
+          </div>
+          {/* From Day */}
+          <div className="col-md-12 col-lg-6 mt-3">
+            {/* From Date*/}
+            <label>From </label>
+            <br />
+            <DatePicker
+              placeholderText="day, month year"
+              selected={data?.fromDate}
+              onChange={(date) => {
+                SetData({
+                  ...data,
+                  fromDate: date,
+                });
+                onFromChange(date);
+              }}
+              className="form-control"
+              dateFormat="d, MMMM yyyy"
+            />
+          </div>
+          {/* To Day */}
+          <div className="col-md-12 col-lg-6 mt-3">
+            {/* To Date */}
+            <label>To </label>
+            <br />
+            <DatePicker
+              placeholderText="day, month year"
+              selected={data?.toDate}
+              onChange={(date) => {
+                SetData({
+                  ...data,
+                  toDate: date,
+                });
+                onToChange(date);
+              }}
+              className="form-control"
+              dateFormat="d, MMMM yyyy"
+            />
+          </div>
 
-        <div className="col-12 mt-3">
-          <div className="buttons-w">
-            <button className="btn btn-primary px-3" type="submit">
-              {buttonText}
-            </button>
+          <div className="col-12 my-3">
+            <div className="buttons-w">
+              <button className="btn btn-primary px-3" type="submit">
+                {buttonText}
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -166,5 +166,5 @@ export const GetParamFromQuery = (name: string, url?: string): string => {
 export const LocalDate = (date: string): string => {
     const _date: any = new Date(date);
     const _d = new Date(_date.toGMTString() + "+2");
-    return _d.toLocaleString()
+    return _d.toLocaleString("en-US")
 };

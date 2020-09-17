@@ -129,7 +129,7 @@ export const SEARCH_STUDENTS = gql`
 `;
 
 export const GET_GUARDIAN = gql`
-  query GET_GUARDIAN($id: ID!) {
+  query GET_STUDENT_GUARDIAN($id: ID!) {
     GetGuardian(id: $id) {
       message
       doc {

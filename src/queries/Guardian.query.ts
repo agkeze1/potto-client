@@ -13,7 +13,7 @@ export const GUARDIAN_PROPS = gql`
 
 // Query Section
 export const GET_GUARDIAN = gql`
-  query GET_GUARDIAN($id: ID!) {
+  query GET_ALL_GUARDIAN($id: ID!) {
     GetGuardian(id: $id) {
       message
       doc {

@@ -11,3 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.menu-w .logo-w .logo-label, .top-bar .logo-w .logo-label {
+  font-size: 1em !important;
+  font-weight: 600 !important;
+}

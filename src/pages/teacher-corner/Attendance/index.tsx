@@ -44,10 +44,12 @@ const TeacherAttendance = () => {
         variables: { teacher: teacher.id },
         onCompleted: (d) => {
             const _items: Array<any> = Array.from(d.GetTeacherTimetables.docs);
-            const total = _items.map((t: any) => t.total).reduce((a: any, b: any) => a + b);
-            setTotalTimetable(total);
-            setTimetables(_items);
-            setTimetable(_items[0].timetable_list[0]);
+            if (_items.length) {
+                const total = _items.map((t: any) => t.total).reduce((a: any, b: any) => a + b);
+                setTotalTimetable(total);
+                setTimetables(_items);
+                setTimetable(_items[0].timetable_list[0]);
+            }
         },
     });
 

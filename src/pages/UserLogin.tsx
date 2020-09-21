@@ -86,8 +86,6 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                         });
                                         if (authService.IsAuthenticated()) {
                                             document.location.href = "/in";
-                                        } else {
-                                            toast.error("Incorrect Username or Password!");
                                         }
                                     }
                                 }}

@@ -87,7 +87,7 @@ export const UPDATE_TEACHER = gql`
         UpdateTeacher(id: $id, model: $model) {
             message
             doc {
-                ...TEACHER_PROPS
+                id
             }
         }
     }

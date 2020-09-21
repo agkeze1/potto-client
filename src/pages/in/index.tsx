@@ -52,6 +52,7 @@ import { authService } from "../../services/Auth.Service";
 import PubNub from "pubnub";
 import ServicePlan from "./ServicePlan/index";
 import Exemption from "./Exemption";
+import UploadTeacherForm from "./Teacher/UploadTeacher";
 
 const Home: FC<IProps> = ({ history }) => {
   document.body.className =
@@ -70,126 +71,94 @@ const Home: FC<IProps> = ({ history }) => {
   });
   NotifyProvider.pubNub = pubNub;
   return (
-    <>
-      <Helmet>
-        <title>Home | {GetAppName()}</title>
-      </Helmet>
-      <PubNubProvider client={pubNub}>
-        <div className="all-wrapper with-side-panel solid-bg-all">
-          <div className="layout-w">
-            {/* Mobile Navigation */}
-            <MobileMenu />
+      <>
+          <Helmet>
+              <title>Home | {GetAppName()}</title>
+          </Helmet>
+          <PubNubProvider client={pubNub}>
+              <div className="all-wrapper with-side-panel solid-bg-all">
+                  <div className="layout-w">
+                      {/* Mobile Navigation */}
+                      <MobileMenu />
 
-            {/* Main sidebar */}
-            <SideNav history={history} />
+                      {/* Main sidebar */}
+                      <SideNav history={history} />
 
-            <div className="content-w">
-              {/* Header */}
-              <Header history={history} />
-              <PubNubConsumer>
-                {(client) => {
-                  client.addListener({
-                    message: (MessageEvent) => {
-                      handleNewData(MessageEvent.message);
-                    },
-                  });
-                  client.subscribe({
-                    channels: [user?.school.id || ""],
-                  });
-                  return "";
-                }}
-              </PubNubConsumer>
-              {/* Content */}
-              <div className="main-container">
-                <Switch>
-                  <Route exact path="/in" component={Dashboard} />
-                  <Route exact path="/in/dashboard" component={Dashboard} />
-                  <Route path="/in/new-school" component={NewSchool} />
-                  <Route path="/in/school-list" component={SchoolList} />
-                  <Route path="/in/new-user" component={NewUser} />
-                  <Route path="/in/user-list" component={UserList} />
-                  <Route path="/in/super-admin-list" component={SuperAdmin} />
-                  <Route path="/in/level" component={Level} />
-                  <Route path="/in/class" component={Class} />
-                  <Route path="/in/term" component={Term} />
-                  <Route path="/in/subjects" component={Subjects} />
-                  <Route path="/in/new-student" component={NewStudent} />
-                  <Route path="/in/student-list" component={StudentList} />
-                  <Route path="/in/new-teacher" component={NewTeacher} />
-                  <Route path="/in/teacher-list" component={TeacherList} />
-                  <Route path="/in/guardian-type" component={GuardianType} />
-                  <Route path="/in/device-list" component={DeviceList} />
-                  <Route path="/in/navigation" component={Navigation} />
-                  <Route
-                    path="/in/navigation-group"
-                    component={NavigationGroup}
-                  />
-                  <Route path="/in/feedback" component={Feedback} />
-                  <Route path="/in/feedback-type" component={FeedbackType} />
-                  <Route path="/in/role" component={Role} />
-                  <Route path="/in/new-timetable" component={NewTimetable} />
-                  <Route path="/in/view-timetable" component={ViewTimetable} />
-                  <Route path="/in/period" component={Period} />
-                  <Route path="/in/roll-call" component={RollCall} />
-                  <Route path="/in/send-feedback" component={SendFeedback} />
-                  <Route
-                    path="/in/subject-attendance"
-                    component={SubjectAttendance}
-                  />
-                  <Route
-                    path="/in/graduate-student"
-                    component={GraduateStudent}
-                  />
-                  <Route
-                    path="/in/teacher-attendance"
-                    component={TeacherAttendance}
-                  />
-                  <Route
-                    path="/in/messaging/teachers"
-                    exact={true}
-                    component={TeacherMessage}
-                  />
-                  <Route
-                    path="/in/messaging/teachers/new"
-                    component={SendTeacherMessage}
-                  />
-                  <Route
-                    path="/in/messaging/guardian"
-                    component={GuardianMessage}
-                  />
-                  <Route path="/in/app-search" component={AppSearch} />
-                  <Route
-                    path="/in/teacher/:id"
-                    exact
-                    component={TeacherDetails}
-                  />
-                  <Route path="/in/student/:id" component={StudentProfile} />
-                  <Route path="/in/guardian/:id" component={GuardianProfile} />
-                  <Route path="/in/school/:id" component={SchoolProfile} />
-                  <Route path="/in/app/plan" component={ServicePlan} />
-                  <Route
-                    path="/in/attendance/exemption"
-                    component={Exemption}
-                  />
-                  <Route component={NotFound} />
-                </Switch>
-                <hr />
-                <div className="footer-in text-center">
-                  <a className="font-sm" href="http://potto.com">
-                    <img
-                      src="/avatar.png"
-                      alt="app logo"
-                      className="logo-footer mr-2"
-                    />
-                    Powered by Potto
-                  </a>
-                </div>
+                      <div className="content-w">
+                          {/* Header */}
+                          <Header history={history} />
+                          <PubNubConsumer>
+                              {(client) => {
+                                  client.addListener({
+                                      message: (MessageEvent) => {
+                                          handleNewData(MessageEvent.message);
+                                      },
+                                  });
+                                  client.subscribe({
+                                      channels: [user?.school.id || ""],
+                                  });
+                                  return "";
+                              }}
+                          </PubNubConsumer>
+                          {/* Content */}
+                          <div className="main-container">
+                              <Switch>
+                                  <Route exact path="/in" component={Dashboard} />
+                                  <Route exact path="/in/dashboard" component={Dashboard} />
+                                  <Route path="/in/new-school" component={NewSchool} />
+                                  <Route path="/in/school-list" component={SchoolList} />
+                                  <Route path="/in/new-user" component={NewUser} />
+                                  <Route path="/in/user-list" component={UserList} />
+                                  <Route path="/in/super-admin-list" component={SuperAdmin} />
+                                  <Route path="/in/level" component={Level} />
+                                  <Route path="/in/class" component={Class} />
+                                  <Route path="/in/term" component={Term} />
+                                  <Route path="/in/subjects" component={Subjects} />
+                                  <Route path="/in/new-student" component={NewStudent} />
+                                  <Route path="/in/student-list" component={StudentList} />
+                                  <Route path="/in/new-teacher" component={NewTeacher} />
+                                  <Route path="/in/teacher-list" component={TeacherList} />
+                                  <Route path="/in/teacher/upload-teacher" component={UploadTeacherForm} />
+                                  <Route path="/in/guardian-type" component={GuardianType} />
+                                  <Route path="/in/device-list" component={DeviceList} />
+                                  <Route path="/in/navigation" component={Navigation} />
+                                  <Route path="/in/navigation-group" component={NavigationGroup} />
+                                  <Route path="/in/feedback" component={Feedback} />
+                                  <Route path="/in/feedback-type" component={FeedbackType} />
+                                  <Route path="/in/role" component={Role} />
+                                  <Route path="/in/new-timetable" component={NewTimetable} />
+                                  <Route path="/in/view-timetable" component={ViewTimetable} />
+                                  <Route path="/in/period" component={Period} />
+                                  <Route path="/in/roll-call" component={RollCall} />
+                                  <Route path="/in/send-feedback" component={SendFeedback} />
+                                  <Route path="/in/subject-attendance" component={SubjectAttendance} />
+                                  <Route path="/in/graduate-student" component={GraduateStudent} />
+                                  <Route path="/in/teacher-attendance" component={TeacherAttendance} />
+                                  <Route path="/in/messaging/teachers" exact={true} component={TeacherMessage} />
+                                  <Route path="/in/messaging/teachers/new" component={SendTeacherMessage} />
+                                  <Route path="/in/messaging/guardian" component={GuardianMessage} />
+                                  <Route path="/in/app-search" component={AppSearch} />
+                                  <Route path="/in/teacher/:id" exact component={TeacherDetails} />
+                                  <Route path="/in/student/:id" component={StudentProfile} />
+                                  <Route path="/in/guardian/:id" component={GuardianProfile} />
+                                  <Route path="/in/school/:id" component={SchoolProfile} />
+                                  <Route path="/in/app/plan" component={ServicePlan} />
+                                  <Route path="/in/attendance/exemption" component={Exemption} />
+                                  <Route component={NotFound} />
+                              </Switch>
+                              <hr />
+                              <div className="footer-in text-center">
+                                  <a className="font-sm" href="http://potto.com">
+                                      <img src="/avatar.png" alt="app logo" className="logo-footer mr-2" />
+                                      Powered by Potto
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </PubNubProvider>
-    </>
+          </PubNubProvider>
+      </>
   );
 };
 

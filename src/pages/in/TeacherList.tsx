@@ -15,6 +15,7 @@ import TeacherItems from "./Teacher/items";
 import NotifyProvider from "../../events/event-resolver";
 import { ACTION_EVENT } from "./../../events/index";
 import { EventEmitter } from "../../events/EventEmitter";
+import { NavLink } from "react-router-dom";
 
 const TeacherList: FC<IProps> = ({ history }) => {
     const [activeTeacher, SetActiveTeacher] = useState<any>(undefined);
@@ -86,7 +87,10 @@ const TeacherList: FC<IProps> = ({ history }) => {
                     <div className="element-wrapper">
                         {!activeTeacher && (
                             <>
-                                <span className="element-actions mt-n2">
+                                <div className="element-actions mt-n2">
+                                    <NavLink className="btn btn-light btn-link" to="/in/teacher/upload-teacher">
+                                        <i className="os-icon os-icon-upload-cloud"></i> Upload File
+                                    </NavLink>
                                     <button
                                         className="btn btn-primary"
                                         type="button"
@@ -94,9 +98,9 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                             history.push("/in/new-teacher");
                                         }}
                                     >
-                                        Create New
+                                        Create New <i className="os-icon os-icon-user-plus"></i>
                                     </button>
-                                </span>
+                                </div>
                                 <h5 className="element-header">Teacher List</h5>
                                 {data && data.GetTeachers.docs.length > 0 && (
                                     <div className="element-box">

@@ -13,6 +13,7 @@ import Select from "react-select";
 import { toast } from "react-toastify";
 import NotifyProvider from "../../events/event-resolver";
 import { ACTION_EVENT } from "../../events";
+import { NavLink } from "react-router-dom";
 
 const NewTeacher: FC<IProps> = ({ history }) => {
     const [record, SetRecord] = useState<any>();
@@ -43,6 +44,17 @@ const NewTeacher: FC<IProps> = ({ history }) => {
             <Helmet>
                 <title>New Teacher | {GetAppName()}</title>
             </Helmet>
+            <ul className="breadcrumb">
+                <li className="breadcrumb-item">
+                    <NavLink to="/in/dashboard">Home</NavLink>
+                </li>
+                <li className="breadcrumb-item">
+                    <NavLink to="/in/teacher-list">Teachers</NavLink>
+                </li>
+                <li className="breadcrumb-item">
+                    <span>New Teacher</span>
+                </li>
+            </ul>
             <div className="content-i">
                 <div className="content-box">
                     <div className="element-wrapper">

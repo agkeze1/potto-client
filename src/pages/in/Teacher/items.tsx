@@ -258,7 +258,7 @@ const TeacherItems: FC<IProps> = ({ items, onRemove, onView }) => {
                                                 <label htmlFor="">Date of Birth </label>
                                                 <br />
                                                 <DatePicker
-                                                    selected={new Date(edit.dob)}
+                                                    selected={new Date(edit.dob || new Date())}
                                                     onChange={(date) =>
                                                         setEdit({
                                                             ...edit,

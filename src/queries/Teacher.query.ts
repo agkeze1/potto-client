@@ -91,7 +91,6 @@ export const UPDATE_TEACHER = gql`
             }
         }
     }
-    ${TEACHER_PROPS}
 `;
 
 export const GET_ALL_TEACHERS_SHORT = gql`

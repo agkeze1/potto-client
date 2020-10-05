@@ -25,7 +25,7 @@ const TeacherItems: FC<IProps> = ({ items, onRemove, onView }) => {
         { value: "Female", label: "Female" },
     ];
     const [active, setActive] = useState<any>(undefined);
-    const [edit, setEdit] = useState<any>(undefined);
+    const [edit, setEdit] = useState<any>({});
     // Update Teacher
 
     const [UpdateTeacher, { loading }] = useMutation(UPDATE_TEACHER, {
@@ -103,6 +103,7 @@ const TeacherItems: FC<IProps> = ({ items, onRemove, onView }) => {
                                                         gender: teacher.gender,
                                                         address: teacher.address,
                                                         dob: teacher.dob,
+                                                        doj: teacher.doj,
                                                     });
                                                     if (edit) {
                                                         setTimeout(() => {
@@ -269,6 +270,20 @@ const TeacherItems: FC<IProps> = ({ items, onRemove, onView }) => {
                                                     dateFormat="d, MMMM yyyy"
                                                 />
                                             </div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="doj">Data of Employment</label>
+                                            <DatePicker
+                                                selected={new Date(edit.doj || new Date())}
+                                                onChange={(date) =>
+                                                    setEdit({
+                                                        ...edit,
+                                                        doj: date,
+                                                    })
+                                                }
+                                                className="form-control"
+                                                dateFormat="d, MMMM yyyy"
+                                            />
                                         </div>
                                         {/* Gender input */}
                                         <div className="form-group">

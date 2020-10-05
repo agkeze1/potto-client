@@ -28,7 +28,6 @@ const ImageUpload: FC<Image> = ({ title = "Choose File", accept = "image/*", onD
                             setLoading(false);
                             if (data) {
                                 onData(data);
-                                toast.success("Image uploaded successfully");
                             } else {
                                 throw new Error("Unable to upload image!");
                             }

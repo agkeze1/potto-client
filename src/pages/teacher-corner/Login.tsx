@@ -42,7 +42,7 @@ const TeacherLogin: React.FC<IProps> = ({ history }) => {
             <div className="all-wrapper menu-side with-pattern scale-in-bottom">
                 <div className="auth-box-w">
                     <div className="logo-w">
-                        <a href="/">
+                        <a className="image--parent" href="/">
                             <img alt="application-logo" width="80" src={GET_LOGO} />
                         </a>
                         <h6 className="mt-1">{GetAppName()}</h6>

@@ -162,7 +162,7 @@ const TeacherList: FC<IProps> = ({ history }) => {
                                         {/* Pagination */}
                                         {data && !searcher && (
                                             <div className="col-lg fade-in">
-                                                <div className="element-box">
+                                                <div className="element-box no-bg bg-white">
                                                     <Pagination
                                                         length={teachers.length}
                                                         {...data.GetTeachers}

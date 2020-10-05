@@ -6,7 +6,7 @@ import ImageModal from "../partials/ImageModal";
 import { IProps } from "../../models/IProps";
 import { authService } from "../../services/Auth.Service";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { USER_LIST, REMOVE_USER, UPDATE_USER } from "../../queries/User.query";
+import { USER_LIST, REMOVE_USER, UPDATE_USER, UPDATE_USER_IMAGE } from "../../queries/User.query";
 import { IImageProp } from "../../models/IImageProp";
 import LoadingState from "../partials/loading";
 import IconInput from "../partials/IconInput";
@@ -17,10 +17,13 @@ import { toast } from "react-toastify";
 import NotifyProvider from "../../events/event-resolver";
 import { EventEmitter } from "../../events/EventEmitter";
 import { ACTION_EVENT } from "./../../events/index";
+import ImageUpload from "../partials/ImageUpload";
+import Image from "./../partials/Image";
 
 const UserList: FC<IProps> = ({ history }) => {
     const [activeUserId, SetActiveUserId] = useState<string>();
     const [editUser, SetEditUser] = useState<any>({});
+    const [image__user, setUserImage] = useState<string>("");
 
     const [page, SetPage] = useState<number>(1);
     const [limit] = useState<number>(25);
@@ -47,6 +50,18 @@ const UserList: FC<IProps> = ({ history }) => {
         variables: { page, limit },
         onError: (err) => toast.error(CleanMessage(err.message)),
         notifyOnNetworkStatusChange: true,
+    });
+
+    const [updateProfileImageFunc, { loading: uploading }] = useMutation(UPDATE_USER_IMAGE, {
+        onError: (err) => toast.error(CleanMessage(err.message)),
+        onCompleted: (d) => {
+            if (d.ChangeUserImage) {
+                const { message } = d.ChangeUserImage;
+                toast.success(message);
+                document.getElementById("closeImageModal")?.click();
+                refetch();
+            }
+        },
     });
 
     useEffect(() => {
@@ -241,6 +256,20 @@ const UserList: FC<IProps> = ({ history }) => {
                                                                         <i className="os-icon os-icon-edit"></i>
                                                                     </a>
                                                                     <a
+                                                                        href="#"
+                                                                        title="Change Profile Image"
+                                                                        data-toggle="modal"
+                                                                        data-target="#imageUpdate"
+                                                                        data-backdrop="static"
+                                                                        data-keyboard="false"
+                                                                        onClick={() => {
+                                                                            SetActiveUserId(user.id);
+                                                                            setUserImage(user.image);
+                                                                        }}
+                                                                    >
+                                                                        <i className="os-icon os-icon-image"></i>
+                                                                    </a>
+                                                                    <a
                                                                         className="danger"
                                                                         href="#"
                                                                         title="Delete"
@@ -271,7 +300,7 @@ const UserList: FC<IProps> = ({ history }) => {
                                     {/* Pagination */}
                                     {data && (
                                         <div className="col-12 fade-in">
-                                            <div className="element-box">
+                                            <div className="element-box no-bg bg-white">
                                                 <Pagination
                                                     length={data.GetUsers.docs.length}
                                                     {...data.GetUsers}
@@ -392,6 +421,29 @@ const UserList: FC<IProps> = ({ history }) => {
                     </div>
                 </div>
             )}
+            <div className="modal fade" id="imageUpdate" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">
+                                Change Profile Picture
+                            </h5>
+                            <button type="button" id="closeImageModal" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body text-center">
+                            <div className="mb-3">
+                                <Image src={image__user} alt={activeUserId + ""} width={150} />
+                            </div>
+                            <div className="mb-3">
+                                <ImageUpload title="Change image" onData={async (path: string) => updateProfileImageFunc({ variables: { id: activeUserId, path } })} />
+                                <LoadingState loading={uploading} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

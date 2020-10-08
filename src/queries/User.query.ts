@@ -43,6 +43,8 @@ export const USER_LOGIN = gql`
                 school {
                     id
                     name
+                    logo
+                    alias
                 }
                 admin
                 superAdmin

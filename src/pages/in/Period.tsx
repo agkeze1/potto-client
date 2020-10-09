@@ -3,14 +3,13 @@
 import React, { FC, useState } from "react";
 import { IProps } from "../../models/IProps";
 import Helmet from "react-helmet";
-import { GetAppName } from "../../context/App";
+import { CleanMessage, GetAppName } from "../../context/App";
 import DatePicker from "react-datepicker";
 import SwitchInput from "../partials/SwitchInput";
-import { IMessage } from "../../models/IMessage";
 import { GET_PERIODS, NEW_PERIOD, UPDATE_PERIOD, REMOVE_PERIOD } from "../../queries/Period.query";
-import AlertMessage from "../partials/AlertMessage";
 import LoadingState from "../partials/loading";
 import { useQuery, useMutation } from "@apollo/react-hooks";
+import { toast } from "react-toastify";
 
 const Period: FC<IProps> = ({ history }) => {
     const [showNewPeriod, SetShowNewPeriod] = useState<boolean>(true);
@@ -19,48 +18,25 @@ const Period: FC<IProps> = ({ history }) => {
     });
     const [editPeriod, SetEditPeriod] = useState<any>({});
 
-    const [newMessage, SetNewMessage] = useState<IMessage>();
-    const [lMessage, SetLMessage] = useState<IMessage>();
-    const [rMessage, SetRMessage] = useState<IMessage>();
-    const [uMessage, SetUMessage] = useState<IMessage>();
-
     // Fetch List of Periods
     const { loading, data, refetch: refetchPeriodList } = useQuery(GET_PERIODS, {
-        onError: (err) =>
-            SetLMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
     });
 
     // Save New Period
     const [NewPeriod, { loading: nLoading }] = useMutation(NEW_PERIOD, {
-        onError: (err) =>
-            SetNewMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
-            SetNewMessage({
-                message: data.NewPeriod.message,
-                failed: false,
-            });
+            toast.success(data.NewPeriod.message);
             refetchPeriodList();
         },
     });
 
     // Update Period
     const [UpdatePeriod, { loading: uLoading }] = useMutation(UPDATE_PERIOD, {
-        onError: (err) =>
-            SetUMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (data) => {
-            SetUMessage({
-                message: data.UpdatePeriod.message,
-                failed: false,
-            });
+            toast.success(data.UpdatePeriod.message);
         },
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
@@ -82,11 +58,7 @@ const Period: FC<IProps> = ({ history }) => {
 
     // Remove Period
     const [RemovePeriod, { loading: rLoading }] = useMutation(REMOVE_PERIOD, {
-        onError: (err) =>
-            SetRMessage({
-                message: err.message,
-                failed: true,
-            }),
+        onError: (err) => toast.error(CleanMessage(err.message)),
         update: (cache, { data }) => {
             const q: any = cache.readQuery({
                 query: GET_PERIODS,
@@ -133,7 +105,6 @@ const Period: FC<IProps> = ({ history }) => {
                                         <form
                                             onSubmit={async (e) => {
                                                 e.preventDefault();
-                                                SetNewMessage(undefined);
                                                 await NewPeriod({
                                                     variables: {
                                                         model: newPeriod,
@@ -144,7 +115,6 @@ const Period: FC<IProps> = ({ history }) => {
                                             <div className="row justify-content-center">
                                                 <div className="col-12">
                                                     <LoadingState loading={nLoading} />
-                                                    <AlertMessage message={newMessage?.message} failed={newMessage?.failed} />
                                                 </div>
                                                 <div className="col-md-4">
                                                     {/* From Time input */}
@@ -215,15 +185,9 @@ const Period: FC<IProps> = ({ history }) => {
 
                                 <LoadingState loading={loading || rLoading} />
 
-                                {/* Get Period list message */}
-                                <AlertMessage message={lMessage?.message} failed={lMessage?.failed} />
-
-                                {/* Remove Period message */}
-                                <AlertMessage message={rMessage?.message} failed={rMessage?.failed} />
-
                                 {/* Period List */}
                                 {data?.GetSchoolPeriodList.docs.length > 0 && (
-                                    <div className="element-box">
+                                    <div className="element-box no-bg bg-white">
                                         <h6 className="">Period List</h6>
                                         <hr />
                                         <div className="row">
@@ -299,11 +263,9 @@ const Period: FC<IProps> = ({ history }) => {
                         </div>
                         <div className="modal-body element-box no-shadow pb-5">
                             <LoadingState loading={uLoading} />
-                            <AlertMessage message={uMessage?.message} failed={uMessage?.failed} />
                             <form
                                 onSubmit={async (e) => {
                                     e.preventDefault();
-                                    SetUMessage(undefined);
                                     await UpdatePeriod({
                                         variables: {
                                             id: editPeriod.id,

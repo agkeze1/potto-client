@@ -21,7 +21,6 @@ import titles from "../../../data/title.json";
 import DatePicker from "react-datepicker";
 import NotifyProvider from "../../../events/event-resolver";
 import { ACTION_EVENT } from "../../../events";
-import { NavLink } from "react-router-dom";
 
 const NewStudent: FC<IProps> = ({ history }) => {
     const [lMessage, SetLMessage] = useState<IMessage>();

@@ -141,3 +141,21 @@ export const UPDATE_USER_IMAGE = gql`
         }
     }
 `;
+
+export const PASSWORD_RESET = gql`
+    mutation UserPasswordReset($email: String!) {
+        UserPasswordReset(email: $email)
+    }
+`;
+export const NEW_USER_PASSWORD = gql`
+    mutation NewUserPassword($token: String!, $email: String!, $password: String!) {
+        NewUserPassword(email: $email, token: $token, password: $password) {
+            message
+            doc {
+                ...USER_PROPS
+            }
+            token
+        }
+    }
+    ${USER_PROPS}
+`;

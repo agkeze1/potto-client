@@ -121,7 +121,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                         Login
                                         <div className="os-icon os-icon-arrow-right7"></div>
                                     </button>
-                                    <NavLink className="btn btn-link text-primary" to="#">
+                                    <NavLink className="btn btn-link text-primary" to="/auth/password-reset">
                                         Forgot password?
                                     </NavLink>
                                 </div>

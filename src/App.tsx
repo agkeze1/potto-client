@@ -16,6 +16,8 @@ import PrivateRouteTeacher from "./context/PrivateRouteTeacher";
 import TeacherCorner from "./pages/teacher-corner";
 import TeacherPasswordReset from "./pages/teacher-corner/PasswordReset";
 import TeacherNewPassword from "./pages/teacher-corner/TeacherNewPassword";
+import ForgotPassword from "./pages/auth/forget-password";
+import UserNewPassword from "./pages/auth/new-password";
 
 function App() {
     return (
@@ -25,6 +27,8 @@ function App() {
                 <Route exact path="/login" component={UserLogin} />
                 <Route path="/default_school" component={FirstSchool} />
                 <Route path="/signup" component={UserSignup} />
+                <Route path="/auth/password-reset" component={ForgotPassword} />
+                <Route path="/auth/new-password" component={UserNewPassword} />
                 <SecuredRoute path="/in" component={In} />
                 <Route path="/teacher/login" component={TeacherLogin} />
                 <PrivateRouteTeacher path="/teacher/app" component={TeacherCorner} />

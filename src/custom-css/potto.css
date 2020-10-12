@@ -1,3 +1,4 @@
+
 .auth-wrapper:before,
 .menu-w.sub-menu-style-over .sub-menu-w,
 .top-bar .logged-user-w .logged-user-menu {
@@ -86,4 +87,4 @@ li.menu-link > a.active > span {
     box-shadow: 0 0 4px #e59927;
     background-color: white;
     padding: 2px;
-}
+} 

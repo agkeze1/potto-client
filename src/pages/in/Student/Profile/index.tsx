@@ -5,7 +5,7 @@ import React, { useState, FC } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, CleanMessage } from "../../../../context/App";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { GET_STUDENT, UPDATE_STUDENT } from "../../../../queries/Student.query";
+import { GET_STUDENT, REGISTER_SUBJECTS, UPDATE_STUDENT } from "../../../../queries/Student.query";
 import { toast } from "react-toastify";
 import { IProps } from "../../../../models/IProps";
 import Subjects from "./Subjects";
@@ -20,10 +20,14 @@ import SubjectAttendance from "./Attendance/SubjectAttendance";
 import LargeImage from "../../partials/LargeImage";
 import IconInput from "../../../partials/IconInput";
 import Select from "react-select";
+import { Subject } from "../../../../models/Subject.model";
+import { useEffect } from "react";
 
 const StudentProfile: FC<IProps> = ({ history, match }) => {
-    const [activeStudent, SetActiveStudent] = useState<any>();
+    const [activeStudent, SetActiveStudent] = useState<any>(undefined);
     const [editStudent, SetEditStudent] = useState<any>();
+    const [subjects, setSubjects] = useState<Array<Subject>>([]);
+    const [selectedSubjects, setSelectedSubject] = useState<Array<string>>([]);
 
     // For lga under a state
     const [locals, SetLocals] = useState<any>([]);
@@ -38,11 +42,7 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
         onCompleted: (data) => {
             if (data) {
                 SetActiveStudent(data.GetStudent.doc);
-                GetSubByLevel({
-                    variables: {
-                        level: data.GetStudent.doc.current_class?.level?.id,
-                    },
-                });
+                setSubjects(data.GetStudent.doc.selected_subjects);
             }
         },
         fetchPolicy: "network-only",
@@ -65,6 +65,24 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
         },
     });
 
+    // Subject registration mutation
+    const [subjectAssignmentFunc, { loading: __loading }] = useMutation(REGISTER_SUBJECTS, {
+        onError: (err) => toast.error(CleanMessage(err.message)),
+        onCompleted: (data) => {
+            if (data.RegisterSubject) {
+                const { message, doc } = data.RegisterSubject;
+                toast.success(message);
+                setSubjects(doc.selected_subjects);
+                document.getElementById("close-modal-subject")?.click();
+            }
+        },
+    });
+    useEffect(() => {
+        if (activeStudent) {
+            GetSubByLevel({ variables: { level: activeStudent?.current_class?.level.id } });
+        }
+    }, [activeStudent, GetSubByLevel]);
+
     return (
         <>
             <Helmet>
@@ -77,7 +95,7 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                             <h5 className="element-header tracking-in-contract">Student Profile</h5>
                             <LoadingState loading={loading} />
                             {activeStudent && (
-                                <div className="element-box ">
+                                <div className="element-box no-bg bg-white">
                                     <div className="row">
                                         <div className="col-12">
                                             <a
@@ -155,11 +173,13 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                                             </div>
 
                                             {/* Selected Subject */}
-                                            <div className="tab-pane" id="subjects">
-                                                <Subjects
-                                                    subjects={activeStudent.selected_subjects.length > 0 ? activeStudent.selected_subjects : sData?.GetSubjectsForRegistration.docs}
-                                                    selected={activeStudent.selected_subjects.length > 0}
-                                                />
+                                            <div className="tab-pane" id="subjects" style={{ minHeight: "50vh" }}>
+                                                <div className="text-right">
+                                                    <button data-target="#RegModal" data-toggle="modal" type="button" className="btn btn-outline-success">
+                                                        <i className="os-icon os-icon-ui-22 mr-2" style={{ fontSize: "1.2em" }}></i>Register Subject
+                                                    </button>
+                                                </div>
+                                                <Subjects subjects={subjects} onRemoved={(item: any) => {}} />
                                                 <LoadingState loading={sLoading} />
                                             </div>
 
@@ -339,9 +359,26 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                                         {/* First Name input */}
                                         <div className="col-sm-6">
                                             <IconInput
-                                                placeholder="Enter first name"
-                                                label="First Name"
+                                                placeholder="Enter surname"
+                                                label="Surname"
                                                 icon="os-icon-email-2-at2"
+                                                required={true}
+                                                type="text"
+                                                initVal={editStudent.surname}
+                                                onChange={(surname: string) => {
+                                                    SetEditStudent({
+                                                        ...editStudent,
+                                                        surname,
+                                                    });
+                                                }}
+                                            />
+                                        </div>
+                                        {/* Middle Name input */}
+                                        <div className="col-sm-6">
+                                            <IconInput
+                                                placeholder="Enter firstname"
+                                                label="Firstname"
+                                                icon="os-icon-phone"
                                                 required={true}
                                                 type="text"
                                                 initVal={editStudent.firstname}
@@ -353,11 +390,13 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                                                 }}
                                             />
                                         </div>
-                                        {/* Middle Name input */}
+                                    </div>
+                                    <div className="row">
+                                        {/* Last Name input */}
                                         <div className="col-sm-6">
                                             <IconInput
-                                                placeholder="Enter middle name"
-                                                label="Middle Name"
+                                                placeholder="Enter middlename"
+                                                label="Middlename"
                                                 icon="os-icon-phone"
                                                 required={true}
                                                 type="text"
@@ -366,25 +405,6 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                                                     SetEditStudent({
                                                         ...editStudent,
                                                         middlename,
-                                                    });
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        {/* Last Name input */}
-                                        <div className="col-sm-6">
-                                            <IconInput
-                                                placeholder="Enter last name"
-                                                label="Last Name"
-                                                icon="os-icon-phone"
-                                                required={true}
-                                                type="text"
-                                                initVal={editStudent.surname}
-                                                onChange={(surname: string) => {
-                                                    SetEditStudent({
-                                                        ...editStudent,
-                                                        surname,
                                                     });
                                                 }}
                                             />
@@ -525,6 +545,67 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                     </div>
                 </div>
             )}
+            <div aria-hidden="true" className="modal fade" id="RegModal" role="dialog">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="regModalLabel">
+                                SUBJECT REGISTRATION
+                            </h5>
+                            <button className="close" id="close-modal-subject" data-dismiss="modal" type="button">
+                                <span aria-hidden="true"> &times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body element-box no-shadow pb-2 bg-white no-bg">
+                            <div className="row">
+                                {sData?.GetSubjectsForRegistration.docs.map((item: Subject, idx: number) => (
+                                    <div key={idx} className="col-lg-2 col-md-3 col-6">
+                                        <div className="custom-control custom-checkbox">
+                                            <input
+                                                onChange={({ currentTarget: { checked } }) => {
+                                                    if (checked) {
+                                                        const __items = [...selectedSubjects, item.id];
+                                                        setSelectedSubject(__items);
+                                                    } else {
+                                                        const index = selectedSubjects.indexOf(item.id);
+                                                        const __items = [...selectedSubjects];
+                                                        __items.splice(index, 1);
+                                                        setSelectedSubject(__items);
+                                                    }
+                                                }}
+                                                defaultChecked={selectedSubjects.indexOf(item.id) !== -1}
+                                                type="checkbox"
+                                                className="custom-control-input"
+                                                id={item.id}
+                                            />
+                                            <label className="custom-control-label" htmlFor={item.id}>
+                                                {item.title}
+                                            </label>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <LoadingState loading={__loading} />
+                            <div className="text-right buttons-w my-2">
+                                <button
+                                    onClick={async () => {
+                                        if (selectedSubjects.length) {
+                                            if (window.confirm("Are you sure you want to proceed?")) {
+                                                await subjectAssignmentFunc({ variables: { id, subjects: selectedSubjects } });
+                                            }
+                                        } else toast.warning("You must select one or more subjects to continue!");
+                                    }}
+                                    className="btn btn-primary px-5"
+                                    type="submit"
+                                >
+                                    <span className="os-icon os-icon-save mr-2"></span>
+                                    Register
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

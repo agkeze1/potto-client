@@ -514,8 +514,26 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                             <div className="col-sm-6">
                                                 {/* First name input */}
                                                 <IconInput
-                                                    placeholder="Enter first name"
-                                                    label="First Name"
+                                                    placeholder="Enter surname"
+                                                    label="Surname"
+                                                    icon="os-icon-ui-09"
+                                                    required={true}
+                                                    type="text"
+                                                    onChange={(surname: string) =>
+                                                        SetNewStudent({
+                                                            ...newStudent,
+                                                            surname,
+                                                        })
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="col-sm-6">
+                                                {/* Middle name input */}
+                                                <IconInput
+                                                    placeholder="Enter firstname"
+                                                    label="Firstname"
                                                     icon="os-icon-ui-09"
                                                     required={true}
                                                     type="text"
@@ -527,10 +545,8 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     }
                                                 />
                                             </div>
-                                        </div>
-                                        <div className="row">
                                             <div className="col-sm-6">
-                                                {/* Middle name input */}
+                                                {/* Surname input */}
                                                 <IconInput
                                                     placeholder="Enter middle name"
                                                     label="Middle Name"
@@ -541,22 +557,6 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                         SetNewStudent({
                                                             ...newStudent,
                                                             middlename,
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="col-sm-6">
-                                                {/* Surname input */}
-                                                <IconInput
-                                                    placeholder="Enter last name"
-                                                    label="Last Name"
-                                                    icon="os-icon-ui-09"
-                                                    required={true}
-                                                    type="text"
-                                                    onChange={(surname: string) =>
-                                                        SetNewStudent({
-                                                            ...newStudent,
-                                                            surname,
                                                         })
                                                     }
                                                 />

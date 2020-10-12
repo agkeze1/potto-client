@@ -179,7 +179,12 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                                                         <i className="os-icon os-icon-ui-22 mr-2" style={{ fontSize: "1.2em" }}></i>Register Subject
                                                     </button>
                                                 </div>
-                                                <Subjects subjects={subjects} onRemoved={(item: any) => {}} />
+                                                <Subjects
+                                                    subjects={subjects}
+                                                    onRemoved={(item: any) => {
+                                                        toast.info("Coming soon!");
+                                                    }}
+                                                />
                                                 <LoadingState loading={sLoading} />
                                             </div>
 

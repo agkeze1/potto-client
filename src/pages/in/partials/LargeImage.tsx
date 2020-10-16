@@ -10,7 +10,7 @@ const LargeImage: FC<IProps> = ({ imgPath, altText, onClick }) => {
   return (
     <>
       <img
-        className="avatar img-lg clickable"
+        className="avatar img-lg no-scale clickable"
         src={imgPath || "/avatar.png"}
         onClick={() => onClick()}
         alt={altText || "passport"}

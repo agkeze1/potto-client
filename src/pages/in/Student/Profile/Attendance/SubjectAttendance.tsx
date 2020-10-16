@@ -22,7 +22,6 @@ const SubjectAttendance: FC<IProps> = ({ studentId }) => {
     variables: { student: studentId },
     onError: (err) => toast.error(CleanMessage(err.message)),
     onCompleted: (data) => {
-      console.log("Stu Att Record: ", data);
       if (data) SetAttRecord(data.GetSubjectAttendanceByStudent.docs);
     },
   });

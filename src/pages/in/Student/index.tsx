@@ -411,7 +411,7 @@ const StudentList: FC<IProps> = ({ history }) => {
 
                                 {/* Pagination */}
                                 <div className="col-12 fade-in">
-                                    <div className="element-box">
+                                    <div className="element-box no-bg bg-white">
                                         <Pagination
                                             length={data?.SearchStudents?.totalDocs}
                                             {...data?.SearchStudents}

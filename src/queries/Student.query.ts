@@ -264,3 +264,15 @@ export const REGISTER_SUBJECTS = gql`
         }
     }
 `;
+
+export const UPDATE_STUDENT_CLASS = gql`
+    mutation UpdateStudentCurrentClass($id: ID!, $_class: String!) {
+        UpdateStudentCurrentClass(id: $id, _class: $_class) {
+            message
+            doc {
+                ...STU_PROPS
+            }
+        }
+    }
+    ${STU_PROPS}
+`;

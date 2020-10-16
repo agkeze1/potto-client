@@ -1,4 +1,3 @@
-
 .auth-wrapper:before,
 .menu-w.sub-menu-style-over .sub-menu-w,
 .top-bar .logged-user-w .logged-user-menu {
@@ -87,4 +86,16 @@ li.menu-link > a.active > span {
     box-shadow: 0 0 4px #e59927;
     background-color: white;
     padding: 2px;
-} 
+}
+
+.custom-control-input:checked {
+    color: #0582cc !important;
+}
+
+.nav-tabs .nav-link:after, .nav-tabs .nav-item .nav-link:after {
+        background-color: #0582cc !important;
+}
+
+.react-switch-checkbox:checked + label.react-switch-label {
+    background-color: #0582cc !important;
+}

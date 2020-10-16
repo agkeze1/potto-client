@@ -37,7 +37,7 @@ const SwitchInput: FC<SwitchProps> = ({ isOn, handleToggle, label }) => {
                   width: "33px",
                   height: "33px",
                   marginTop: "-2px",
-                  border: isOn ? "1px solid #16a820" : "1px solid darkgray",
+                  // border: isOn ? "1px solid #16a820" : "1px solid darkgray",
                 }}
               />
             </label>

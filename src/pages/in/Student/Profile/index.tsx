@@ -22,6 +22,7 @@ import IconInput from "../../../partials/IconInput";
 import Select from "react-select";
 import { Subject } from "../../../../models/Subject.model";
 import { useEffect } from "react";
+import ImageModal from "./../../../partials/ImageModal";
 
 const StudentProfile: FC<IProps> = ({ history, match }) => {
     const [activeStudent, SetActiveStudent] = useState<any>(undefined);
@@ -136,7 +137,9 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                                     </div>
                                     <div className="text-center mb-5 mt-n3">
                                         {/* Profile Picture */}
-                                        <LargeImage imgPath={activeStudent.passport} />
+                                        <div data-target="#imageModal" data-toggle="modal">
+                                            <LargeImage imgPath={activeStudent.passport} onClick={() => {}} />
+                                        </div>
 
                                         <h4 className="up-header text-uppercase mt-3">{activeStudent.full_name}</h4>
                                         <h6 className="up-sub-header text-uppercase text-primary">{activeStudent.reg_no}</h6>
@@ -564,7 +567,7 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                         <div className="modal-body element-box no-shadow pb-2 bg-white no-bg">
                             <div className="row">
                                 {sData?.GetSubjectsForRegistration.docs.map((item: Subject, idx: number) => (
-                                    <div key={idx} className="col-lg-2 col-md-3 col-6">
+                                    <div key={idx} className="col-12 col-md-6 mb-2">
                                         <div className="custom-control custom-checkbox">
                                             <input
                                                 onChange={({ currentTarget: { checked } }) => {
@@ -611,6 +614,8 @@ const StudentProfile: FC<IProps> = ({ history, match }) => {
                     </div>
                 </div>
             </div>
+
+            <ImageModal image={activeStudent?.passport} name={activeStudent?.full_name} />
         </>
     );
 };

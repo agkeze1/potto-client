@@ -26,7 +26,6 @@ export const CLASS_PROPS = gql`
 export const GET_CLASSES = gql`
     query GET_CLASSES($level: ID!) {
         GetClasses(level: $level) {
-            message
             docs {
                 ...CLASS_PROPS
             }

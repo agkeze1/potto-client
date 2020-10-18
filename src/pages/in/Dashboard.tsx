@@ -2,7 +2,7 @@
 /* eslint-disable no-script-url */
 import React, { useState } from "react";
 import Helmet from "react-helmet";
-import { GetAppName, DayString,  LocalDate } from "../../context/App";
+import { GetAppName, DayString, LocalDate } from "../../context/App";
 import { Doughnut, Bar } from "react-chartjs-2";
 import { DASHBOARD } from "../../queries/Dashboard.query";
 import { useQuery } from "@apollo/react-hooks";
@@ -406,7 +406,14 @@ const Dashboard = () => {
                                                     {weeklyRollcallStat?.map((stat: any, idx: number) => (
                                                         <tr>
                                                             <td>{idx + 1}</td>
-                                                            <td className="text-left">{LocalDate(stat?.date)}</td>
+                                                            <td className="text-left">
+                                                                {LocalDate(stat?.date)}
+                                                                <p>
+                                                                    <strong>
+                                                                        <span className="text-primary">CLASS:</span> {stat.activeClass.name}
+                                                                    </strong>
+                                                                </p>
+                                                            </td>
                                                             <td className="text-center">
                                                                 <span className="badge badge-dark">{stat?.total}</span>
                                                             </td>
@@ -430,7 +437,7 @@ const Dashboard = () => {
                                     )}
                                     {weeklyRollcallStat?.length === 0 && (
                                         <div className="text-center">
-                                            <h5 className="text-danger">No Rollcall Stat. available in the past week!</h5>
+                                            <h5 className="text-danger">No Rollcall Stat. available in the current week!</h5>
                                         </div>
                                     )}
                                 </div>

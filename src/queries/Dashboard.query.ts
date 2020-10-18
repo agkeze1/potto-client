@@ -153,6 +153,10 @@ const WEEKLY_ROLLCAL_SUMMARY = gql`
             exempted
             manual
             total
+            activeClass {
+                id
+                name
+            }
         }
     }
 `;

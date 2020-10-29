@@ -355,7 +355,16 @@ const MobileMenu = () => {
                                 </div>
                             </div>
                         </li>
-
+                        {user.superAdmin && (
+                            <li className="menu-link">
+                                <NavLink to="/in/audit" onClick={() => scrollTop()}>
+                                    <div className="icon-w">
+                                        <div className="os-icon os-icon-tasks-checked"></div>
+                                    </div>
+                                    <span>Audit Trail</span>
+                                </NavLink>
+                            </li>
+                        )}
                         <li className="menu-link">
                             <a
                                 onClick={() => {

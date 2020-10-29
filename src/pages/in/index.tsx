@@ -53,6 +53,7 @@ import PubNub from "pubnub";
 import ServicePlan from "./ServicePlan/index";
 import Exemption from "./Exemption";
 import UploadTeacherForm from "./Teacher/UploadTeacher";
+import AuditTrail from "./Audit";
 
 const Home: FC<IProps> = ({ history }) => {
   document.body.className =
@@ -144,6 +145,7 @@ const Home: FC<IProps> = ({ history }) => {
                                   <Route path="/in/school/:id" component={SchoolProfile} />
                                   <Route path="/in/app/plan" component={ServicePlan} />
                                   <Route path="/in/attendance/exemption" component={Exemption} />
+                                  <Route path="/in/audit" component={AuditTrail} />
                                   <Route component={NotFound} />
                               </Switch>
                               <hr />

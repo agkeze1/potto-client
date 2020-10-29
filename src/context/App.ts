@@ -1,6 +1,9 @@
-const { REACT_APP_ID: key, REACT_APP_LOGO, REACT_APP_NAME, REACT_APP_FULL_NAME } = process.env;
+import { authService } from "../services/Auth.Service";
 
-export const GetAppName = (): string => REACT_APP_NAME || "";
+const { REACT_APP_ID: key, REACT_APP_LOGO, REACT_APP_NAME, REACT_APP_FULL_NAME } = process.env;
+const user = authService.GetUser();
+
+export const GetAppName = (): string => user?.school?.name || REACT_APP_NAME || "";
 
 export const GET_API_URL = () => process.env.REACT_APP_BASEURL;
 export const GET_APP_ID = key || "potto";
@@ -188,3 +191,5 @@ export const LocalDate = (date: string): string => {
     const _d = new Date(_date.toGMTString() + "+2");
     return _d.toLocaleString("en-US");
 };
+
+export const DefaultImage = "https://media.istockphoto.com/vectors/profile-picture-vector-illustration-vector-id587805156?k=6&m=587805156&s=612x612&w=0&h=Fqz5lYgwiZc0LUUmYZajX-wmFoSwIMBtWoXJNLkJ9Ek=";

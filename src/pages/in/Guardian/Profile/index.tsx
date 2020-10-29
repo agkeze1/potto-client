@@ -1,3 +1,4 @@
+ // eslint-disable-next-line
 import React, { useState, FC } from "react";
 import Helmet from "react-helmet";
 import { GetAppName, CleanMessage } from "../../../../context/App";

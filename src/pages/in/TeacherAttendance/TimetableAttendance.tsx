@@ -25,16 +25,21 @@ const TimetableAttendance: FC<iProp> = ({ items, onItem }) => {
                         <h6 className="element-header">{getDay(item.day)}</h6>
                         <div className="row">
                             {item.timetable_list.map((time: any, index: number) => (
-                                <div key={index} className="col-12">
-                                    <a onClick={() => onItem(time)} className="element-box el-tablo no-bg bg-white" href="javascript:void(0)">
-                                        <h6 className="element-header">
-                                            {time.period.from_time} - {time.period.to_time} {time.period.total === 1 && <span className="badge badge-primary text-uppercase">single period</span>}
-                                            {time.period.total === 2 && <span className="badge badge-primary text-uppercase">double period</span>}
-                                        </h6>
-                                        <strong>{time.assigned_class.name}</strong> <br />
-                                        <span className="value">{time.subject.title}</span>
-                                    </a>
-                                </div>
+                                <table key={index} className="table table-hover">
+                                    <tbody>
+                                        <tr onClick={() => onItem(time)}>
+                                            <td>
+                                                {time.period.from_time} - {time.period.to_time} <br/>
+                                                {time.period.total === 1 && <span className="badge badge-primary text-uppercase">single period</span>}
+                                                {time.period.total === 2 && <span className="badge badge-primary text-uppercase">double period</span>}
+                                            </td>
+                                            <td>
+                                                <strong>{time.assigned_class.name}</strong> <br />
+                                                <h6>{time.subject.title}</h6>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             ))}
                         </div>
                     </div>

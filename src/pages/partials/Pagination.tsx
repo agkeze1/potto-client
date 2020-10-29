@@ -23,13 +23,13 @@ const Pagination: React.FC<iPagination> = (props) => {
             <div className="row fade-in">
                 <div className="col-sm-12 col-md-4">
                     <div className="page-summary" id="example1_info" role="status" aria-live="polite">
-                        showing <strong>{getPageNumber()}</strong> to <strong>{getPageNumber() + length - 1}</strong> of <strong>{totalDocs}</strong> entires
+                        showing <strong>{getPageNumber()}</strong> to <strong>{getPageNumber() + length - 1}</strong> of <strong>{Intl.NumberFormat().format(totalDocs)}</strong> entires
                     </div>
                 </div>
                 <div className="col-sm-12 col-md-8 text-right">
                     <div className="dataTables_paginate paging_simple_numbers" id="example1_paginate">
                         <ul className="pagination">
-                            <li id="example1_previous" className="mr-2">
+                            <li id="example1_previous" className="mr-2">    
                                 <button
                                     onClick={() => {
                                         if (prevPage) {

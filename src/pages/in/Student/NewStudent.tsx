@@ -56,12 +56,12 @@ const NewStudent: FC<IProps> = ({ history }) => {
     // Get Levels for level input
     const { loading: lLoading, refetch: refetchLevels } = useQuery(GET_LEVELS, {
         variables: {
-            school: school.id,
+            school: school.id
         },
         onError: (err) => {
             SetLMessage({
                 message: err.message,
-                failed: true,
+                failed: true
             });
             SetShowLevelsRefresh(true);
         },
@@ -70,13 +70,13 @@ const NewStudent: FC<IProps> = ({ history }) => {
                 SetLevel(
                     data.GetLevels.docs.map((level: any) => ({
                         label: level.name,
-                        value: level.id,
+                        value: level.id
                     }))
                 );
                 SetShowLevelsRefresh(false);
             }
         },
-        notifyOnNetworkStatusChange: true,
+        notifyOnNetworkStatusChange: true
     });
 
     // Get classes for class input
@@ -84,17 +84,17 @@ const NewStudent: FC<IProps> = ({ history }) => {
         onError: (err) =>
             SetCMessage({
                 message: err.message,
-                failed: true,
+                failed: true
             }),
         onCompleted: (data) => {
             if (data)
                 SetClasses(
                     data.GetClasses.docs.map((item: any) => ({
                         label: item.name,
-                        value: item.id,
+                        value: item.id
                     }))
                 );
-        },
+        }
     });
 
     // Get Guardian Types for GuardianTypes input
@@ -102,7 +102,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
         onError: (err) => {
             SetGTypeMessage({
                 message: err.message,
-                failed: true,
+                failed: true
             });
             SetShowGTypeRefresh(true);
         },
@@ -111,13 +111,13 @@ const NewStudent: FC<IProps> = ({ history }) => {
                 SetGuardianTypes(
                     data.GetGuardianTypes.docs.map((type: any) => ({
                         label: type.name,
-                        value: type.id,
+                        value: type.id
                     }))
                 );
                 SetShowGTypeRefresh(false);
             }
         },
-        notifyOnNetworkStatusChange: true,
+        notifyOnNetworkStatusChange: true
     });
 
     // Save New Student record
@@ -125,19 +125,19 @@ const NewStudent: FC<IProps> = ({ history }) => {
         onError: (err) =>
             SetNewStuMsg({
                 message: err.message,
-                failed: true,
+                failed: true
             }),
         onCompleted: (data) => {
             if (data) {
                 SetReturnedStu(data.NewStudent.doc);
                 NotifyProvider.NotifyAll({
                     content: data.NewStudent.doc.id,
-                    action: ACTION_EVENT.STUDENT.CREATED,
+                    action: ACTION_EVENT.STUDENT.CREATED
                 });
                 setStudentId(data.NewStudent.doc.id);
                 document.getElementById("btnGuardModal")?.click();
             }
-        },
+        }
     });
 
     // Fetch classes on Level change
@@ -153,19 +153,19 @@ const NewStudent: FC<IProps> = ({ history }) => {
         onError: (err) =>
             SetNewGuardMsg({
                 message: err.message,
-                failed: true,
+                failed: true
             }),
         onCompleted: (data) => {
             if (data) {
                 SetNewGuardMsg({
                     message: data.NewGuardian.message,
-                    failed: false,
+                    failed: false
                 });
                 setTimeout(() => {
                     history.push("/in/student-list");
                 }, 1000);
             }
-        },
+        }
     });
 
     // Get Guardian by Phone number
@@ -178,7 +178,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
             } else {
                 SetGuardByPhoneMsg({
                     message: err.message,
-                    failed: true,
+                    failed: true
                 });
             }
         },
@@ -187,7 +187,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                 SetGuardianExists(true);
                 SetReturnedGuard(data.GetGuardianByMobile.doc);
             }
-        },
+        }
     });
 
     // Add Existing Guardian to Student
@@ -195,20 +195,20 @@ const NewStudent: FC<IProps> = ({ history }) => {
         onError: (err) =>
             SetNewGuardMsg({
                 message: err.message,
-                failed: true,
+                failed: true
             }),
         onCompleted: (data) => {
             if (data) {
                 SetNewGuardMsg({
                     message: data.AddStudentGuardian.message,
-                    failed: false,
+                    failed: false
                 });
                 setTimeout(() => {
                     document.getElementById("btnGuardModal")?.click();
                     history.push("/in/student-list");
                 }, 1000);
             }
-        },
+        }
     });
 
     return (
@@ -235,7 +235,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 style={{
                                                     borderRadius: "50%",
                                                     width: "150px",
-                                                    height: "150px",
+                                                    height: "150px"
                                                 }}
                                             />
                                             <h5>{returnedStu.full_name}</h5>
@@ -256,10 +256,10 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 variables: {
                                                     model: {
                                                         ...newGuardian,
-                                                        phone: guardianPhone,
+                                                        phone: guardianPhone
                                                     },
-                                                    student: returnedStu.id,
-                                                },
+                                                    student: returnedStu.id
+                                                }
                                             });
                                         }}
                                     >
@@ -269,12 +269,12 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 <Dropdown
                                                     items={titles.titles.map((title: any) => ({
                                                         label: title.label,
-                                                        value: title.value,
+                                                        value: title.value
                                                     }))}
                                                     onSelect={(item: any) =>
                                                         SetNewGuardian({
                                                             ...newGuardian,
-                                                            title: item.label,
+                                                            title: item.label
                                                         })
                                                     }
                                                     label="Title"
@@ -286,12 +286,12 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 <Dropdown
                                                     items={guardianTypes.map((rel: any) => ({
                                                         label: rel.label,
-                                                        value: rel.value,
+                                                        value: rel.value
                                                     }))}
                                                     onSelect={(item: any) =>
                                                         SetNewGuardian({
                                                             ...newGuardian,
-                                                            type: item.value,
+                                                            type: item.value
                                                         })
                                                     }
                                                     label="Type"
@@ -311,7 +311,10 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     </button>
                                                 )}
                                                 <LoadingState loading={gTypeLoading} />
-                                                <AlertMessage message={gTypeMessage?.message} failed={gTypeMessage?.failed} />
+                                                <AlertMessage
+                                                    message={gTypeMessage?.message}
+                                                    failed={gTypeMessage?.failed}
+                                                />
                                             </div>
                                         </div>
                                         {/* Full name input */}
@@ -324,7 +327,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                             onChange={(name: string) =>
                                                 SetNewGuardian({
                                                     ...newGuardian,
-                                                    name,
+                                                    name
                                                 })
                                             }
                                         />
@@ -352,7 +355,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onChange={(email: string) =>
                                                         SetNewGuardian({
                                                             ...newGuardian,
-                                                            email,
+                                                            email
                                                         })
                                                     }
                                                 />
@@ -365,12 +368,12 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 <Dropdown
                                                     items={gender.gender.map((item: any) => ({
                                                         label: item.label,
-                                                        value: item.value,
+                                                        value: item.value
                                                     }))}
                                                     onSelect={(item: any) =>
                                                         SetNewGuardian({
                                                             ...newGuardian,
-                                                            gender: item.label,
+                                                            gender: item.label
                                                         })
                                                     }
                                                     label="Gender"
@@ -382,17 +385,17 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 <Dropdown
                                                     items={state.map((item: any, index: number) => ({
                                                         label: item.state.name,
-                                                        value: index + "",
+                                                        value: index + ""
                                                     }))}
                                                     onSelect={(item: any) => {
                                                         SetNewGuardian({
                                                             ...newGuardian,
-                                                            state: item.label,
+                                                            state: item.label
                                                         });
                                                         SetLocals(
                                                             state[item.value].state.locals.map((item: any) => ({
                                                                 label: item.name,
-                                                                value: item.name,
+                                                                value: item.name
                                                             }))
                                                         );
                                                     }}
@@ -409,7 +412,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onSelect={(item: any) =>
                                                         SetNewGuardian({
                                                             ...newGuardian,
-                                                            lga: item.label,
+                                                            lga: item.label
                                                         })
                                                     }
                                                     label="LGA"
@@ -427,7 +430,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onChange={(hometown: string) =>
                                                         SetNewGuardian({
                                                             ...newGuardian,
-                                                            hometown,
+                                                            hometown
                                                         })
                                                     }
                                                 />
@@ -443,7 +446,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                             onChange={(address: string) =>
                                                 SetNewGuardian({
                                                     ...newGuardian,
-                                                    address,
+                                                    address
                                                 })
                                             }
                                         />
@@ -453,7 +456,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                             onData={(image: string) =>
                                                 SetNewGuardian({
                                                     ...newGuardian,
-                                                    image,
+                                                    image
                                                 })
                                             }
                                         />
@@ -483,13 +486,13 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 // Save New student record
                                                 SaveNewStudent({
                                                     variables: {
-                                                        model: newStudent,
-                                                    },
+                                                        model: newStudent
+                                                    }
                                                 });
                                             } else {
                                                 SetCMessage({
                                                     message: "Class does not exist under selected Level!",
-                                                    failed: true,
+                                                    failed: true
                                                 });
                                             }
                                         }}
@@ -506,7 +509,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onChange={(regNo: string) =>
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            regNo,
+                                                            regNo
                                                         })
                                                     }
                                                 />
@@ -522,7 +525,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onChange={(surname: string) =>
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            surname,
+                                                            surname
                                                         })
                                                     }
                                                 />
@@ -540,7 +543,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onChange={(firstname: string) =>
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            firstname,
+                                                            firstname
                                                         })
                                                     }
                                                 />
@@ -556,7 +559,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onChange={(middlename: string) =>
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            middlename,
+                                                            middlename
                                                         })
                                                     }
                                                 />
@@ -566,15 +569,16 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                         <div className="row">
                                             <div className="col-sm-6 mb-3">
                                                 {/* Date of Birth input */}
-                                                <label htmlFor="">Date of Birth </label>
+                                                <label htmlFor="dob">Date of Birth </label>
                                                 <br />
                                                 <DatePicker
+                                                    id="dob"
                                                     placeholderText="day, month year"
                                                     selected={newStudent?.dob}
                                                     onChange={(date) =>
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            dob: date,
+                                                            dob: date
                                                         })
                                                     }
                                                     className="form-control"
@@ -591,7 +595,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onChange={(date) =>
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            admissionDate: date,
+                                                            admissionDate: date
                                                         })
                                                     }
                                                     className="form-control"
@@ -605,12 +609,12 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 <Dropdown
                                                     items={gender.gender.map((item: any) => ({
                                                         label: item.label,
-                                                        value: item.label,
+                                                        value: item.label
                                                     }))}
                                                     onSelect={(item: any) =>
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            gender: item.label,
+                                                            gender: item.label
                                                         })
                                                     }
                                                     label="Gender"
@@ -624,7 +628,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onSelect={(item: any) => {
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            class: undefined,
+                                                            class: undefined
                                                         });
                                                         SetCMessage(undefined);
                                                         SetActiveLevelId(item.value);
@@ -654,7 +658,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onSelect={(item: any) => {
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            class: item.value,
+                                                            class: item.value
                                                         });
                                                     }}
                                                     label="Class"
@@ -670,17 +674,17 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                 <Dropdown
                                                     items={state.map((item: any, index: number) => ({
                                                         label: item.state.name,
-                                                        value: index + "",
+                                                        value: index + ""
                                                     }))}
                                                     onSelect={(item: any) => {
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            state: item.label,
+                                                            state: item.label
                                                         });
                                                         SetLocals(
                                                             state[item.value].state.locals.map((item: any) => ({
                                                                 value: item.name,
-                                                                label: item.name,
+                                                                label: item.name
                                                             }))
                                                         );
                                                     }}
@@ -695,7 +699,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     onSelect={(item: any) =>
                                                         SetNewStudent({
                                                             ...newStudent,
-                                                            lga: item.value,
+                                                            lga: item.value
                                                         })
                                                     }
                                                     label="LGA"
@@ -714,7 +718,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                             onChange={(address: string) =>
                                                 SetNewStudent({
                                                     ...newStudent,
-                                                    address,
+                                                    address
                                                 })
                                             }
                                         />
@@ -724,7 +728,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                             onData={(passport: string) =>
                                                 SetNewStudent({
                                                     ...newStudent,
-                                                    passport,
+                                                    passport
                                                 })
                                             }
                                         />
@@ -743,7 +747,14 @@ const NewStudent: FC<IProps> = ({ history }) => {
             </div>
 
             {/* Button to lunch Guardian Phone modal */}
-            <button id="btnGuardModal" data-target="#guardianPhoneModal" data-toggle="modal" data-backdrop="static" data-keyboard="false" style={{ display: "none" }}></button>
+            <button
+                id="btnGuardModal"
+                data-target="#guardianPhoneModal"
+                data-toggle="modal"
+                data-backdrop="static"
+                data-keyboard="false"
+                style={{ display: "none" }}
+            ></button>
 
             {/* Guardian Phone Modal */}
             {returnedStu && (
@@ -767,7 +778,7 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     style={{
                                                         borderRadius: "50%",
                                                         width: "150px",
-                                                        height: "150px",
+                                                        height: "150px"
                                                     }}
                                                 />
                                                 <h5>{returnedStu.full_name}</h5>
@@ -776,15 +787,18 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                             </div>
                                         </div>
                                         <LoadingState loading={gLoading} />
-                                        <AlertMessage message={guardByPhoneMsg?.message} failed={guardByPhoneMsg?.failed} />
+                                        <AlertMessage
+                                            message={guardByPhoneMsg?.message}
+                                            failed={guardByPhoneMsg?.failed}
+                                        />
                                         <form
                                             onSubmit={async (e) => {
                                                 e.preventDefault();
                                                 SetGuardByPhoneMsg(undefined);
                                                 GetGuardByPhone({
                                                     variables: {
-                                                        mobile: guardianPhone,
-                                                    },
+                                                        mobile: guardianPhone
+                                                    }
                                                 });
                                             }}
                                         >
@@ -806,7 +820,11 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     <button className="btn btn-primary px-5" type="submit">
                                                         Continue
                                                     </button>
-                                                    <a href={`/in/student/${studentId}`} className="btn btn-default btn-link px-5" type="button">
+                                                    <a
+                                                        href={`/in/student/${studentId}`}
+                                                        className="btn btn-default btn-link px-5"
+                                                        type="button"
+                                                    >
                                                         Skip
                                                     </a>
                                                 </div>
@@ -825,13 +843,16 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                     style={{
                                                         borderRadius: "50%",
                                                         width: "150px",
-                                                        height: "150px",
+                                                        height: "150px"
                                                     }}
                                                 />
                                                 <h5>{returnedGuard.name}</h5>
                                                 <label htmlFor="">{returnedGuard.phone}</label>
                                                 <hr />
-                                                <AlertMessage message={newGuardMsg?.message} failed={newGuardMsg?.failed} />
+                                                <AlertMessage
+                                                    message={newGuardMsg?.message}
+                                                    failed={newGuardMsg?.failed}
+                                                />
                                                 <LoadingState loading={aGLoading} />
                                                 <b>Guardian with entered phone number already exists.</b>
                                                 <label htmlFor="">Do you want to use this Guardian?</label>
@@ -852,8 +873,8 @@ const NewStudent: FC<IProps> = ({ history }) => {
                                                             AddNewGuardian({
                                                                 variables: {
                                                                     id: returnedStu.id,
-                                                                    guardianId: returnedGuard.id,
-                                                                },
+                                                                    guardianId: returnedGuard.id
+                                                                }
                                                             });
                                                         }}
                                                     >

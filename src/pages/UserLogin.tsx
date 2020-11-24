@@ -29,7 +29,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
             if (data && !data.HasSchool) {
                 history.push("/default_school");
             }
-        },
+        }
     });
 
     // Checks if first User already exists
@@ -38,7 +38,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
             if (uData && uData.FirstSetup) {
                 history.push("/signup");
             }
-        },
+        }
     });
 
     const [Login, { loading }] = useMutation(USER_LOGIN, {
@@ -46,7 +46,7 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
         onCompleted: (data) => {
             const { doc, token } = data.Login;
             authService.Login(doc, token);
-        },
+        }
     });
 
     return (
@@ -81,8 +81,8 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
                                         await Login({
                                             variables: {
                                                 email,
-                                                password,
-                                            },
+                                                password
+                                            }
                                         });
                                         if (authService.IsAuthenticated()) {
                                             document.location.href = "/in";

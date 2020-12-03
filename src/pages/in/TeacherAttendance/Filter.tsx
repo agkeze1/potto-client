@@ -17,7 +17,10 @@ interface iProp {
 
 const TeacherAttendanceReportFilter: FC<iProp> = ({ onTeacher, onWeek, activeTeacher }) => {
     const weeks: Array<any> = [
-        { label: "2 Weeks Ago", value: 2 },
+        { label: "2 months Ago", value: 8 },
+        { label: "A month Ago", value: 4 },
+        { label: "3 Weeks Ago", value: 3 },
+        { label: "2 Weeks Ago", value:  2},
         { label: "Last Week", value: 1 },
     ];
     const [teachers, setTeachers] = useState<Array<any>>([]);

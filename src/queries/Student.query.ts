@@ -276,3 +276,23 @@ export const UPDATE_STUDENT_CLASS = gql`
     }
     ${STU_PROPS}
 `;
+
+export const GET_STUDENT_IN_CLASS = gql`
+    query GetStudentsOfClass($classId: ID!) {
+        GetStudentOfSameClass(classId: $classId) {
+            docs {
+                id
+                passport
+                full_name
+                reg_no
+                gender
+            }
+        }
+    }
+`;
+
+export const PROMOTE_STUDENT = gql`
+    mutation PromoteStudents($students: [ID!]!, $classId: ID!) {
+        PromoteStudents(Students: $students, classId: $classId)
+    }
+`;

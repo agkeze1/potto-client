@@ -44,7 +44,10 @@ const SideNav: FC<SideProps> = ({ history }) => {
                             if (keyword) history.push(`/in/app-search?q=${keyword}`);
                         }}
                     >
-                        <input onChange={({ currentTarget: { value } }) => setKeyword(value)} placeholder="Start typing to search..." />
+                        <input
+                            onChange={({ currentTarget: { value } }) => setKeyword(value)}
+                            placeholder="Start typing to search..."
+                        />
                     </form>
                 </div>
                 <ul className="main-menu">
@@ -288,6 +291,11 @@ const SideNav: FC<SideProps> = ({ history }) => {
                                     <li>
                                         <NavLink to="/in/graduate-student" onClick={() => scrollTop()}>
                                             Graduate Student
+                                        </NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink to="/in/promotion-student" onClick={() => scrollTop()}>
+                                            Student Promotion
                                         </NavLink>
                                     </li>
                                 </ul>

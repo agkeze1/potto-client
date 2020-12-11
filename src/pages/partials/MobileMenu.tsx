@@ -60,7 +60,11 @@ const MobileMenu = () => {
                                         <div className="sub-menu-i">
                                             <ul className="sub-menu">
                                                 <li>
-                                                    <NavLink to="/in/new-school" onClick={() => scrollTop()} className="">
+                                                    <NavLink
+                                                        to="/in/new-school"
+                                                        onClick={() => scrollTop()}
+                                                        className=""
+                                                    >
                                                         New
                                                     </NavLink>
                                                 </li>
@@ -228,6 +232,11 @@ const MobileMenu = () => {
                                         <li>
                                             <NavLink to="/in/graduate-student" onClick={() => scrollTop()}>
                                                 Graduate Student
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/in/promotion-student" onClick={() => scrollTop()}>
+                                                Student Promotion
                                             </NavLink>
                                         </li>
                                     </ul>

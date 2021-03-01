@@ -20,6 +20,7 @@ const Class: FC<IProps> = ({ history }) => {
     const [showNewClass, SetShowNewClass] = useState<boolean>(false);
     const [levels, SetLevel] = useState<any>([]);
     const [teachers, SetTeachers] = useState<any>([]);
+    const limit = 1000;
 
     // Update Class
     const [activeClassId, SetActiveClassId] = useState<string>();
@@ -30,7 +31,7 @@ const Class: FC<IProps> = ({ history }) => {
 
     // Fetch Teachers for Form Teacher input
     const { loading: tLoading } = useQuery(TEACHER_LIST, {
-        variables: { page: 1, limit: 100 },
+        variables: { page: 1, limit },
         onCompleted: (data) => {
             if (data.GetTeachers) {
                 SetTeachers(

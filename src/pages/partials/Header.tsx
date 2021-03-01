@@ -21,7 +21,7 @@ const Header: FC<IProps> = ({ history }) => {
           >
             <input
               onChange={({ currentTarget: { value } }) => setKeyword(value)}
-              placeholder="Type to search"
+              placeholder="Type to search ..."
             />
           </form>
         </div>

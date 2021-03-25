@@ -33,7 +33,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
     const [activeRecordAttendances, SetActiveRecordAttendances] = useState<any>();
     const [activeImg, SetActiveImg] = useState<IImageProp>({
         image: "/avatar.png",
-        name: "Undefined",
+        name: "Undefined"
     });
 
     // Get  School of logged in user
@@ -46,6 +46,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
             SetActiveRecord(data?.GetClassRollCallAttendances.docs[0]);
             SetActiveRecordAttendances(data?.GetClassRollCallAttendances.docs[0]?.attendances);
         },
+        fetchPolicy: "network-only"
     });
 
     useEffect(() => {
@@ -75,11 +76,11 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                 onLevelChange={(level: any) => {
                                     SetActiveLevel({
                                         name: level?.label,
-                                        id: level?.value,
+                                        id: level?.value
                                     });
                                     SetAttendanceInput({
                                         ...attendanceInput,
-                                        current_class: undefined,
+                                        current_class: undefined
                                     });
                                 }}
                                 onClassChange={(_class: any) => {
@@ -87,35 +88,35 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                         ...attendanceInput,
                                         current_class: {
                                             name: _class.label,
-                                            id: _class.value,
-                                        },
+                                            id: _class.value
+                                        }
                                     });
                                 }}
                                 onFromChange={(fromDate: any) => {
                                     SetAttendanceInput({
                                         ...attendanceInput,
-                                        fromDate,
+                                        fromDate
                                     });
                                 }}
                                 onToChange={(toDate: any) => {
                                     SetAttendanceInput({
                                         ...attendanceInput,
-                                        toDate,
+                                        toDate
                                     });
                                 }}
                                 onSubmit={(item: any) => {
                                     if (item?._class?.value && item?.fromDate && item?.toDate) {
                                         GetClass({
                                             variables: {
-                                                id: attendanceInput?.current_class?.id,
-                                            },
+                                                id: attendanceInput?.current_class?.id
+                                            }
                                         });
                                         GetRollCall({
                                             variables: {
                                                 _class: attendanceInput.current_class?.id,
                                                 start: attendanceInput.fromDate,
-                                                end: attendanceInput.toDate,
-                                            },
+                                                end: attendanceInput.toDate
+                                            }
                                         });
                                         SetShowAttendanceResult(true);
                                         SetShowAttendanceInfo(true);
@@ -142,14 +143,17 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                                 <div className="user-w">
                                                     <div className="user-avatar-w">
                                                         <div className="user-avatar">
-                                                            <img alt={cData?.GetClass.doc.form_teacher?.name} src={cData?.GetClass.doc.form_teacher?.image} />
+                                                            <img
+                                                                alt={cData?.GetClass.doc.form_teacher?.name}
+                                                                src={cData?.GetClass.doc.form_teacher?.image}
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className="user-name">
                                                         <h6 className="user-title">
                                                             <NavLink
                                                                 to={{
-                                                                    pathname: `/in/teacher/${cData?.GetClass.doc.form_teacher?.id}`,
+                                                                    pathname: `/in/teacher/${cData?.GetClass.doc.form_teacher?.id}`
                                                                 }}
                                                             >
                                                                 {cData?.GetClass.doc.form_teacher?.name}
@@ -159,7 +163,9 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                                     </div>
                                                 </div>
                                             )}
-                                            {!cData?.GetClass.doc.form_teacher && <h6 className="text-danger mt-3">No Form teacher</h6>}
+                                            {!cData?.GetClass.doc.form_teacher && (
+                                                <h6 className="text-danger mt-3">No Form teacher</h6>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="col-sm-6 mt-3">
@@ -211,7 +217,9 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                         rCData?.GetClassRollCallAttendances.docs.map((rec: any, index: number) => (
                                             <a
                                                 key={index}
-                                                className={`el-tablo att-date-crd ${activeRecord?.date === rec.date ? "active-att-date" : ""}`}
+                                                className={`el-tablo att-date-crd ${
+                                                    activeRecord?.date === rec.date ? "active-att-date" : ""
+                                                }`}
                                                 href="javascript:void(0)"
                                                 onClick={() => {
                                                     scrollTop();
@@ -248,13 +256,17 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                                         SetShowSummary(!showSummary);
                                                     }}
                                                 >
-                                                    <i className={`os-icon os-icon-chevron-${showSummary ? "down" : "up"} icon-lg`}></i>
+                                                    <i
+                                                        className={`os-icon os-icon-chevron-${
+                                                            showSummary ? "down" : "up"
+                                                        } icon-lg`}
+                                                    ></i>
                                                 </a>
                                             </span>
                                             <h6
                                                 className="element-header"
                                                 style={{
-                                                    marginBottom: showSummary ? "30px" : "0",
+                                                    marginBottom: showSummary ? "30px" : "0"
                                                 }}
                                             >
                                                 Summary
@@ -263,7 +275,10 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                                 <div className="row">
                                                     {/* Counts */}
                                                     <div className="col-4">
-                                                        <a className="element-box el-tablo bg-darkseagreen no-bg" href="#">
+                                                        <a
+                                                            className="element-box el-tablo bg-darkseagreen no-bg"
+                                                            href="#"
+                                                        >
                                                             <div className="label">Total Students</div>
                                                             <div className="value">{activeRecord.total}</div>
                                                         </a>
@@ -271,13 +286,20 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                                     <div className="col-4">
                                                         <a className="element-box el-tablo no-bg bg-azure" href="#">
                                                             <div className="label">Total present</div>
-                                                            <div className="value text-primary">{activeRecord.stats?.present}</div>
+                                                            <div className="value text-primary">
+                                                                {activeRecord.stats?.present}
+                                                            </div>
                                                         </a>
                                                     </div>
                                                     <div className="col-4">
-                                                        <a className="element-box el-tablo no-bg bg-bisque mb-0" href="#">
+                                                        <a
+                                                            className="element-box el-tablo no-bg bg-bisque mb-0"
+                                                            href="#"
+                                                        >
                                                             <div className="label">Total absent</div>
-                                                            <div className="value text-danger">{activeRecord.stats?.absent}</div>
+                                                            <div className="value text-danger">
+                                                                {activeRecord.stats?.absent}
+                                                            </div>
                                                         </a>
                                                     </div>
                                                     <div className="col-4">
@@ -287,15 +309,25 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                                         </a>
                                                     </div>
                                                     <div className="col-4">
-                                                        <a className="element-box el-tablo no-bg bg-bisque mb-0" href="#">
+                                                        <a
+                                                            className="element-box el-tablo no-bg bg-bisque mb-0"
+                                                            href="#"
+                                                        >
                                                             <div className="label">Exempted</div>
-                                                            <div className="value text-danger">{activeRecord.stats?.exempted}</div>
+                                                            <div className="value text-danger">
+                                                                {activeRecord.stats?.exempted}
+                                                            </div>
                                                         </a>
                                                     </div>
                                                     <div className="col-4">
-                                                        <a className="element-box el-tablo no-bg bg-ivory mb-0" href="#">
+                                                        <a
+                                                            className="element-box el-tablo no-bg bg-ivory mb-0"
+                                                            href="#"
+                                                        >
                                                             <div className="label">Device Used</div>
-                                                            <h5 className="text-primary">{activeRecord.device?.name}</h5>
+                                                            <h5 className="text-primary">
+                                                                {activeRecord.device?.name}
+                                                            </h5>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -337,7 +369,7 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                                                             onClick={() =>
                                                                                 SetActiveImg({
                                                                                     image: att.student?.passport,
-                                                                                    name: att.student?.full_name,
+                                                                                    name: att.student?.full_name
                                                                                 })
                                                                             }
                                                                         />{" "}
@@ -346,7 +378,13 @@ const AttendanceResult: FC<IProps> = ({ showFilter }) => {
                                                                     </td>
                                                                     <td className="text-left">{att.student?.gender}</td>
                                                                     <td>
-                                                                        <label className={`badge ${att.present ? "badge-success-inverted" : "badge-danger-inverted"}`}>
+                                                                        <label
+                                                                            className={`badge ${
+                                                                                att.present
+                                                                                    ? "badge-success-inverted"
+                                                                                    : "badge-danger-inverted"
+                                                                            }`}
+                                                                        >
                                                                             {att.present ? "Present" : "Absent"}
                                                                         </label>
                                                                     </td>

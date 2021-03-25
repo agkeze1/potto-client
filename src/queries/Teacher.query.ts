@@ -209,3 +209,11 @@ export const GET_TEACHER = gql`
     }
     ${TEACHER_PROPS}
 `;
+
+export const UPDATE_TEACHER_PASSWORD = gql`
+    mutation AdminUpdateTeacherPassword($id: ID!, $password: String!) {
+        AdminUpdateTeacherPassword(id: $id, newPassword: $password) {
+            message
+        }
+    }
+`;

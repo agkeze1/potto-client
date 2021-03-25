@@ -5,14 +5,19 @@ import { GetAppName, CleanMessage, CLEAN_DATE, GetAge } from "./../../../context
 import { Redirect, NavLink } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import { toast } from "react-toastify";
-import { GET_TEACHER } from "../../../queries/Teacher.query";
+import { GET_TEACHER, UPDATE_TEACHER_PASSWORD } from "../../../queries/Teacher.query";
 import LoadingState from "../../partials/loading";
 import TeacherTTAccordion from "../../partials/TeacherTTAccordion";
 import MessageEditor from "../../partials/MessagingEditor";
 import { SEND_TEACHER_MESSAGE } from "../../../queries/teacher-message.query";
+import { User } from "../../../models/User.model";
+import { authService } from "./../../../services/Auth.Service";
+import IconInput from "../../partials/IconInput";
 
 const TeacherDetails: FC<IProps> = ({ match }) => {
     const { id } = match.params;
+    const user = authService.GetUser();
+    const [model, setModel] = useState({ password: "", confirm: "" });
 
     const [teacher, setTeacher] = useState<any>();
 
@@ -21,14 +26,23 @@ const TeacherDetails: FC<IProps> = ({ match }) => {
         onCompleted: (d) => {
             const { doc } = d.GetTeacher;
             setTeacher(doc);
-        },
+        }
     });
     const [sendMessageFunc, { loading: messageLoading }] = useMutation(SEND_TEACHER_MESSAGE, {
         onError: (err) => toast.error(CleanMessage(err.message)),
         onCompleted: (d) => {
             toast.success(d.SendTeachersMessage.message);
-        },
+        }
     });
+
+    const [changePasswordFunc, { loading: changing }] = useMutation(UPDATE_TEACHER_PASSWORD, {
+        onError: (err) => toast.error(CleanMessage(err.message)),
+        onCompleted: (d) => {
+            toast.success(d.AdminUpdateTeacherPassword.message);
+            setModel({ password: "", confirm: "" });
+        }
+    });
+
     useEffect(() => {
         if (id) getTeacherFunc({ variables: { id } });
     }, [id, getTeacherFunc]);
@@ -52,7 +66,10 @@ const TeacherDetails: FC<IProps> = ({ match }) => {
                             <div className="element-box">
                                 <div className="text-left">
                                     <NavLink to="/in/teacher-list">
-                                        <i className="icon-lg os-icon os-icon-arrow-left6" style={{ fontSize: "25px" }}></i>
+                                        <i
+                                            className="icon-lg os-icon os-icon-arrow-left6"
+                                            style={{ fontSize: "25px" }}
+                                        ></i>
                                     </NavLink>
                                 </div>
                                 <div className="text-center mb-5">
@@ -62,7 +79,7 @@ const TeacherDetails: FC<IProps> = ({ match }) => {
                                         src={teacher.image || "/avatar.png"}
                                         style={{
                                             width: "200px",
-                                            height: "200px",
+                                            height: "200px"
                                         }}
                                     />
 
@@ -95,6 +112,14 @@ const TeacherDetails: FC<IProps> = ({ match }) => {
                                                     Send Message
                                                 </a>
                                             </li>
+
+                                            {user && user.admin && (
+                                                <li className="nav-item text-uppercase">
+                                                    <a className="nav-link" data-toggle="tab" href="#password">
+                                                        Change Password
+                                                    </a>
+                                                </li>
+                                            )}
                                         </ul>
                                     </div>
                                     <div className="tab-content">
@@ -107,17 +132,26 @@ const TeacherDetails: FC<IProps> = ({ match }) => {
                                                     </li>
                                                     <li>
                                                         <span>Date of Birth</span> | <b>{CLEAN_DATE(teacher.dob)}</b>
-                                                        <span className="badge badge-primary ml-2 rounded p-1">{GetAge(teacher.dob)} Years</span>
+                                                        <span className="badge badge-primary ml-2 rounded p-1">
+                                                            {GetAge(teacher.dob)} Years
+                                                        </span>
                                                     </li>
                                                     <li>
                                                         <span>Phone number</span> | <b>{teacher.phone}</b>
                                                     </li>
                                                     <li>
                                                         <span>Employment date</span> | <b>{CLEAN_DATE(teacher.doj)} </b>
-                                                        <span className="badge badge-primary ml-2 rounded p-1">{GetAge(teacher.doj)} Years</span>
+                                                        <span className="badge badge-primary ml-2 rounded p-1">
+                                                            {GetAge(teacher.doj)} Years
+                                                        </span>
                                                     </li>
                                                     <li>
-                                                        <span>Email Address</span> | <b>{teacher.email || <span className="text-danger">No Email Address</span>}</b>
+                                                        <span>Email Address</span> |{" "}
+                                                        <b>
+                                                            {teacher.email || (
+                                                                <span className="text-danger">No Email Address</span>
+                                                            )}
+                                                        </b>
                                                     </li>
                                                     <li>
                                                         <span>Address</span> | <b>{teacher.address}</b>
@@ -145,13 +179,60 @@ const TeacherDetails: FC<IProps> = ({ match }) => {
                                                                 model: {
                                                                     message,
                                                                     excluded: [],
-                                                                    teachers: [teacher.id],
-                                                                },
-                                                            },
+                                                                    teachers: [teacher.id]
+                                                                }
+                                                            }
                                                         })
                                                     }
                                                     total={1}
                                                 />
+                                            </div>
+                                        </div>
+                                        <div className="tab-pane" id="password">
+                                            <div className="row">
+                                                <div className="col-6">
+                                                    <form
+                                                        onSubmit={async (event) => {
+                                                            event.preventDefault();
+                                                            if (model.password !== model.confirm)
+                                                                return toast.warn("Passwords do not match!");
+                                                            await changePasswordFunc({
+                                                                variables: { id, password: model.password }
+                                                            });
+                                                        }}
+                                                    >
+                                                        <IconInput
+                                                            placeholder="Enter password"
+                                                            label="Password"
+                                                            icon="os-icon-fingerprint"
+                                                            required={true}
+                                                            type="password"
+                                                            name="password"
+                                                            onChange={(password: string) => {
+                                                                setModel({
+                                                                    ...model,
+                                                                    password
+                                                                });
+                                                            }}
+                                                        />
+                                                        <IconInput
+                                                            name="confirm-password"
+                                                            placeholder="Confirm password"
+                                                            label="Confirm Password"
+                                                            onChange={(confirm: string) => {
+                                                                setModel({ ...model, confirm });
+                                                            }}
+                                                            icon="os-icon-fingerprint"
+                                                            required={true}
+                                                            type="password"
+                                                        />
+                                                        <LoadingState loading={changing} />
+                                                        <button type="submit" className="btn btn-primary">
+                                                            Update Password
+                                                            <div className="os-icon os-icon-arrow-right7"></div>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

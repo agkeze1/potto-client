@@ -1,22 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { GetAppName, GET_LOGO } from "../context/App";
 import { NavLink } from "react-router-dom";
 import Input from "./partials/Input";
 import LoadingState from "./partials/loading";
 import { authService } from "../services/Auth.Service";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
 import { FIRST_USER, USER_LOGIN } from "../queries/User.query";
 import { HAS_SCHOOL } from "../queries/School.query";
 import { IProps } from "../models/IProps";
 import { toast } from "react-toastify";
 import { CleanMessage } from "./../context/App";
 
+const __KEY = "_potto_first";
+
 const UserLogin: React.FC<IProps> = ({ history }) => {
     document.body.className = "auth-wrapper";
 
     const [email, SetEmail] = useState<string>();
     const [password, SetPassword] = useState<string>();
+    const [hasSchool, setHasSchool] = useState(false);
 
     // Check if user is already logged in
     if (authService.IsAuthenticated()) {
@@ -24,9 +27,11 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
     }
 
     // Check if any school exists
-    const { data } = useQuery(HAS_SCHOOL, {
+    const [getFirstFunc, { data }] = useLazyQuery(HAS_SCHOOL, {
         onCompleted: () => {
+            localStorage.setItem(__KEY, JSON.stringify(data));
             if (data && !data.HasSchool) {
+                setHasSchool(data.HasSchool);
                 history.push("/default_school");
             }
         }
@@ -49,15 +54,25 @@ const UserLogin: React.FC<IProps> = ({ history }) => {
         }
     });
 
+    useEffect(() => {
+        if (!localStorage.getItem(__KEY)) {
+            getFirstFunc();
+        } else {
+            const d = JSON.parse(localStorage.getItem(__KEY) || "");
+            setHasSchool(d.HasSchool);
+            if (!d.HasSchool) history.push("/default_school");
+        }
+    }, []);
+
     return (
         <>
-            {!data && !uData && (
+            {!hasSchool && !uData && (
                 <h5 className="text-center" style={{ paddingTop: "15%", color: "lightGrey" }}>
                     <img src="./loading.gif" alt="loading" style={{ width: "50px" }} /> <br />
                     loading
                 </h5>
             )}
-            {data && uData && (
+            {hasSchool && uData && (
                 <>
                     <Helmet>
                         <title> Login | {GetAppName()}</title>
